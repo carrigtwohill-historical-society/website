@@ -2,7 +2,7 @@
   "name": "chs-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Carrigtwohill & District Historical Society — Eleventy site (CHS-Proto)",
+  "description": "Carrigtwohill & District Historical Society — Eleventy site",
   "scripts": {
     "migrate": "node scripts/migrate-aspx.js",
     "copy-assets": "node scripts/copy-assets.js",

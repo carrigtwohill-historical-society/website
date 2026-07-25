@@ -77,7 +77,7 @@ For now: Aidan via GitHub.
 
 Later (committee-friendly, still not open to the public):
 
-1. Invite named committee members as GitHub collaborators on `CHS-Proto`
+1. Invite named committee members as GitHub collaborators on `website`
 2. They edit a place file in the GitHub website (no install needed)
 3. Protect the `main`/`master` branch so changes go through a short review
 

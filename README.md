@@ -1,6 +1,6 @@
-# Carrigtwohill & District Historical Society (CHS-Proto)
+# Carrigtwohill & District Historical Society
 
-Eleventy static site for GitHub Pages: `https://duinneacha.github.io/CHS-Proto/`
+Eleventy static site for GitHub Pages: `https://carrigtwohill-historical-society.github.io/website/`
 
 ## Commands
 

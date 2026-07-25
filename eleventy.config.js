@@ -57,13 +57,13 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addTransform("prefixRootUrls", (content, outputPath) => {
     if (!outputPath || !outputPath.endsWith(".html")) return content;
     return content.replace(
-      /(href|src|action)="\/(?!CHS-Proto\/)/g,
-      '$1="/CHS-Proto/'
+      /(href|src|action)="\/(?!website\/)/g,
+      '$1="/website/'
     );
   });
 
   return {
-    pathPrefix: "/CHS-Proto/",
+    pathPrefix: "/website/",
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
