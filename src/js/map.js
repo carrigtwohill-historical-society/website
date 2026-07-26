@@ -272,63 +272,53 @@
       catLabel && String(catLabel).toLowerCase() !== "unknown"
         ? escapeHtml(catLabel)
         : "";
-    const info = place.hasPreview
-      ? escapeHtml(place.preview)
-      : "Notes to be added — a short description of this place will go here.";
+    const preview = place.hasPreview ? String(place.preview).trim() : "";
+    // Keep popup short — long notes live on the place page
+    const shortPreview =
+      preview.length > 140 ? preview.slice(0, 137).trim() + "…" : preview;
     const detailHref = place.detailPath
       ? prefixPath(place.detailPath)
-      : place.liveVideoPage || null;
+      : null;
 
     let html = `<div class="map-popup">`;
-    html += `<h3>${escapeHtml(place.name)}</h3>`;
+    html += `<h3>${escapeHtml(place.name || "Historical place")}</h3>`;
 
+    if (cat || place.townland) {
+      html += `<p class="map-popup-meta">`;
+      if (cat) html += cat;
+      if (cat && place.townland) html += " · ";
+      if (place.townland) html += escapeHtml(place.townland);
+      html += `</p>`;
+    } else {
+      html += `<p class="map-popup-meta map-popup-meta-empty">Category to be added</p>`;
+    }
+
+    // Only show a real photo in the popup — no tall empty placeholder
     if (place.heroImage) {
       html += `<figure class="map-popup-figure"><img src="${escapeHtml(
         place.heroImage.startsWith("http")
           ? place.heroImage
           : prefixPath(place.heroImage)
       )}" alt="${escapeHtml(place.heroAlt || place.name)}"></figure>`;
-    } else {
-      html += `<div class="map-popup-photo-ph"><span>Photograph to be added</span></div>`;
     }
 
-    if (cat) {
-      html += `<p class="map-popup-meta">${cat}`;
-      if (place.townland) {
-        html += ` · ${escapeHtml(place.townland)}`;
-      }
-      html += `</p>`;
-    } else {
-      html += `<p class="map-popup-meta map-popup-meta-empty">Category to be added</p>`;
+    if (shortPreview) {
+      html += `<p class="map-popup-info">${escapeHtml(shortPreview)}</p>`;
     }
 
-    html += `<div class="map-popup-info${
-      place.hasPreview ? "" : " map-popup-info-empty"
-    }"><p>${info}</p></div>`;
-
-    if (place.author) {
-      html += `<p class="map-popup-meta">Record: ${escapeHtml(place.author)}</p>`;
-    }
-
+    html += `<p class="map-popup-actions">`;
     if (place.liveVideoPage) {
-      html += `<p><a class="map-popup-link" href="${escapeHtml(
+      html += `<a class="map-popup-link" href="${escapeHtml(
         place.liveVideoPage
-      )}" target="_blank" rel="noopener">Watch MTU exhibit video</a></p>`;
+      )}" target="_blank" rel="noopener">Watch video</a>`;
     }
-
-    if (detailHref && !place.liveVideoPage) {
-      html += `<p class="map-popup-actions"><a class="map-popup-link" href="${escapeHtml(
+    if (detailHref) {
+      if (place.liveVideoPage) html += `<span class="map-popup-sep"> · </span>`;
+      html += `<a class="map-popup-link" href="${escapeHtml(
         detailHref
-      )}">Further information</a></p>`;
-    } else if (!place.liveVideoPage) {
-      html += `<p class="map-popup-actions"><span class="map-popup-link-disabled">Further information — page to be completed</span></p>`;
+      )}">Further information</a>`;
     }
-
-    if (place.credit) {
-      html += `<p class="map-popup-credit"><small>${escapeHtml(
-        place.credit
-      )}</small></p>`;
-    }
+    html += `</p>`;
 
     html += `</div>`;
     return html;
@@ -401,6 +391,8 @@
       bearing: DEFAULT_BEARING,
       maxPitch: 75,
       attributionControl: { compact: true },
+      // Let the page scroll normally; require Ctrl/⌘+scroll (or +/-) to zoom
+      cooperativeGestures: true,
     });
 
     map.addControl(
@@ -588,9 +580,12 @@
       })
         .setLngLat([lng, lat])
         .setPopup(
-          new maplibregl.Popup({ offset: 18, maxWidth: "320px" }).setHTML(
-            popupHtml(place)
-          )
+          new maplibregl.Popup({
+            offset: 16,
+            maxWidth: "280px",
+            closeButton: true,
+            focusAfterOpen: false,
+          }).setHTML(popupHtml(place))
         )
         .addTo(map);
     });
