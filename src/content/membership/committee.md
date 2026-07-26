@@ -12,16 +12,14 @@ oldPath: "/Membership/Committee.aspx"
     <h3>AGM 2024</h3>
    
     <p class="indentedText">
-        Having been widely advertised via our email mailing list, and in the Federation of Local
-        History Societies circulation noticeboards, the AGM was held, 25<sup>th</sup> April 2024,
-        at Mary Geary’s Childcare, kindly provided by their management.
+        This year’s AGM and election of new committee took place, 23<sup>rd</sup> May 2026, at Mary         Geary’s Childcare, providing their continued support of the society with a comfortable              venue for this AGM and for our regular monthly meetings; for which we are extremely                 grateful.
     </p>
     <p class="indentedText">
-        The AGM commenced with an opening address by Jim Barry (Chair), followed by André Saubolle 
-        (Secretary), concluding with Michael Cummins’ (Treasurer) financial report, after which 
-        the existing committee retired.
+        As this was the first meeting since the AGM in the opening passage for the Agenda of                21<sup>st</sup>February 2026, the following was noted and read at this meeting:
     </p>
-   
+   <p class="indentedText">
+       “The last full committee meeting was held 14th June 2025. It was followed a few weeks later, 28th June, to finalise the book of the parish history, and prepare for its launch. It is unknown if the Minutes were recorded.”
+   </p>
     <h3>Elected Committee</h3>
     <table class="Center" align="center">
         <tr>
@@ -30,21 +28,21 @@ oldPath: "/Membership/Committee.aspx"
         </tr>
         <tr>
             <td class="auto-style13">Vice-Chair:</td>
-            <td class="auto-style14">Marie McCarthy</td>
+            <td class="auto-style14">Aiden Dennehy</td>
         </tr>
         <tr>
             <td class="auto-style13">Secretary:</td>
             <td class="auto-style14">André Saubolle</td>
         </tr>
          <tr>
-            <td class="auto-style13">Vice Secretary</td>
-            <td class="auto-style14">Tony Ó Floinn</td>
-        </tr>
-        <tr>
             <td class="auto-style13">Treasurer:</td>
             <td class="auto-style14">Michael Cummins</td>
         </tr>
-       
+         <tr>
+            <td class="auto-style13">P.R.O.</td>
+            <td class="auto-style14">Mary FitzGerald</td>
+        </tr>
+             
         <tr>
             <td class="auto-style13"><strong>Committee Officers:</strong></td>
             <td class="auto-style14">Sister Mary Kenefick, Ollie Sheehan, Frank Hannigan, William Ahern</td>
