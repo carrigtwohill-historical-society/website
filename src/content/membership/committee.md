@@ -45,7 +45,7 @@ oldPath: "/Membership/Committee.aspx"
              
         <tr>
             <td class="auto-style13"><strong>Committee Officers:</strong></td>
-            <td class="auto-style14">Sister Mary Kenefick, Ollie Sheehan, Frank Hannigan, William Ahern</td>
+            <td class="auto-style14">Sister Mary Kenefick, Mary McCarthy, Ollie McSweeny, David Moore</td>
         </tr>
     </table>
     
