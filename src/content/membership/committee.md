@@ -9,7 +9,7 @@ oldPath: "/Membership/Committee.aspx"
 
     <h1>Committee Members & Membership</h1>
     <h2>Current Committee</h2>
-    <h3>AGM 2024</h3>
+    <h3>AGM 2026</h3>
    
     <p class="indentedText">
         This year’s AGM and election of new committee took place, 23<sup>rd</sup> May 2026, at Mary         Geary’s Childcare, providing their continued support of the society with a comfortable              venue for this AGM and for our regular monthly meetings; for which we are extremely                 grateful.
