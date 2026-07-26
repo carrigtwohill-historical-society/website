@@ -13,16 +13,25 @@ layout: layouts/base.njk
     <div>
       <div class="email-callout">
         <strong>Email us directly</strong>
-        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <a id="contact-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a>
         <p style="margin:0.75rem 0 0;font-size:0.95rem">
-          Prefer email if you need to send attachments (photos, documents, research files). The form below does not accept file uploads.
+          Prefer email if you need to send attachments (photos, documents, research files).
+          The form below does not accept file uploads — open your email app and <strong>attach the photo yourself</strong> before sending.
         </p>
       </div>
-      <p>We welcome enquiries about membership, local history research, and society events.</p>
+      <p>We welcome enquiries about membership, local history research, society events, and places on the historical map.</p>
+      <p id="place-tip-banner" class="place-tip-banner" hidden>
+        You are sending a tip about <strong id="place-tip-name"></strong>.
+        We read these at committee meetings; accepted notes are entered into the place record by a society member.
+      </p>
     </div>
 
-    <form class="contact-form" action="{{ site.formspree }}" method="POST">
-      <input type="hidden" name="_subject" value="CHS website contact">
+    <form class="contact-form" id="contact-form" action="{{ site.formspree }}" method="POST">
+      <input type="hidden" name="_subject" id="contact-subject" value="CHS website contact">
+      <input type="hidden" name="place_id" id="contact-place-id" value="">
+      <input type="hidden" name="place_name" id="contact-place-name" value="">
+      <input type="hidden" name="place_url" id="contact-place-url" value="">
+
       <label for="name">Name</label>
       <input id="name" name="name" type="text" required autocomplete="name">
 
@@ -36,3 +45,65 @@ layout: layouts/base.njk
     </form>
   </div>
 </article>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var placeId = params.get("place") || "";
+  var placeName = params.get("placeName") || "";
+  if (!placeId && !placeName) return;
+
+  var subject = placeName
+    ? "Map place tip: " + placeName
+    : "Map place tip";
+  var starter =
+    "I’d like to share information about " +
+    (placeName || "a place on the historical map") +
+    (placeId ? " (" + placeId + ")" : "") +
+    ".\n\n";
+
+  var subj = document.getElementById("contact-subject");
+  var msg = document.getElementById("message");
+  var pid = document.getElementById("contact-place-id");
+  var pname = document.getElementById("contact-place-name");
+  var purl = document.getElementById("contact-place-url");
+  var banner = document.getElementById("place-tip-banner");
+  var bannerName = document.getElementById("place-tip-name");
+  var mailto = document.getElementById("contact-mailto");
+
+  if (subj) subj.value = subject;
+  if (msg && !msg.value) msg.value = starter;
+  if (pid) pid.value = placeId;
+  if (pname) pname.value = placeName;
+  if (purl && placeId) {
+    var base = document.querySelector('link[href*="/css/site.css"]');
+    var prefix = "";
+    if (base) {
+      var href = base.getAttribute("href") || "";
+      var idx = href.indexOf("/css/site.css");
+      if (idx > 0) prefix = href.slice(0, idx);
+    }
+    purl.value =
+      window.location.origin +
+      prefix +
+      "/map/places/" +
+      encodeURIComponent(placeId) +
+      "/";
+  }
+  if (banner && bannerName) {
+    banner.hidden = false;
+    bannerName.textContent = placeName || placeId;
+  }
+  if (mailto) {
+    var body =
+      "Please find attached a photograph or note for " +
+      (placeName || "a map place") +
+      (placeId ? " (" + placeId + ")" : "") +
+      ".\n\n(Remember to attach your photo yourself before sending.)";
+    mailto.href =
+      "mailto:{{ site.email }}?subject=" +
+      encodeURIComponent(subject) +
+      "&body=" +
+      encodeURIComponent(body);
+  }
+})();
+</script>

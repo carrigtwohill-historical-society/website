@@ -7,10 +7,11 @@ maplibre: true
 bodyClass: map-page-body
 ---
 <div class="map-page">
+  <p class="map-skip"><a href="#map-places-list">Skip map — view places as a list</a></p>
   <div class="map-toolbar">
     <div class="map-toolbar-text">
       <h1 class="page-title">Historical Map</h1>
-      <p>Satellite view with a slight tilt. Zoom in to see place names on the pins. Use the layer buttons to show townland borders and names. Red circles are MTU/CIT exhibit films.</p>
+      <p>Satellite view with a slight tilt. Zoom in to see place names on the pins. Use the layer buttons to show townland borders and names. Pin colours show the type of place — each colour is named in the legend below.</p>
     </div>
     <div class="map-toolbar-actions" role="group" aria-label="Map layers">
       <button type="button" id="map-basemap-toggle" class="btn map-ctrl-btn" aria-pressed="false">Show street map</button>
@@ -23,21 +24,61 @@ bodyClass: map-page-body
     <div id="chs-map" role="region" aria-label="Carrigtwohill historical map"></div>
     <div id="map-status" class="map-status">Loading map…</div>
   </div>
-  <div class="map-legend">
-    <span class="legend-places">Parish places</span>
-    <span class="legend-mtu">MTU exhibit films</span>
+
+  <div class="map-legend" aria-label="Place type colours">
+    {% for cat in categories.list %}
+    <span class="legend-item">
+      <span class="legend-swatch" style="background: {{ cat.colour }}" aria-hidden="true"></span>
+      {{ cat.label }}
+    </span>
+    {% endfor %}
   </div>
+
+  <section id="map-places-list" class="map-places-list" aria-labelledby="map-places-list-title" tabindex="-1">
+    <h2 id="map-places-list-title">Places on this map</h2>
+    <p class="map-places-list-intro">
+      A text list of every place shown above, for anyone who prefers not to use the interactive map — including screen reader and keyboard users.
+    </p>
+    {% if mapPlaces and mapPlaces.length %}
+    <ol class="map-places-ol">
+      {% for place in mapPlaces %}
+      <li class="map-places-item">
+        <h3 class="map-places-name">
+          <a href="{{ place.detailPath | url }}">{{ place.name }}</a>
+        </h3>
+        <p class="map-places-meta">
+          <span class="map-places-category">{{ place.categoryLabel or place.category }}</span>
+          {% if place.townland %}
+          <span class="map-places-townland"> · {{ place.townland }}</span>
+          {% endif %}
+        </p>
+        {% if place.hasPreview %}
+        <p class="map-places-preview">{{ place.preview }}</p>
+        {% else %}
+        <p class="map-places-preview map-places-preview-empty">Notes to be added</p>
+        {% endif %}
+        {% if not place.heroImage %}
+        <p class="map-places-photo-ph">Photograph to be added</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p>No published places are available yet.</p>
+    {% endif %}
+  </section>
 
   <aside class="map-contribute" aria-labelledby="map-contribute-title">
     <div class="map-contribute-inner">
       <h2 id="map-contribute-title">Help us enrich this map</h2>
       <p>
         Spot a missing place, a story, a photograph, or a correction? Your local knowledge is very welcome —
-        this map grows with the community.
+        this map grows with the community. Open a place page and use “Share a note or photo”, or contact us below.
       </p>
       <p class="map-contribute-email">
         Email us at
         <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        — if you are sending a photograph, attach the file yourself in your email app —
         or reach us on social media:
       </p>
       {% set socialClass = "social-nav-map" %}

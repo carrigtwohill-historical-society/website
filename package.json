@@ -6,17 +6,21 @@
   "scripts": {
     "migrate": "node scripts/migrate-aspx.js",
     "copy-assets": "node scripts/copy-assets.js",
+    "validate-places": "node scripts/validate-places.js",
     "build-places": "node scripts/build-places.js",
-    "prepare-content": "npm run migrate && npm run copy-assets && npm run build-places",
-    "build": "eleventy",
-    "start": "eleventy --serve --port=8080",
+    "prepare-content": "npm run migrate && npm run copy-assets && npm run validate-places && npm run build-places",
+    "build": "npm run validate-places && npm run build-places && eleventy",
+    "start": "npm run build-places && eleventy --serve --port=8080",
     "clean": "node -e \"require('fs').rmSync('_site',{recursive:true,force:true})\""
   },
   "author": "Carrigtwohill & District Historical Society",
   "license": "UNLICENSED",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
+    "@11ty/eleventy-img": "^6.0.4",
     "@11ty/eleventy-plugin-rss": "^2.0.4",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^5.2.2",
     "slugify": "^1.6.6"
   }
 }

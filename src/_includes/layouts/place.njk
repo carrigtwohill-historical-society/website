@@ -1,27 +1,64 @@
 ---
 layout: layouts/base.njk
 ---
+{% set catId = category %}
+{% set catMeta = categories.byId[catId] %}
+{% set catLabel = catMeta.label if catMeta else category %}
+{% set displayTownland = townland %}
 <article class="page place-page">
   <p class="place-back"><a href="{{ '/map/' | url }}">← Back to map</a></p>
   <header class="page-header">
     <h1 class="page-title">{{ name or title }}</h1>
-    {% if category and category != "Unknown" %}
-    <p class="place-meta">{{ category }}</p>
-    {% else %}
-    <p class="place-meta place-meta-empty">Category to be added</p>
-    {% endif %}
+    <p class="place-meta">
+      {% if catLabel and catId != "unknown" %}
+        <span class="place-category">{{ catLabel }}</span>
+      {% else %}
+        <span class="place-meta-empty">Category to be added</span>
+      {% endif %}
+      {% if displayTownland %}
+        <span class="place-townland"> · {{ displayTownland }}{% if townlandIrish %} ({{ townlandIrish }}){% endif %}</span>
+      {% endif %}
+    </p>
   </header>
 
-  <figure class="place-hero{% if not heroImage %} place-hero-empty{% endif %}">
+  {% set gallery = images if images and images.length else null %}
+  {% if heroImage or gallery %}
+  <div class="place-gallery">
     {% if heroImage %}
-    <img src="{{ heroImage | url }}" alt="{{ name or title }}">
-    {% else %}
+    <figure class="place-hero">
+      {% placeImage heroImage, name or title %}
+      {% if heroCaption or credit %}
+      <figcaption>
+        {% if heroCaption %}{{ heroCaption }}{% endif %}
+        {% if credit %}<span class="place-credit">{{ credit }}</span>{% endif %}
+      </figcaption>
+      {% endif %}
+    </figure>
+    {% endif %}
+    {% if gallery %}
+      {% for img in gallery %}
+        {% set imgPath = img.path or img.src or img %}
+        {% if imgPath and imgPath != heroImage %}
+        <figure class="place-gallery-item">
+          {% placeImage imgPath, img.caption or name or title %}
+          {% if img.caption or img.credit %}
+          <figcaption>
+            {% if img.caption %}{{ img.caption }}{% endif %}
+            {% if img.credit %}<span class="place-credit">{{ img.credit }}</span>{% endif %}
+          </figcaption>
+          {% endif %}
+        </figure>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% else %}
+  <figure class="place-hero place-hero-empty">
     <div class="place-placeholder-image" role="img" aria-label="Photograph to be added">
       <span>Photograph to be added</span>
     </div>
-    {% endif %}
-    {% if heroCaption %}<figcaption>{{ heroCaption }}</figcaption>{% endif %}
   </figure>
+  {% endif %}
 
   <div class="place-body prose">
     {% set plain = content | striptags | trim %}
@@ -30,12 +67,44 @@ layout: layouts/base.njk
     {% else %}
       <div class="place-placeholder-text">
         <p><strong>Notes to be added</strong></p>
-        <p>This place is on the map so the committee can see what still needs research: a short description, sources, and photographs. Edit the Markdown file for this place under <code>src/places/</code>.</p>
+        <p>A short description of this place will appear here as the society records grow. If you know something about this place, please share it with us.</p>
       </div>
     {% endif %}
   </div>
 
+  {% if youtube %}
+  {% set ytId = youtube | youtubeId %}
+  {% if ytId %}
+  <div class="place-video">
+    <h2 class="place-section-title">Video</h2>
+    <div class="place-video-frame">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/{{ ytId }}"
+        title="YouTube video: {{ name or title }}"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <p class="place-video-link"><a href="{{ youtube }}" rel="noopener noreferrer" target="_blank">Watch on YouTube</a></p>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {% if liveVideoPage %}
+  <p class="place-mtu-link"><a href="{{ liveVideoPage }}" rel="noopener noreferrer" target="_blank">Watch MTU exhibit video</a></p>
+  {% endif %}
+
   {% if author %}
   <p class="place-author">Record: {{ author }}</p>
   {% endif %}
+
+  <aside class="place-contribute" aria-labelledby="place-contribute-title">
+    <h2 id="place-contribute-title">Share a note or photo about this place</h2>
+    <p>Your local knowledge helps the society. Tell us what you know — we read every message at committee meetings.</p>
+    <p class="place-contribute-actions">
+      <a class="btn" href="{{ '/about/contact-us/' | url }}?place={{ id | urlencode }}&amp;placeName={{ (name or title) | urlencode }}">Send a note about this place</a>
+      <a class="btn btn-secondary" href="mailto:{{ site.email }}?subject={{ ('Photo for map place: ' + (name or title)) | urlencode }}&amp;body={{ ('Please find attached a photograph for ' + (name or title) + ' (' + id + ').%0A%0A(Remember to attach your photo yourself before sending.)') | urlencode }}">Email a photo (attach it yourself)</a>
+    </p>
+  </aside>
 </article>

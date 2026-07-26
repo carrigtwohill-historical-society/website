@@ -1,0 +1,60 @@
+{
+  "$comment": "Single source of truth for place types. Validation, map pins, and legend read this file. Mirror labels/ids in .pages.yml select options when adding a category (Pages CMS select cannot load remote JSON).",
+  "categories": [
+    {
+      "id": "castles-antiquities",
+      "label": "Castle / antiquity",
+      "colour": "#8B4513"
+    },
+    {
+      "id": "big-houses-estates",
+      "label": "Big house / estate",
+      "colour": "#2F4F6F"
+    },
+    {
+      "id": "churches-religious",
+      "label": "Church / religious",
+      "colour": "#4A6741"
+    },
+    {
+      "id": "graveyards-memorials",
+      "label": "Graveyard / memorial",
+      "colour": "#5C4A3A"
+    },
+    {
+      "id": "industry-trade",
+      "label": "Industry / trade",
+      "colour": "#B45309"
+    },
+    {
+      "id": "shops-village",
+      "label": "Shop / village",
+      "colour": "#0E7490"
+    },
+    {
+      "id": "notable-people",
+      "label": "Notable person",
+      "colour": "#7C3AED"
+    },
+    {
+      "id": "townlands-placenames",
+      "label": "Placename / townland",
+      "colour": "#15803D"
+    },
+    {
+      "id": "exhibit",
+      "label": "MTU exhibit film",
+      "colour": "#C41E3A"
+    },
+    {
+      "id": "unknown",
+      "label": "Unknown",
+      "colour": "#6B7280"
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "colour": "#9CA3AF"
+    }
+  ]
+}

@@ -6,28 +6,21 @@ Eleventy static site for GitHub Pages: `https://carrigtwohill-historical-society
 
 ```bash
 npm install
-npm run migrate      # ASPX → Markdown (+ url-map.json)
-npm run copy-assets  # images/PDFs from backup
-npm run build-places # merge jimmap + MTU pins
-npm start            # local server
-npm run build        # production build to _site/
+npm run validate-places  # fatal/warn checks on src/places/*.md
+npm run build-places     # MD → src/data/places.json (never writes MD)
+npm start                # local server
+npm run build            # validate + build-places + eleventy
 ```
 
-Or all prep steps:
-
-```bash
-npm run prepare-content
-npm start
-```
+Map places are edited as Markdown in `src/places/` (committee via Pages CMS). See `docs/PLACES.md` and `docs/EDITING-PLACES.md`.
 
 ## Content rules
 
 - Historian prose is frozen — do not rewrite body text.
 - Old ASP.NET paths are recorded in `src/data/url-map.json`.
-- Large CIT videos are not in the repo; pages link to the live site until YouTube hosts them.
-- Contact form: Formspree. Attachments: email `admin@carrigtwohillhistoricalsociety.com`.
+- Contact form: Formspree → society admin. Photo attachments: email and attach the file yourself.
 
 ## Source material
 
 - Backup: `D:\chs\website_backup_04072026\OneDrive_1_04-07-2026`
-- Map pins: `D:\chs\jimmap\data\places.json` (+ Barryscourt from carrigmapv2)
+- Place records: `src/places/*.md` (source of truth)

@@ -1,11 +1,13 @@
 const path = require("path");
 const fs = require("fs");
+const Image = require("@11ty/eleventy-img");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/js": "js" });
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
   eleventyConfig.addPassthroughCopy({ "src/data/places.json": "data/places.json" });
+  eleventyConfig.addPassthroughCopy({ "src/data/categories.json": "data/categories.json" });
   eleventyConfig.addPassthroughCopy({ "src/data/url-map.json": "data/url-map.json" });
   eleventyConfig.addPassthroughCopy({
     "src/data/carrigtwohill-parishes.geojson": "data/carrigtwohill-parishes.geojson",
@@ -28,6 +30,63 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("isoDate", () => new Date().toISOString().slice(0, 10));
+
+  eleventyConfig.addFilter("urlencode", (s) =>
+    encodeURIComponent(s == null ? "" : String(s))
+  );
+
+  eleventyConfig.addFilter("youtubeId", (url) => {
+    if (!url) return "";
+    const s = String(url).trim();
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube-nocookie\.com\/embed\/)([A-Za-z0-9_-]{6,})/,
+      /^([A-Za-z0-9_-]{11})$/,
+    ];
+    for (const re of patterns) {
+      const m = s.match(re);
+      if (m) return m[1];
+    }
+    return "";
+  });
+
+  /** Resize place photos; sharp fixes orientation before EXIF strip. */
+  eleventyConfig.addNunjucksAsyncShortcode(
+    "placeImage",
+    async function (src, alt) {
+      if (!src) return "";
+      const inputPath = String(src).startsWith("http")
+        ? String(src)
+        : path.join(
+            __dirname,
+            "src",
+            String(src).replace(/^\//, "")
+          );
+      if (!String(src).startsWith("http") && !fs.existsSync(inputPath)) {
+        const fallback = this.ctx && this.ctx.page ? "" : "";
+        return `<img src="${src}" alt="${alt || ""}" loading="lazy">`;
+      }
+      try {
+        const metadata = await Image(inputPath, {
+          widths: [640, 960, 1280],
+          formats: ["webp", "jpeg"],
+          outputDir: path.join(__dirname, "_site", "img", "places"),
+          urlPath: "/img/places/",
+          sharpJpegOptions: { quality: 78, mozjpeg: true },
+          sharpWebpOptions: { quality: 75 },
+        });
+        const attrs = {
+          alt: alt || "",
+          loading: "lazy",
+          decoding: "async",
+          sizes: "(max-width: 800px) 100vw, 800px",
+        };
+        return Image.generateHTML(metadata, attrs);
+      } catch (e) {
+        console.warn("placeImage failed for", src, e.message);
+        return `<img src="${src}" alt="${alt || ""}" loading="lazy">`;
+      }
+    }
+  );
 
   eleventyConfig.addCollection("contentPages", (api) =>
     api.getFilteredByGlob("src/content/**/*.md").sort((a, b) =>
@@ -56,10 +115,31 @@ module.exports = function (eleventyConfig) {
   // Migrated HTML uses root-absolute /assets/... — apply pathPrefix for GH Pages
   eleventyConfig.addTransform("prefixRootUrls", (content, outputPath) => {
     if (!outputPath || !outputPath.endsWith(".html")) return content;
-    return content.replace(
+    let out = content.replace(
       /(href|src|action)="\/(?!website\/)/g,
       '$1="/website/'
     );
+    // eleventy-img srcset
+    out = out.replace(
+      /(srcset=")([^"]+)(")/g,
+      (full, a, list, c) => {
+        const fixed = list
+          .split(",")
+          .map((part) => {
+            const trimmed = part.trim();
+            if (trimmed.startsWith("/website/") || trimmed.startsWith("http")) {
+              return trimmed;
+            }
+            if (trimmed.startsWith("/")) {
+              return `/website${trimmed}`;
+            }
+            return trimmed;
+          })
+          .join(", ");
+        return a + fixed + c;
+      }
+    );
+    return out;
   });
 
   return {

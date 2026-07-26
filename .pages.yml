@@ -1,0 +1,154 @@
+# Carrigtwohill & District Historical Society — Places CMS
+# Connect this repo at https://app.pagescms.org (invite-only editors).
+# Category options mirror src/data/categories.json (Pages CMS select is static —
+# when you add a category, update BOTH files).
+
+media:
+  - name: place_images
+    label: Place photographs
+    input: src/assets/map/places
+    output: /assets/map/places
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
+
+content:
+  - name: places
+    label: Carrigtwohill Historical Society — Places
+    type: collection
+    path: src/places
+    filename: "{id}.md"
+    view:
+      fields: [name, townland, category, status]
+      primary: name
+      sort: [name, townland, category, status]
+      search: [name, townland, category, preview]
+      default:
+        sort: name
+        order: asc
+    fields:
+      - name: name
+        label: Place name
+        type: string
+        required: true
+      - name: id
+        label: URL id (slug)
+        type: string
+        required: true
+        description: Lowercase letters, numbers, hyphens only. Must be unique (e.g. ballyannan-castle).
+      - name: status
+        label: Status
+        type: select
+        options:
+          values:
+            - name: draft
+              label: Draft (not on public site)
+            - name: published
+              label: Published
+            - name: stub
+              label: Stub (on map, needs more notes)
+        default: draft
+        required: true
+      - name: images
+        label: Photographs
+        type: image
+        list: true
+        options:
+          media: place_images
+          extensions: [jpg, jpeg, png, webp]
+        description: First image is the main photo. For then/now, put the older photo first and caption each (e.g. c. 1920 / 2026). JPEG preferred.
+      - name: heroImage
+        label: Main photo path (optional override)
+        type: string
+        description: Usually leave blank if you uploaded photographs above.
+      - name: heroCaption
+        label: Main photo caption
+        type: string
+      - name: credit
+        label: Photo credit / rights note
+        type: string
+        description: Who took or owns the photo. Only upload images you have permission to publish.
+      - name: preview
+        label: Short map note
+        type: text
+        description: One or two sentences for the map popup.
+      - name: body
+        label: Full notes
+        type: rich-text
+        options:
+          format: markdown
+          media: place_images
+      - name: townland
+        label: Townland (optional override)
+        type: string
+        description: Leave blank to auto-fill from the pin location. Fill in only to correct a border case.
+      - name: townlandIrish
+        label: Townland (Irish)
+        type: string
+      - name: category
+        label: Type of place
+        type: select
+        required: true
+        options:
+          values:
+            - name: castles-antiquities
+              label: Castle / antiquity
+            - name: big-houses-estates
+              label: Big house / estate
+            - name: churches-religious
+              label: Church / religious
+            - name: graveyards-memorials
+              label: Graveyard / memorial
+            - name: industry-trade
+              label: Industry / trade
+            - name: shops-village
+              label: Shop / village
+            - name: notable-people
+              label: Notable person
+            - name: townlands-placenames
+              label: Placename / townland
+            - name: exhibit
+              label: MTU exhibit film
+            - name: unknown
+              label: Unknown
+            - name: other
+              label: Other
+      - name: categoryOther
+        label: If Other — describe the type
+        type: string
+        description: Shown when type is Other (helps us add a proper category later).
+      - name: lat
+        label: Latitude
+        type: number
+        required: true
+        description: Decimal degrees (e.g. from Google Maps).
+      - name: lng
+        label: Longitude
+        type: number
+        required: true
+      - name: youtube
+        label: YouTube URL
+        type: string
+        description: Paste a full YouTube link.
+      - name: liveVideoPage
+        label: MTU exhibit video page (legacy)
+        type: string
+      - name: layer
+        label: Layer
+        type: select
+        options:
+          values:
+            - name: places
+              label: Parish places
+            - name: mtu
+              label: MTU exhibit
+        default: places
+      - name: author
+        label: Author / recorder
+        type: string
+      - name: sources
+        label: Sources
+        type: string
+        list: true
+      - name: title
+        label: Title (usually same as name)
+        type: string

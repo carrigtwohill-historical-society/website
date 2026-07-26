@@ -1,19 +1,19 @@
 ---
 id: cashs-place
-title: "Cash's Place"
-name: "Cash's Place"
+title: Cash's Place
+name: Cash's Place
 lat: 51.91992
 lng: -8.30896
 layer: places
-category: "Unknown"
+category: unknown
 categories:
-  - "Unknown"
-eras:
-preview: ""
-author: "Jim Barry"
+  - unknown
+eras: null
+preview: ''
+author: Jim Barry
 status: stub
-heroImage: ""
-sources:
+heroImage: ''
+sources: null
 ---
 
 

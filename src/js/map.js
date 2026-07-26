@@ -265,9 +265,12 @@
   }
 
   function popupHtml(place) {
+    const catLabel =
+      place.categoryLabel ||
+      (place.category && place.category !== "unknown" ? place.category : "");
     const cat =
-      place.category && place.category !== "Unknown"
-        ? escapeHtml(place.category)
+      catLabel && String(catLabel).toLowerCase() !== "unknown"
+        ? escapeHtml(catLabel)
         : "";
     const info = place.hasPreview
       ? escapeHtml(place.preview)
@@ -286,11 +289,18 @@
           : prefixPath(place.heroImage)
       )}" alt="${escapeHtml(place.heroAlt || place.name)}"></figure>`;
     } else {
-      html += `<div class="map-popup-photo-ph" aria-hidden="true"><span>Photograph to be added</span></div>`;
+      html += `<div class="map-popup-photo-ph"><span>Photograph to be added</span></div>`;
     }
 
-    if (cat) html += `<p class="map-popup-meta">${cat}</p>`;
-    else html += `<p class="map-popup-meta map-popup-meta-empty">Category to be added</p>`;
+    if (cat) {
+      html += `<p class="map-popup-meta">${cat}`;
+      if (place.townland) {
+        html += ` · ${escapeHtml(place.townland)}`;
+      }
+      html += `</p>`;
+    } else {
+      html += `<p class="map-popup-meta map-popup-meta-empty">Category to be added</p>`;
+    }
 
     html += `<div class="map-popup-info${
       place.hasPreview ? "" : " map-popup-info-empty"
@@ -310,8 +320,6 @@
       html += `<p class="map-popup-actions"><a class="map-popup-link" href="${escapeHtml(
         detailHref
       )}">Further information</a></p>`;
-    } else if (detailHref && place.layer === "mtu") {
-      /* video link already shown */
     } else if (!place.liveVideoPage) {
       html += `<p class="map-popup-actions"><span class="map-popup-link-disabled">Further information — page to be completed</span></p>`;
     }
@@ -327,15 +335,22 @@
   }
 
   function createPinElement(place) {
-    const isMtu = place.layer === "mtu";
     const wrap = document.createElement("button");
     wrap.type = "button";
-    wrap.className = "map-pin" + (isMtu ? " map-pin-mtu" : " map-pin-place");
-    wrap.setAttribute("aria-label", place.name || "Historical place");
+    wrap.className = "map-pin map-pin-place";
+    const catLabel = place.categoryLabel || place.category || "Historical place";
+    wrap.setAttribute(
+      "aria-label",
+      `${place.name || "Historical place"} (${catLabel})`
+    );
     wrap.title = place.name || "";
 
     const dot = document.createElement("span");
     dot.className = "map-pin-dot";
+    if (place.categoryColour) {
+      dot.style.background = place.categoryColour;
+      dot.style.borderColor = "#1c1a17";
+    }
     wrap.appendChild(dot);
 
     if (place.name) {
@@ -539,6 +554,14 @@
       applyBoundaryData();
     } catch (_) {
       /* optional */
+    }
+
+    // Keep keyboard users from getting stuck in the WebGL canvas
+    try {
+      const canvas = el.querySelector("canvas");
+      if (canvas) canvas.setAttribute("tabindex", "-1");
+    } catch (_) {
+      /* ignore */
     }
 
     const res = await fetch(prefixPath("/data/places.json"));
