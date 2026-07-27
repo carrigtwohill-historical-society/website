@@ -2,6 +2,9 @@
 layout: layouts/base.njk
 ---
 <article class="page">
+  <div class="page-body prose">
+    {{ content | safe }}
+  </div>
   {% if page.url == "/membership/current-membership/" %}
   <aside class="membership-banner">
     <h2>Join or renew your membership</h2>
@@ -14,7 +17,4 @@ layout: layouts/base.njk
     <p class="membership-banner-note">Or email <a href="mailto:{{ site.email }}">{{ site.email }}</a> / use the contact form.</p>
   </aside>
   {% endif %}
-  <div class="page-body prose">
-    {{ content | safe }}
-  </div>
 </article>

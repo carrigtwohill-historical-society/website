@@ -394,11 +394,13 @@ a:hover { color: var(--cork-red); }
 .prose > h1:first-of-type + h2 {
   text-align: center;
 }
-.prose p { margin: 0.85rem 0; }
+.prose p { margin: 0.85rem 0; text-align: justify; }
 
+/* Ported from legacy Sitemaster.css — full content width, justified body copy (G1 / P7) */
 .indentedText {
   margin: 0.85rem 0;
-  max-width: 42rem;
+  width: 100%;
+  max-width: none;
   text-align: justify;
 }
 .IndentQuotes {
@@ -469,14 +471,15 @@ a:hover { color: var(--cork-red); }
   font-variant-numeric: tabular-nums;
 }
 
-/* Images: ignore legacy tiny pixel widths from ASP.NET migration */
+/* Images: ignore legacy tiny pixel widths from ASP.NET migration.
+   No opaque background — transparent PNGs (e.g. RIC barracks ExternalView) must keep alpha (P8). */
 .prose img {
   width: auto !important;
   max-width: 100%;
   height: auto !important;
   display: block;
   border: 1px solid var(--line);
-  background: var(--white);
+  background: transparent;
 }
 
 .prose .FigureRight,
@@ -493,9 +496,22 @@ a:hover { color: var(--cork-red); }
   max-width: 100%;
 }
 .prose figcaption {
+  display: block;
   font-size: 0.9rem;
   color: var(--muted);
   margin-top: 0.35rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Legacy custom tag used in migrated HTML — treat like figcaption (P9) */
+.prose FigureCaption {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+  line-height: 1.35;
+  text-align: center;
 }
 
 /* Full-width figures in tables / stacked images */
@@ -1816,6 +1832,55 @@ body.lightbox-open {
   .lightbox-counter {
     grid-column: 1 / -1;
     grid-row: 4;
+  }
+}
+
+/* Townlands / valuation tables — ported from legacy Sitemaster.css (P11 formatting) */
+.CentreTable {
+  width: 100%;
+  max-width: 100%;
+  margin: 1rem 0 1.5rem;
+  border-collapse: collapse;
+  vertical-align: top;
+}
+.CentreTable th,
+.CentreTable td {
+  padding: 0.4rem 0.55rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.TableHeaders,
+.TableRowTitle {
+  color: var(--blue-mid);
+  text-align: left;
+  font-size: 1.05rem;
+}
+.TableHeaders th {
+  font-weight: 700;
+  text-decoration: underline overline;
+  height: auto;
+  white-space: nowrap;
+}
+.TableRowTitle {
+  font-style: italic;
+  font-weight: 600;
+}
+.TableRowContent,
+.TableNumbers {
+  color: var(--ink);
+  font-weight: 400;
+  text-align: left;
+}
+.TableNumbers {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .CentreTable {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

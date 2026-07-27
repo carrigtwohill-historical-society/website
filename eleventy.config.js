@@ -142,6 +142,69 @@ module.exports = function (eleventyConfig) {
     return out;
   });
 
+  // G2 — external http(s) links open in a new tab; internal links untouched
+  eleventyConfig.addTransform("externalLinks", (content, outputPath) => {
+    if (!outputPath || !outputPath.endsWith(".html")) return content;
+    const siteData = require("./src/_data/site.json");
+    const ownHosts = new Set(
+      [
+        "carrigtwohill-historical-society.github.io",
+        "localhost",
+        "127.0.0.1",
+      ]
+        .concat(
+          (() => {
+            try {
+              return [new URL(siteData.url).hostname];
+            } catch {
+              return [];
+            }
+          })()
+        )
+        .filter(Boolean)
+    );
+
+    return content.replace(/<a\b([^>]*)>/gi, (full, attrs) => {
+      const hrefMatch = attrs.match(/\bhref\s*=\s*(["'])(.*?)\1/i);
+      if (!hrefMatch) return full;
+      const href = hrefMatch[2].trim();
+      if (!/^https?:\/\//i.test(href)) return full;
+
+      let host = "";
+      try {
+        host = new URL(href).hostname;
+      } catch {
+        return full;
+      }
+      if (ownHosts.has(host)) return full;
+
+      let next = attrs;
+      if (/\btarget\s*=/i.test(next)) {
+        next = next.replace(/\btarget\s*=\s*(["']).*?\1/gi, 'target="_blank"');
+      } else {
+        next += ' target="_blank"';
+      }
+
+      if (/\brel\s*=/i.test(next)) {
+        next = next.replace(/\brel\s*=\s*(["'])(.*?)\1/gi, (m, q, relVal) => {
+          const parts = new Set(
+            String(relVal)
+              .split(/\s+/)
+              .map((p) => p.trim().toLowerCase())
+              .filter(Boolean)
+          );
+          parts.add("noopener");
+          parts.add("noreferrer");
+          return `rel=${q}${[...parts].join(" ")}${q}`;
+        });
+      } else {
+        next += ' rel="noopener noreferrer"';
+      }
+
+      return `<a${next}>`;
+    });
+  });
+
   return {
     pathPrefix: "/website/",
     templateFormats: ["md", "njk", "html"],

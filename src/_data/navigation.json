@@ -24,6 +24,7 @@
     "children": [
       { "label": "Archaeology", "url": "/local-history/archaeological/archaeology/" },
       { "label": "RIC Barrack", "url": "/events/projects-and-events/past-events/taking-of-the-barracks/barrack-story/" },
+      { "label": "Barrett's Forge", "url": "/local-history/village-traders/barretts/barrets-forge/" },
       { "label": "Valuations & Surveys", "url": "/local-history/townlands/townlands/" },
       { "label": "Down's Survey", "url": "/surveysand-valuations/downs-survey/downs-survey/" },
       { "label": "Topographical Survey", "url": "/surveysand-valuations/samuel-lewis/samuel-lewis/" }
