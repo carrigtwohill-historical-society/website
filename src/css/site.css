@@ -399,7 +399,7 @@ a:hover { color: var(--cork-red); }
 .indentedText {
   margin: 0.85rem 0;
   max-width: 42rem;
-  text-align:justified;
+  text-align: justify;
 }
 .IndentQuotes {
   margin: 0.85rem 0 0.85rem 1.25rem;
@@ -408,6 +408,7 @@ a:hover { color: var(--cork-red); }
   color: var(--muted);
   font-style: italic;
   max-width: 40rem;
+   text-align: justify;
 }
 
 .prose .FigureCenter,
