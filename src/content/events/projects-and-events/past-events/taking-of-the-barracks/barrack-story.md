@@ -20,22 +20,15 @@ oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/Barrack
         The barracks, long since demolished, consisted of a sergeant and five constables, located at the corner of Well Lane 
         and Main Street at what is now O’Donovan’s truck yard.</p>
     <p class="indentedText">
-        The village was completely isolated having been secured at eastern and western ends, and from Belvelly of Great Island,
-        with all telephone communication cut by the IRA men to ensure no RIC reinforcements may come to the rescue of the Carrigtwohill
-        barracks. </p>
+        The village was completely isolated having been secured at eastern and western ends, and from Belvelly of Great Island, with all telephone communication cut by the IRA men to ensure no RIC reinforcements may come to the rescue of the Carrigtwohill barracks. </p>
     <figure class="FigureRight">
         <img src="/assets/Events/Projects%20And%20Events/Past%20Events/Taking%20of%20the%20Barracks/Blasted%20Wall%20Internal%20-%20Illustrated%20London%20News.jpeg" alt="Imageholeinwall">
     </figure>
     <p class="indentedText">
-        The battle commenced at approximately 11 that night, and continued through the early hours, finally coming to its conclusion
-        when the barracks eventually fell with the officers captured and held handcuffed&nbsp; after an explosion blasted a hole through the barrack’s wall on the
-        eastern gable adjoining a small stable owned by local businessman, O’Grady; through which the assailants entered.</p>
+       The battle commenced at approximately 11 that night, and continued through the early hours, finally coming to its conclusion when the barracks eventually fell with the officers captured and held handcuffed; after an explosion blasted a hole through the barrack’s wall on the eastern gable adjoining a small stable owned by local businessman, O’Grady; through which the assailants entered.</p>
        
     <p class="indentedText">
-        The IRA volunteers and the RIC officers did not suffer any casualties during the attack, which was the first successful 
-        assault on RIC barracks in Ireland during the War of Independence, signalling the commencement of the all-out war on the RIC, 
-        in rural Ireland. However, a number of these IRA men later took part in the battle of Clonmult, during which several would
-        not survive.
+       The IRA volunteers and the RIC officers did not suffer any casualties during the attack, which was the first successful assault on RIC barracks in Ireland during the War of Independence, signalling the commencement of the all-out war on the RIC, in rural Ireland. However, a number of these IRA men later took part in the battle of Clonmult, during which several would not survive.
     </p>
     <p class="indentedText">
         The barracks was never repaired, or rebuilt, but was allowed to fall to ruin, eventually being completely demolished.</p>
