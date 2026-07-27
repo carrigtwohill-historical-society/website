@@ -29,6 +29,6 @@ oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/Barrack
        
     <p class="indentedText">
        The IRA volunteers and the RIC officers did not suffer any casualties during the attack, which was the first successful assault on RIC barracks in Ireland during the War of Independence, signalling the commencement of the all-out war on the RIC, in rural Ireland. However, a number of these IRA men later took part in the battle of Clonmult, during which several would not survive.
-    </p>
+   </p>
     <p class="indentedText">
         The barracks was never repaired, or rebuilt, but was allowed to fall to ruin, eventually being completely demolished.</p>
