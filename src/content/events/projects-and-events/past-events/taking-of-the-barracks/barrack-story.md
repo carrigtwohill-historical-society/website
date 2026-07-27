@@ -9,7 +9,7 @@ oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/Barrack
     <h2>Taking of Carrigtwohill RIC Barracks</h2>
     <h3>A General Overview</h3>
     <figure class="FigureLeft">
-        <img src="/assets/Events/Projects%20And%20Events/Past%20Events/Taking%20of%20the%20Barracks/External%20View.jpeg" alt="">
+        <img src="/assets/Events/Projects%20And%20Events/Past%20Events/Taking%20of%20the%20Barracks/ExternalView.png" alt="">
     </figure>
     <p class="indentedText">
         On the night of Saturday, 3<sup>rd</sup> January 1920, a contingent of 30 to 40 IRA men from Cobh and Midleton of the
