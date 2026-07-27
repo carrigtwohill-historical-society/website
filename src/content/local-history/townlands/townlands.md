@@ -41,7 +41,7 @@ oldPath: "/Local History/Townlands/Townlands.aspx"
         </tr>
         <tr>
             <td class="TableRowTitle">Ballycurreen</td>
-            <td class ="TableNumbers">375</td>
+            <td class="TableNumbers">375</td>
             <td class="TableNumbers">2</td>
             <td class="TableNumbers">33</td>
             <td class="TableRowContent">51.931487169828415, -8.328312412337548</td>
