@@ -28,8 +28,9 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
    <p class="indentedText">
         During the consultation period our Secretary, André Saubolle, attend these meetings. Some weeks later we learnt that the forge was saved. This achieved, the society then sought to have the forge recorded as a Legally Protected Structure. This too was successfully achieved with Barrett’s Forge included within the County Council’s Development Plan for 2022-2028 under reference 2993. As such it is also included within the National Monuments schedule.
     </p>
-    <figure class="FigureCenter">
+     <figure class="FigureCenter">
           <img src="/assets/Local%20History/Village%20Traders/Barretts/BarrettsForgeCCCDevelopmentPlan.png" Alt="DevelopmentPlan">
+       
       </figure>   
     <h3>Barrett Family history</h3>
     <p class="indentedText">
