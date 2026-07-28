@@ -26,7 +26,7 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
     <figcaption>Cork Examiner, 1<sup>st</sup> June 2021</figcaption>
     </figure>
    <p class="indentedText">
-       Test
+        During the consultation period our Secretary, André Saubolle, attend these meetings. Some weeks later we learnt that the forge was saved. This achieved, the society then sought to have the forge recorded as a Legally Protected Structure. This too was successfully achieved with Barrett’s Forge included within the County Council’s Development Plan for 2022-2028 under reference 2993. As such it is also included within the National Monuments schedule.
     </p>
     <h3>Barrett Family history</h3>
     <p class="indentedText">
