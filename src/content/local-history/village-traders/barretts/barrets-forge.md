@@ -25,10 +25,12 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
         <img src="/assets/Local%20History/Village%20Traders/Barretts/Barrett%27s%20Forge%20-%20CE%201%20June%2021.jpg" alt="ImageCorkExaminer">
     <figcaption>Cork Examiner, 1<sup>st</sup> June 2021</figcaption>
     </figure>
+   <p class="indentedText">
+       Test
+    </p>
     <h3>Barrett Family history</h3>
     <p class="indentedText">
-        Also include above is an undated photograph believed to have been taken during the 1920s showing the Barrett family hard at work. It 
-        may be found in the Carrigtwohill publication entitled “Carrigtwohill through the Century”.</p>
+        Also include above is an undated photograph believed to have been taken during the 1920s showing the Barrett family hard at work. It may be found in the Carrigtwohill publication entitled “Carrigtwohill through the Century”.</p>
     <figure class="FigureCenter">
         <img src="/assets/Local%20History/Village%20Traders/Barretts/ForgeToday.jpg" alt="ImageForgeToday">
     <figcaption>Barrett's Forge as seen today</figcaption>
