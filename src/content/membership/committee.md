@@ -18,7 +18,7 @@ oldPath: "/Membership/Committee.aspx"
         As this was the first meeting since the AGM in the opening passage for the Agenda of                21<sup>st</sup>February 2026, the following was noted and read at this meeting:
     </p>
    <p class="IndentQuotes">
-       The last full committee meeting was held 14<sup>th</sup> June 2025. It was followed a few           weeks later,28<sup>th</sup> June, to finalise the book of the parish history, and prepare           for its launch.
+       The last full committee meeting was held 14<sup>th</sup> June 2025. It was followed a few weeks later,28<sup>th</sup> June, to finalise the book of the parish history, and prepare for its launch.
    </p>
     <h3>Elected Committee</h3>
     <table class="Center" align="center">
