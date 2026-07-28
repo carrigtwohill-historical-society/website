@@ -12,23 +12,22 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
         <img src="/assets/Local%20History/Village%20Traders/Barretts/BarrettsForge.jpg" alt="BarrettsForge">
         <figcaption>The Barret family: Redmond (second from right), Eileen (right), Jim (boy facing), Redmond’s father and Grandfather banding a wheel.
             </figcaption>
-    </figure>
-    <h4>SAVE OUR FORGE 
-        <br />
-        &
-        <br />
-        Stop the Destruction of our Social and Cultural Heritage
-    </h4> 
-    <p class="indentedText">
-        A recent planning application to Cork County Council (REF: 21/05047) by developers have indicated their intention to demolish Barrett’s forge in Anngrove that has stood for over 250 years. Carrigtwohill & District Historical Society is campaigning to help save this beautiful building and in turn to stop the destruction of another piece of our rich social and cultural history.
-    </p>
-    <p class="indentedText">
-        Carrigtwohill&#39;s Blacksmiths were the leading engineers of their day and in certain ways the forefathers of the engineers who now 
-        work next door in Stryker, Gillead, AbbVie and G.E. Healthcare.</p>
+    </figure> 
       <p class="indentedText">
-        We hope that Cork County Council will in their forthcoming County Development Plan categorise this building as listed, but in the meantime we need your help to prevent this shameful destruction.</p>
-    <p class="indentedText">
-        Please sign our petition by simply completing short questionnaire alongside, then share our webpage with your friends and colleagues who may also wish to finally submit their objections for this planning application (REF: 21/05047) to our Cork County Council on the basis that it is premature.</p>
+      A recent planning application to Cork County Council (REF: 21/05047) by developers had indicated their intention to demolish Barrett’s 
+      Forge in Anngrove that has stood for over 250 years. Carrigtwohill & District Historical Society commenced campaigning to save this 
+      beautiful building and in turn to stop the destruction of another piece of our rich social and cultural history.
+  </p>
+  <p class="indentedText">
+      Carrigtwohill&#39;s Blacksmiths were the leading engineers of their day and in certain ways the forefathers of the engineers who now 
+      work next door in Stryker, Gillead, AbbVie and G.E. Healthcare.</p>
+ 
+  <p class="indentedText">
+      It was hoped that Cork County Council would in their County Development Plan categorise this building as a protected structure. To this
+      end an online petition was designed to collect signatures of those in support of our objective by completing short questionnaire. During
+      this process a significate number of supporters from home and from the international diaspora signed the petition which was attached to
+      our submission to An Bord Pleanála to stop the destruction of Barrett’s Fodge.
+  </p>
     <figure class="FigureCenter">
         <img src="/assets/Local%20History/Village%20Traders/Barretts/Barrett%27s%20Forge%20-%20CE%201%20June%2021.jpg" alt="ImageCorkExaminer">
     <figcaption>Cork Examiner, 1<sup>st</sup> June 2021</figcaption>
