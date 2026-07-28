@@ -30,7 +30,9 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
     </p>
      <figure class="FigureCenter">
           <img src="/assets/Local%20History/Village%20Traders/Barretts/BarrettsForgeCCCDevelopmentPlan.png" Alt="DevelopmentPlan">
-       
+       <figcaption>
+           Barrett's Forge is now included within the County Council's Development Plan
+       </figcaption>
       </figure>   
     <h3>Barrett Family history</h3>
     <p class="indentedText">
