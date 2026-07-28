@@ -52,20 +52,15 @@ oldPath: "/Membership/Committee.aspx"
     <h2>Venues</h2>
     <h3>Monthly Meetings</h3>
     <p class="indentedText">
-        The venue for our monthly meetings are generously provided free of charge by the management team 
-        of Mary Geary Childcare. Their continued support is much appreciated.
+        The venue for our monthly meetings are generously provided free of charge by the management team of Mary Geary Childcare. Their continued support is much appreciated.
     </p>
     <p class="indentedText">
         We are also paid up members of the Federation of Local History Societies.
     </p>
     <h3>Presentations, Lectures, and Tours</h3>
     <p class="indentedText">
-        Until recently, the former parish church of St David’s was the venue for many of our 
-        presentations and lectures, for which we offered a nominal annual subscription. St David’s
-        is currently unavailable, as it is used as temporary classroom. On other occasions Carrigtwohill
-        Community Centre might be used.</p>
+        Until recently, the former parish church of St David’s was the venue for many of our        presentations and lectures, for which we offered a nominal annual subscription. St David’s is currently unavailable, as it is used as temporary classroom. On other occasions Carrigtwohill Community Centre might be used.</p>
     
     <p class="indentedText">
-        These lectures and presentation are generally well attended by our membership, and on numerous occasions
-        by visitors from further afield.
+        These lectures and presentation are generally well attended by our membership, and on numerous occasions by visitors from further afield.
     </p>
