@@ -14,19 +14,12 @@ oldPath: "/Local History/Village Traders/Barretts/BarretsForge.aspx"
             </figcaption>
     </figure> 
       <p class="indentedText">
-      A recent planning application to Cork County Council (REF: 21/05047) by developers had indicated their intention to demolish Barrett’s 
-      Forge in Anngrove that has stood for over 250 years. Carrigtwohill & District Historical Society commenced campaigning to save this 
-      beautiful building and in turn to stop the destruction of another piece of our rich social and cultural history.
+      A recent planning application to Cork County Council (REF: 21/05047) by developers had indicated their intention to demolish Barrett’s Forge in Anngrove that has stood for over 250 years. Carrigtwohill & District Historical Society commenced campaigning to save this beautiful building and in turn to stop the destruction of another piece of our rich social and cultural history.
   </p>
   <p class="indentedText">
-      Carrigtwohill&#39;s Blacksmiths were the leading engineers of their day and in certain ways the forefathers of the engineers who now 
-      work next door in Stryker, Gillead, AbbVie and G.E. Healthcare.</p>
- 
+      Carrigtwohill&#39;s Blacksmiths were the leading engineers of their day and in certain ways the forefathers of the engineers who now work next door in Stryker, Gillead, AbbVie and G.E. Healthcare.</p>
   <p class="indentedText">
-      It was hoped that Cork County Council would in their County Development Plan categorise this building as a protected structure. To this
-      end an online petition was designed to collect signatures of those in support of our objective by completing short questionnaire. During
-      this process a significate number of supporters from home and from the international diaspora signed the petition which was attached to
-      our submission to An Bord Pleanála to stop the destruction of Barrett’s Fodge.
+      It was hoped that Cork County Council would in their County Development Plan categorise this building as a protected structure. To this end an online petition was designed to collect signatures of those in support of our objective by completing short questionnaire. During this process a significate number of supporters from home and from the international diaspora signed the petition which was attached to our submission to An Bord Pleanála to stop the destruction of Barrett’s Fodge.
   </p>
     <figure class="FigureCenter">
         <img src="/assets/Local%20History/Village%20Traders/Barretts/Barrett%27s%20Forge%20-%20CE%201%20June%2021.jpg" alt="ImageCorkExaminer">
