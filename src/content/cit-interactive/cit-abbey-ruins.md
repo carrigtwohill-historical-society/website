@@ -5,15 +5,8 @@ permalink: /cit-interactive/cit-abbey-ruins/
 layout: layouts/page.njk
 oldPath: "/CITInteractive/CITAbbeyRuins.aspx"
 ---
-
 <h1>Augustinian Canon Regular Abbey Ruins & St David’s Church</h1>
-<p class="mtu-back"><a href="/cit-interactive/cit-map/">&larr; Back to MTU village map</a></p>
-    
-    <figure class="FigureCenter">
-        <video controls="controls" controlslist="nodownload" autoplay>
-            <source src="/assets/Videos/AbbeyRuins.mp4" type="video/mp4">
-        </video>
-    </figure>
+<p class="mtu-back"><a href="/cit-interactive/cit-map/">&larr; Back to MTU village map</a></p>  
     <div>
     <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1002414586?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="AbbeyRuins"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
     </Div>
