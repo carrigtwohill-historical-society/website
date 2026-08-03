@@ -1,0 +1,40 @@
+---
+title: Search
+description: Search pages across the Carrigtwohill & District Historical Society website.
+permalink: /search/
+layout: layouts/base.njk
+eleventyExcludeFromCollections: true
+---
+<section class="search-page" data-search-page data-pagefind-ignore>
+  <header class="page-header">
+    <h1>Search</h1>
+    <p class="search-page-lead">Find articles, places, people, and events across the site.</p>
+  </header>
+
+  <form class="search-page-form" action="{{ '/search/' | url }}" method="get" role="search" data-search-page-form>
+    <label class="visually-hidden" for="search-page-input">Search the site</label>
+    <div class="search-page-field">
+      <svg class="search-page-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M15.5 15.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input
+        id="search-page-input"
+        class="search-page-input"
+        type="search"
+        name="q"
+        placeholder="Search the site"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        data-search-page-input
+      >
+      <button type="submit" class="btn search-page-submit">Search</button>
+    </div>
+  </form>
+
+  <p class="search-page-status" role="status" data-search-page-status>Enter a search term to find pages across the site.</p>
+  <ul class="search-page-list" data-search-page-list></ul>
+</section>

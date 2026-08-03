@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const { execSync } = require("child_process");
 const Image = require("@11ty/eleventy-img");
 
 module.exports = function (eleventyConfig) {
@@ -140,6 +141,11 @@ module.exports = function (eleventyConfig) {
       }
     );
     return out;
+  });
+
+  // Full-text search index for header search (Pagefind)
+  eleventyConfig.on("eleventy.after", () => {
+    execSync("npx pagefind --site _site", { stdio: "inherit" });
   });
 
   // G2 — external http(s) links open in a new tab; internal links untouched

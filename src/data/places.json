@@ -26,9 +26,15 @@
       "townland": "Carrigtwohill",
       "townlandIrish": "Carraig Thuathail",
       "townlandSource": "computed",
-      "heroImage": null,
+      "heroImage": "/assets/map/places/img-20251014-wa0000-copy.jpg",
       "heroAlt": "Abbey / St David’s (MTU exhibit)",
-      "images": [],
+      "images": [
+        {
+          "path": "/assets/map/places/img-20251014-wa0000-copy.jpg",
+          "caption": "",
+          "credit": ""
+        }
+      ],
       "sources": [],
       "hasPreview": true,
       "hasBody": true,
@@ -66,6 +72,39 @@
       "hasPreview": false,
       "hasBody": false,
       "detailPath": "/map/places/anngrove-house/"
+    },
+    {
+      "id": "ballyadam-railway-bridge",
+      "name": "Ballyadam Railway Bridge",
+      "location": {
+        "lat": 51.91802042845538,
+        "lng": -8.230208454904657
+      },
+      "category": "industry-trade",
+      "categoryLabel": "Industry / trade",
+      "categoryColour": "#B45309",
+      "categoryOther": "",
+      "categories": [
+        "industry-trade"
+      ],
+      "eras": [],
+      "preview": "Historic railway bridge at Ballyadam House on the Glounthaune–Midleton line — the society has campaigned to save it from demolition.",
+      "author": "",
+      "status": "published",
+      "layer": "places",
+      "liveVideoPage": null,
+      "credit": null,
+      "youtube": "",
+      "townland": "Ballyadam",
+      "townlandIrish": "Baile Adaim",
+      "townlandSource": "computed",
+      "heroImage": null,
+      "heroAlt": "Ballyadam Railway Bridge",
+      "images": [],
+      "sources": [],
+      "hasPreview": true,
+      "hasBody": true,
+      "detailPath": "/local-history/ballyadam/ballyadam/"
     },
     {
       "id": "ballyannan-castle",
@@ -400,12 +439,12 @@
         "lat": 51.91992,
         "lng": -8.30896
       },
-      "category": "unknown",
-      "categoryLabel": "Unknown",
-      "categoryColour": "#6B7280",
+      "category": "big-houses-estates",
+      "categoryLabel": "Big house / estate",
+      "categoryColour": "#2F4F6F",
       "categoryOther": "",
       "categories": [
-        "unknown"
+        "big-houses-estates"
       ],
       "eras": [],
       "preview": "",

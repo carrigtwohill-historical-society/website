@@ -1,48 +1,38 @@
-<footer class="site-footer">
+<footer class="site-footer" data-pagefind-ignore>
   <div class="footer-bar" aria-hidden="true"></div>
   <div class="footer-body">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-brand-lockup">
-          <img class="footer-mark" src="{{ '/assets/Styles/Images/CDHSLogo.png' | url }}" width="180" height="131" alt="" loading="lazy">
-          <p class="footer-title">{{ site.name }}</p>
-        </div>
-        <p class="footer-email">
-          Email:
-          <a href="mailto:{{ site.email }}">{{ site.email }}</a>
-        </p>
-        <p class="footer-note">For messages with attachments, please email us directly — the contact form does not accept file uploads.</p>
-        <p class="footer-heading">Connect</p>
-        {% set socialClass = "social-nav-footer" %}
-        {% set socialLabel = "Social links" %}
-        {% set showVimeo = true %}
-        {% include "partials/social-icons.njk" %}
-      </div>
-
-      <div class="footer-partners">
-        <p class="footer-heading">Partners</p>
-        <ul class="partner-list">
-          <li>
-            <a class="partner-link" href="{{ site.partners.federation }}" target="_blank" rel="noopener noreferrer">
-              <img src="{{ '/assets/Styles/Images/FeredationLogo.png' | url }}" alt="" width="160" height="80" loading="lazy">
-              <span>Federation of Local History Societies</span>
-            </a>
-          </li>
-          <li>
-            <a class="partner-link" href="{{ site.partners.c2h2040 }}" target="_blank" rel="noopener noreferrer">
-              <img src="{{ '/assets/Styles/Images/C2H2040.png' | url }}" alt="" width="140" height="70" loading="lazy">
-              <span>C2H 2040</span>
-            </a>
-          </li>
-          <li>
-            <a class="partner-link" href="{{ site.partners.barryDna }}" target="_blank" rel="noopener noreferrer">
-              <img src="{{ '/assets/Styles/Images/BarryDNALogo.png' | url }}" alt="" width="140" height="70" loading="lazy">
-              <span>Barry DNA Project</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+    <div class="footer-partners">
+      <p class="footer-heading">Partners</p>
+      <ul class="partner-list">
+        <li>
+          <a class="partner-link" href="{{ site.partners.federation }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ '/assets/Styles/Images/FeredationLogo.png' | url }}" alt="" width="160" height="80" loading="lazy">
+            <span>Federation of Local History Societies</span>
+          </a>
+        </li>
+        <li>
+          <a class="partner-link" href="{{ site.partners.c2h2040 }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ '/assets/Styles/Images/C2H2040.png' | url }}" alt="" width="140" height="70" loading="lazy">
+            <span>C2H 2040</span>
+          </a>
+        </li>
+        <li>
+          <a class="partner-link" href="{{ site.partners.barryDna }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ '/assets/Styles/Images/BarryDNALogo.png' | url }}" alt="" width="140" height="70" loading="lazy">
+            <span>Barry DNA Project</span>
+          </a>
+        </li>
+        <li>
+          <a class="partner-link" href="{{ site.partners.psmg }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ '/assets/Styles/Images/PSMGLogo.png' | url }}" alt="" width="140" height="70" loading="lazy">
+            <span>Poor Servants of the Mother of God (SMG)</span>
+          </a>
+        </li>
+      </ul>
     </div>
-    <p class="footer-copy">&copy; {{ site.footerYear }} {{ site.name }}</p>
+    <p class="footer-copy">
+      &copy; {{ site.footerYear }} {{ site.name }}
+      <span class="footer-credit">Website designed by <a href="https://aidandennehy.ie" target="_blank" rel="noopener noreferrer">aidandennehy.ie</a></span>
+    </p>
   </div>
 </footer>

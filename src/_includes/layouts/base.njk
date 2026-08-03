@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-IE">
+<html lang="en-IE" data-path-prefix="{{ site.pathPrefix }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,19 +13,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ '/css/site.css' | url }}?v=20260722e">
+  <link rel="stylesheet" href="{{ '/css/site.css' | url }}?v=20260803d">
   {% if maplibre %}
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css" crossorigin="anonymous">
   {% endif %}
 </head>
 <body class="{{ bodyClass }}">
   {% include "partials/header.njk" %}
-  <main id="main" class="site-main{% if maplibre %} site-main-map{% endif %}">
+  <main id="main" class="site-main{% if maplibre %} site-main-map{% endif %}" data-pagefind-body>
     {{ content | safe }}
   </main>
   {% include "partials/footer.njk" %}
   <script src="{{ '/js/nav.js' | url }}" defer></script>
   <script src="{{ '/js/lightbox.js' | url }}" defer></script>
+  <script src="{{ '/js/search.js' | url }}" defer></script>
   {% if maplibre %}
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
   <script src="{{ '/js/map.js' | url }}"></script>

@@ -113,7 +113,9 @@ function main() {
       sources: Array.isArray(data.sources) ? data.sources : [],
       hasPreview: !!(data.preview && String(data.preview).trim()),
       hasBody: !!(body && body.length > 40),
-      detailPath: `/map/places/${id}/`,
+      detailPath: data.detailPath
+        ? String(data.detailPath).trim()
+        : `/map/places/${id}/`,
     });
   }
 

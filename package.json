@@ -11,6 +11,7 @@
     "prepare-content": "npm run migrate && npm run copy-assets && npm run validate-places && npm run build-places",
     "build": "npm run validate-places && npm run build-places && eleventy",
     "start": "npm run build-places && eleventy --serve --port=8080",
+    "pagefind": "pagefind --site _site",
     "clean": "node -e \"require('fs').rmSync('_site',{recursive:true,force:true})\""
   },
   "author": "Carrigtwohill & District Historical Society",
@@ -21,6 +22,7 @@
     "@11ty/eleventy-plugin-rss": "^2.0.4",
     "gray-matter": "^4.0.3",
     "js-yaml": "^5.2.2",
+    "pagefind": "^1.5.2",
     "slugify": "^1.6.6"
   }
 }
