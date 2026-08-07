@@ -1832,15 +1832,16 @@ body.mtu-map-page .site-main {
   color: var(--muted);
   text-align: center;
 }
-.footer-credit {
-  display: block;
-  margin-top: 0.35rem;
+.website-credit {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--muted);
 }
-.footer-credit a {
+.website-credit a {
   color: var(--blue);
   text-decoration: none;
 }
-.footer-credit a:hover {
+.website-credit a:hover {
   color: var(--cork-red);
   text-decoration: underline;
 }

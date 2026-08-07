@@ -83,3 +83,6 @@ oldPath: "/About/AboutUs.aspx"
         For a copy of the Constitution
         <a href="/assets/Documents/constitution-amended-21-sept-2023.pdf">click here</a>.
     </p>
+    <p class="indentedText website-credit">
+        Website design by <a href="https://aidandennehy.ie" target="_blank" rel="noopener noreferrer">Aidan Dennehy</a>.
+    </p>
