@@ -102,6 +102,7 @@ function main() {
       status: data.status || "published",
       layer,
       liveVideoPage: data.liveVideoPage || null,
+      website: data.website ? String(data.website).trim() : "",
       credit: data.credit || null,
       youtube: data.youtube || "",
       townland: town.townland,

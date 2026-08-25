@@ -91,6 +91,10 @@ layout: layouts/base.njk
   {% endif %}
   {% endif %}
 
+  {% if website %}
+  <p class="place-website-link"><a class="btn" href="{{ website }}" rel="noopener noreferrer" target="_blank">Visit {{ websiteLabel or "the related website" }}</a></p>
+  {% endif %}
+
   {% if liveVideoPage %}
   <p class="place-mtu-link"><a href="{{ liveVideoPage }}" rel="noopener noreferrer" target="_blank">Watch MTU exhibit video</a></p>
   {% endif %}

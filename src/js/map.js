@@ -1,21 +1,38 @@
 /**
- * Historical map — MapLibre GL (jimmap-style Esri satellite + globe tilt).
- * Circle markers; labels from zoom threshold; optional townland names/borders.
+ * Historical map — MapLibre GL (Esri satellite, 3D terrain, Places tree, fly-to).
  */
 (function () {
   "use strict";
 
   const DEFAULT_CENTER = [-8.266, 51.908];
   const DEFAULT_ZOOM = 12;
-  const DEFAULT_PITCH = 30;
+  const DEFAULT_PITCH = 52;
   const DEFAULT_BEARING = 0;
   const FIT_MAX_ZOOM = 15;
-  const LABEL_MIN_ZOOM = 12.2;
+  const FLY_ZOOM = 16;
+  const FLY_DURATION = 2500;
+  const TERRAIN_EXAG = 1.5;
 
   const OSM_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
   const ESRI_ATTRIBUTION =
     "Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community";
+  const TERRAIN_ATTRIBUTION =
+    'Terrain © <a href="https://mapterhorn.com/attribution">Mapterhorn</a>';
+
+  const CATEGORY_ORDER = [
+    "castles-antiquities",
+    "big-houses-estates",
+    "churches-religious",
+    "graveyards-memorials",
+    "industry-trade",
+    "shops-village",
+    "notable-people",
+    "townlands-placenames",
+    "exhibit",
+    "other",
+    "unknown",
+  ];
 
   function prefixPath(p) {
     const css = document.querySelector('link[href*="/css/site.css"]');
@@ -35,7 +52,14 @@
       .replace(/"/g, "&quot;");
   }
 
-  /** Average of ring vertices — good enough for townland label anchors. */
+  function websiteLinkLabel(url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch (e) {
+      return "Related website";
+    }
+  }
+
   function ringCentroid(ring) {
     let x = 0;
     let y = 0;
@@ -98,21 +122,52 @@
     return { type: "FeatureCollection", features };
   }
 
-  function emptySourcesExtra() {
+  function terrainSources() {
     return {
-      townlands: {
-        type: "geojson",
-        data: { type: "FeatureCollection", features: [] },
+      terrainSource: {
+        type: "raster-dem",
+        url: "https://tiles.mapterhorn.com/tilejson.json",
+        tileSize: 512,
+        attribution: TERRAIN_ATTRIBUTION,
       },
-      "townland-labels": {
-        type: "geojson",
-        data: { type: "FeatureCollection", features: [] },
-      },
-      parishes: {
-        type: "geojson",
-        data: { type: "FeatureCollection", features: [] },
+      hillshadeSource: {
+        type: "raster-dem",
+        url: "https://tiles.mapterhorn.com/tilejson.json",
+        tileSize: 512,
       },
     };
+  }
+
+  function hillshadeLayer() {
+    return {
+      id: "hills",
+      type: "hillshade",
+      source: "hillshadeSource",
+      paint: {
+        "hillshade-shadow-color": "#473B24",
+        "hillshade-exaggeration": 0.45,
+      },
+    };
+  }
+
+  function emptySourcesExtra() {
+    return Object.assign(
+      {
+        townlands: {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] },
+        },
+        "townland-labels": {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] },
+        },
+        parishes: {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] },
+        },
+      },
+      terrainSources()
+    );
   }
 
   function boundaryLayers(satellite) {
@@ -160,7 +215,6 @@
     ];
   }
 
-  /** Drawn last so names sit above satellite reference tiles. */
   function townlandNameLayer(satellite) {
     return {
       id: "townland-names",
@@ -190,11 +244,14 @@
 
   function buildStyle(kind) {
     const satellite = kind !== "street";
+    const extras = emptySourcesExtra();
     if (!satellite) {
       return {
         version: 8,
         projection: { type: "globe" },
         glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+        terrain: { source: "terrainSource", exaggeration: TERRAIN_EXAG },
+        sky: {},
         sources: Object.assign(
           {
             osm: {
@@ -209,7 +266,7 @@
               attribution: OSM_ATTRIBUTION,
             },
           },
-          emptySourcesExtra()
+          extras
         ),
         layers: [
           {
@@ -218,6 +275,7 @@
             paint: { "background-color": "#f6f1e6" },
           },
           { id: "osm", type: "raster", source: "osm" },
+          hillshadeLayer(),
           ...boundaryLayers(false),
           townlandNameLayer(false),
         ],
@@ -228,6 +286,8 @@
       version: 8,
       projection: { type: "globe" },
       glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+      terrain: { source: "terrainSource", exaggeration: TERRAIN_EXAG },
+      sky: {},
       sources: Object.assign(
         {
           "esri-imagery": {
@@ -248,7 +308,7 @@
             maxzoom: 19,
           },
         },
-        emptySourcesExtra()
+        extras
       ),
       layers: [
         {
@@ -257,6 +317,7 @@
           paint: { "background-color": "#000" },
         },
         { id: "esri-imagery", type: "raster", source: "esri-imagery" },
+        hillshadeLayer(),
         ...boundaryLayers(true),
         { id: "esri-reference", type: "raster", source: "esri-reference" },
         townlandNameLayer(true),
@@ -273,12 +334,9 @@
         ? escapeHtml(catLabel)
         : "";
     const preview = place.hasPreview ? String(place.preview).trim() : "";
-    // Keep popup short — long notes live on the place page
     const shortPreview =
       preview.length > 140 ? preview.slice(0, 137).trim() + "…" : preview;
-    const detailHref = place.detailPath
-      ? prefixPath(place.detailPath)
-      : null;
+    const detailHref = place.detailPath ? prefixPath(place.detailPath) : null;
 
     let html = `<div class="map-popup">`;
     html += `<h3>${escapeHtml(place.name || "Historical place")}</h3>`;
@@ -293,7 +351,6 @@
       html += `<p class="map-popup-meta map-popup-meta-empty">Category to be added</p>`;
     }
 
-    // Only show a real photo in the popup — no tall empty placeholder
     if (place.heroImage) {
       html += `<figure class="map-popup-figure"><img src="${escapeHtml(
         place.heroImage.startsWith("http")
@@ -307,20 +364,32 @@
     }
 
     html += `<p class="map-popup-actions">`;
+    const actionLinks = [];
     if (place.liveVideoPage) {
-      html += `<a class="map-popup-link" href="${escapeHtml(
-        place.liveVideoPage
-      )}" target="_blank" rel="noopener">Watch video</a>`;
+      actionLinks.push(
+        `<a class="map-popup-link" href="${escapeHtml(
+          place.liveVideoPage
+        )}" target="_blank" rel="noopener">Watch video</a>`
+      );
+    }
+    if (place.website) {
+      actionLinks.push(
+        `<a class="map-popup-link" href="${escapeHtml(
+          place.website
+        )}" target="_blank" rel="noopener">${escapeHtml(
+          websiteLinkLabel(place.website)
+        )}</a>`
+      );
     }
     if (detailHref) {
-      if (place.liveVideoPage) html += `<span class="map-popup-sep"> · </span>`;
-      html += `<a class="map-popup-link" href="${escapeHtml(
-        detailHref
-      )}">Further information</a>`;
+      actionLinks.push(
+        `<a class="map-popup-link" href="${escapeHtml(
+          detailHref
+        )}">Further information</a>`
+      );
     }
-    html += `</p>`;
-
-    html += `</div>`;
+    html += actionLinks.join(`<span class="map-popup-sep"> · </span>`);
+    html += `</p></div>`;
     return html;
   }
 
@@ -328,6 +397,7 @@
     const wrap = document.createElement("button");
     wrap.type = "button";
     wrap.className = "map-pin map-pin-place";
+    wrap.dataset.placeId = place.id || "";
     const catLabel = place.categoryLabel || place.category || "Historical place";
     wrap.setAttribute(
       "aria-label",
@@ -366,12 +436,56 @@
     if (onLabel && offLabel) btn.textContent = on ? onLabel : offLabel;
   }
 
+  function placeHasCoords(place) {
+    return (
+      place &&
+      place.location &&
+      typeof place.location.lat === "number" &&
+      typeof place.location.lng === "number"
+    );
+  }
+
+  function groupPlaces(places) {
+    const groups = new Map();
+    for (const place of places) {
+      if (!placeHasCoords(place)) continue;
+      const id = place.category || "unknown";
+      if (!groups.has(id)) {
+        groups.set(id, {
+          id,
+          label: place.categoryLabel || id,
+          colour: place.categoryColour || "#6B7280",
+          places: [],
+        });
+      }
+      groups.get(id).places.push(place);
+    }
+    const ordered = [];
+    for (const id of CATEGORY_ORDER) {
+      if (groups.has(id)) ordered.push(groups.get(id));
+    }
+    groups.forEach((g, id) => {
+      if (!CATEGORY_ORDER.includes(id)) ordered.push(g);
+    });
+    for (const g of ordered) {
+      g.places.sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""), "en-IE")
+      );
+    }
+    return ordered;
+  }
+
   async function init() {
     const el = document.getElementById("chs-map");
     if (!el || typeof maplibregl === "undefined") return;
 
     const status = document.getElementById("map-status");
     const hint = document.getElementById("map-layer-hint");
+    const treeEl = document.getElementById("map-places-tree");
+    const filterEl = document.getElementById("map-places-filter");
+    const panelEl = document.getElementById("map-places-panel");
+    const btnPlaces = document.getElementById("map-places-toggle");
+    const btnPlacesClose = document.getElementById("map-places-close");
     if (status) status.hidden = false;
 
     let currentBasemap = "satellite";
@@ -381,6 +495,8 @@
     let townlandLabelsData = null;
     let parishesData = null;
     let loadingBoundaries = false;
+    let flyGen = 0;
+    const records = new Map();
 
     const map = new maplibregl.Map({
       container: "chs-map",
@@ -389,23 +505,34 @@
       zoom: DEFAULT_ZOOM,
       pitch: DEFAULT_PITCH,
       bearing: DEFAULT_BEARING,
-      maxPitch: 75,
+      maxPitch: 85,
       attributionControl: { compact: true },
-      // Let the page scroll normally; require Ctrl/⌘+scroll (or +/-) to zoom
-      cooperativeGestures: true,
+      cooperativeGestures: false,
     });
 
     map.addControl(
       new maplibregl.NavigationControl({ visualizePitch: true }),
       "top-right"
     );
+    if (typeof maplibregl.TerrainControl === "function") {
+      map.addControl(
+        new maplibregl.TerrainControl({
+          source: "terrainSource",
+          exaggeration: TERRAIN_EXAG,
+        }),
+        "top-right"
+      );
+    }
     map.addControl(new maplibregl.ScaleControl({ maxWidth: 120 }), "bottom-left");
 
-    const syncLabelVisibility = () => {
-      el.classList.toggle("show-pin-labels", map.getZoom() >= LABEL_MIN_ZOOM);
-    };
-    map.on("zoom", syncLabelVisibility);
-    map.on("zoomend", syncLabelVisibility);
+    function applyTerrain() {
+      if (!map.getSource("terrainSource")) return;
+      try {
+        map.setTerrain({ source: "terrainSource", exaggeration: TERRAIN_EXAG });
+      } catch (_) {
+        /* terrain optional */
+      }
+    }
 
     const btnBase = document.getElementById("map-basemap-toggle");
     const btnTown = document.getElementById("map-townlands-toggle");
@@ -424,20 +551,11 @@
           parts.push("zoom in a little if names look sparse");
         }
       }
-      if (!townlandsOn && !townlandNamesOn) {
-        parts.push("use the buttons above to show townland borders or names");
-      }
+      parts.push("click a place to fly there");
       hint.textContent = parts.join(" · ");
     }
 
     function syncButtons() {
-      setToggleState(
-        btnBase,
-        currentBasemap === "street",
-        "Show satellite",
-        "Show street map"
-      );
-      // Basemap button: pressed = street mode active (optional); keep as action label
       if (btnBase) {
         btnBase.setAttribute(
           "aria-pressed",
@@ -496,8 +614,23 @@
       updateHint();
     }
 
+    function setPanelOpen(open) {
+      document.body.classList.toggle("map-places-open", open);
+      if (btnPlaces) btnPlaces.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open && panelEl) panelEl.focus();
+      window.setTimeout(() => map.resize(), 220);
+    }
+
+    if (btnPlaces) {
+      btnPlaces.addEventListener("click", () => setPanelOpen(true));
+    }
+    if (btnPlacesClose) {
+      btnPlacesClose.addEventListener("click", () => setPanelOpen(false));
+    }
+
     map.on("style.load", () => {
       applyBoundaryData();
+      applyTerrain();
       syncButtons();
     });
 
@@ -512,9 +645,6 @@
     if (btnTown) {
       btnTown.addEventListener("click", async () => {
         townlandsOn = !townlandsOn;
-        if (!townlandsOn && townlandNamesOn) {
-          // Keep names usable; borders can be off independently
-        }
         syncButtons();
         if (townlandsOn) await ensureBoundaries();
         applyBoundaryData();
@@ -525,12 +655,10 @@
       btnNames.addEventListener("click", async () => {
         townlandNamesOn = !townlandNamesOn;
         if (townlandNamesOn) {
-          // Borders help names make sense — turn on together
           townlandsOn = true;
           await ensureBoundaries();
-          // Nudge zoom if labels would be sparse
           if (map.getZoom() < 10.8) {
-            map.easeTo({ zoom: 11.2, duration: 600 });
+            map.easeTo({ zoom: 11.2, duration: 600, pitch: map.getPitch() });
           }
         }
         syncButtons();
@@ -548,7 +676,6 @@
       /* optional */
     }
 
-    // Keep keyboard users from getting stuck in the WebGL canvas
     try {
       const canvas = el.querySelector("canvas");
       if (canvas) canvas.setAttribute("tabindex", "-1");
@@ -556,25 +683,239 @@
       /* ignore */
     }
 
+    function closeAllPopups() {
+      records.forEach((rec) => {
+        const popup = rec.marker.getPopup();
+        if (popup && popup.isOpen()) rec.marker.togglePopup();
+      });
+    }
+
+    function setPinVisible(placeId, on) {
+      const rec = records.get(placeId);
+      if (!rec) return;
+      rec.visible = on;
+      rec.marker.getElement().hidden = !on;
+      if (!on) {
+        const popup = rec.marker.getPopup();
+        if (popup && popup.isOpen()) rec.marker.togglePopup();
+      }
+    }
+
+    function highlightPlace(placeId) {
+      treeEl.querySelectorAll(".map-places-row").forEach((row) => {
+        row.classList.toggle("is-selected", row.dataset.placeId === placeId);
+      });
+    }
+
+    function flyToPlace(place) {
+      if (!placeHasCoords(place)) return;
+      const rec = records.get(place.id);
+      if (rec && rec.visible === false) {
+        const check = treeEl.querySelector(
+          '.map-places-row[data-place-id="' + place.id + '"] .map-places-check'
+        );
+        if (check) {
+          check.checked = true;
+          setPinVisible(place.id, true);
+          syncFolderChecks();
+        }
+      }
+      highlightPlace(place.id);
+      const gen = ++flyGen;
+      closeAllPopups();
+      map.flyTo({
+        center: [place.location.lng, place.location.lat],
+        zoom: FLY_ZOOM,
+        pitch: DEFAULT_PITCH,
+        duration: FLY_DURATION,
+        essential: true,
+      });
+      map.once("moveend", () => {
+        if (gen !== flyGen) return;
+        const current = records.get(place.id);
+        if (!current) return;
+        const popup = current.marker.getPopup();
+        if (popup && !popup.isOpen()) current.marker.togglePopup();
+      });
+      if (window.matchMedia("(max-width: 700px)").matches) {
+        setPanelOpen(false);
+      }
+    }
+
+    function visiblePlaceButtons() {
+      return Array.prototype.slice.call(
+        treeEl.querySelectorAll(
+          ".map-places-row:not(.is-filtered-out) .map-places-item-btn"
+        )
+      );
+    }
+
+    function syncFolderChecks() {
+      treeEl.querySelectorAll(".map-places-folder").forEach((folder) => {
+        const boxes = folder.querySelectorAll(
+          ".map-places-folder-list .map-places-check"
+        );
+        const folderCheck = folder.querySelector(".map-places-folder-check");
+        if (!folderCheck || !boxes.length) return;
+        let on = 0;
+        boxes.forEach((b) => {
+          if (b.checked) on++;
+        });
+        folderCheck.checked = on === boxes.length;
+        folderCheck.indeterminate = on > 0 && on < boxes.length;
+      });
+    }
+
+    function applyFilter(q) {
+      const query = String(q || "")
+        .trim()
+        .toLowerCase();
+      treeEl.querySelectorAll(".map-places-row").forEach((row) => {
+        const name = (row.dataset.name || "").toLowerCase();
+        const match = !query || name.indexOf(query) !== -1;
+        row.classList.toggle("is-filtered-out", !match);
+      });
+      treeEl.querySelectorAll(".map-places-folder").forEach((folder) => {
+        const any = folder.querySelector(
+          ".map-places-row:not(.is-filtered-out)"
+        );
+        folder.hidden = query && !any;
+      });
+    }
+
+    function buildTree(mappable) {
+      if (!treeEl) return;
+      treeEl.innerHTML = "";
+      const groups = groupPlaces(mappable);
+      for (const group of groups) {
+        const folder = document.createElement("div");
+        folder.className = "map-places-folder";
+        folder.dataset.category = group.id;
+
+        const head = document.createElement("div");
+        head.className = "map-places-folder-head";
+
+        const folderCheck = document.createElement("input");
+        folderCheck.type = "checkbox";
+        folderCheck.className = "map-places-check map-places-folder-check";
+        folderCheck.checked = true;
+        folderCheck.title = "Show or hide this group";
+        folderCheck.addEventListener("change", () => {
+          const on = folderCheck.checked;
+          folder.querySelectorAll(".map-places-folder-list .map-places-check").forEach(
+            (box) => {
+              box.checked = on;
+              setPinVisible(box.closest(".map-places-row").dataset.placeId, on);
+            }
+          );
+          folderCheck.indeterminate = false;
+        });
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "map-places-folder-toggle";
+        toggle.setAttribute("aria-expanded", "true");
+
+        const swatch = document.createElement("span");
+        swatch.className = "map-places-swatch";
+        swatch.style.background = group.colour;
+        swatch.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.className = "map-places-folder-label";
+        label.textContent = group.label;
+
+        const count = document.createElement("span");
+        count.className = "map-places-count";
+        count.textContent = String(group.places.length);
+
+        toggle.appendChild(swatch);
+        toggle.appendChild(label);
+        toggle.appendChild(count);
+        toggle.addEventListener("click", () => {
+          const collapsed = folder.classList.toggle("is-collapsed");
+          toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        });
+
+        head.appendChild(folderCheck);
+        head.appendChild(toggle);
+
+        const list = document.createElement("ul");
+        list.className = "map-places-folder-list";
+        list.setAttribute("role", "group");
+
+        for (const place of group.places) {
+          const li = document.createElement("li");
+          li.className = "map-places-row";
+          li.dataset.placeId = place.id;
+          li.dataset.name = place.name || "";
+          li.setAttribute("role", "treeitem");
+
+          const check = document.createElement("input");
+          check.type = "checkbox";
+          check.className = "map-places-check";
+          check.checked = true;
+          check.title = "Show on map";
+          check.addEventListener("change", () => {
+            setPinVisible(place.id, check.checked);
+            syncFolderChecks();
+          });
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "map-places-item-btn";
+          btn.textContent = place.name || "Historical place";
+          btn.addEventListener("click", () => flyToPlace(place));
+
+          li.appendChild(check);
+          li.appendChild(btn);
+          list.appendChild(li);
+        }
+
+        folder.appendChild(head);
+        folder.appendChild(list);
+        treeEl.appendChild(folder);
+      }
+
+      treeEl.addEventListener("keydown", (e) => {
+        const buttons = visiblePlaceButtons();
+        const current = document.activeElement;
+        const idx = buttons.indexOf(current);
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          const next = buttons[Math.min(idx + 1, buttons.length - 1)] || buttons[0];
+          if (next) next.focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          const prev = buttons[Math.max(idx - 1, 0)] || buttons[0];
+          if (prev) prev.focus();
+        } else if (e.key === "Enter" && idx >= 0) {
+          e.preventDefault();
+          current.click();
+        }
+      });
+    }
+
+    if (filterEl) {
+      filterEl.addEventListener("input", () => applyFilter(filterEl.value));
+    }
+
     const res = await fetch(prefixPath("/data/places.json"));
     const data = await res.json();
     const places = data.places || [];
     const bounds = new maplibregl.LngLatBounds();
     let count = 0;
+    const mappable = [];
+
     places.forEach((place) => {
-      if (
-        !place.location ||
-        typeof place.location.lat !== "number" ||
-        typeof place.location.lng !== "number"
-      ) {
-        return;
-      }
+      if (!placeHasCoords(place)) return;
       const lng = place.location.lng;
       const lat = place.location.lat;
       bounds.extend([lng, lat]);
       count++;
+      mappable.push(place);
 
-      new maplibregl.Marker({
+      const marker = new maplibregl.Marker({
         element: createPinElement(place),
         anchor: "center",
       })
@@ -588,24 +929,33 @@
           }).setHTML(popupHtml(place))
         )
         .addTo(map);
+
+      marker.getElement().addEventListener("click", () => {
+        highlightPlace(place.id);
+      });
+
+      records.set(place.id, { place, marker, visible: true });
     });
 
-    map.on("style.load", syncLabelVisibility);
+    buildTree(mappable);
+
     map.on("zoomend", updateHint);
+    window.addEventListener("resize", () => map.resize());
 
     const applyBounds = () => {
       if (count > 1) {
         map.fitBounds(bounds, {
-          padding: 60,
+          padding: 48,
           maxZoom: FIT_MAX_ZOOM,
           pitch: DEFAULT_PITCH,
           bearing: DEFAULT_BEARING,
           duration: 0,
         });
       }
-      syncLabelVisibility();
+      applyTerrain();
       updateHint();
       if (status) status.hidden = true;
+      map.resize();
     };
 
     if (map.loaded()) applyBounds();

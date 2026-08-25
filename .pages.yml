@@ -125,6 +125,14 @@ content:
         label: Longitude
         type: number
         required: true
+      - name: website
+        label: Related website
+        type: string
+        description: Optional full URL (e.g. a dedicated project site). Shown on the map popup and place page.
+      - name: websiteLabel
+        label: Related website label
+        type: string
+        description: Short label for the button (e.g. templecurraheen.ie). Defaults to “the related website”.
       - name: youtube
         label: YouTube URL
         type: string
