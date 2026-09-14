@@ -3,6 +3,7 @@ title: "Standish Barry of Leamlara"
 description: "Standish Barry of Leamlara who was a Catholic took the oath of allegiance to the Crown in 1794 at King’s Old Castle, Cork City. Thus, remained a Catholic."
 permalink: /persons-of-note/barry/standish-barry/standish-barry/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Standish Barry/StandishBarry.aspx"
 ---
 

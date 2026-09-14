@@ -2,6 +2,7 @@
 title: "Colonel Sir James Cotter"
 permalink: /persons-of-note/cotter/sir-james-cotter-senior/sir-james-cotter-senior/
 layout: layouts/page.njk
+section: cotter
 oldPath: "/Persons of Note/Cotter/Sir James Cotter Senior/SirJamesCotterSenior.aspx"
 ---
 

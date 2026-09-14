@@ -3,6 +3,7 @@ title: "St David's Church of Ireland"
 description: "St David’s of Carrigtwohill, built 1905, is the last Protestant Church of the village which is no longer used for a place of worship."
 permalink: /religious-of-parish/parish-churches/st-davids/st-davids-church/
 layout: layouts/page.njk
+section: parish-churches
 oldPath: "/Religious of Parish/Parish Churches/St David's/StDavidsChurch.aspx"
 ---
 

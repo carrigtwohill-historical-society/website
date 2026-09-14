@@ -2,6 +2,7 @@
 title: "James Hugh Smith Barry"
 permalink: /persons-of-note/barry/smith-barry/james-hugh-smith-barry/james-hugh-smith-barry/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Smith Barry/James Hugh Smith Barry/JamesHughSmithBarry.aspx"
 ---
 

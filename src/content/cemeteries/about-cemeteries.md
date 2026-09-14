@@ -3,6 +3,7 @@ title: "Local Cemeteries"
 description: "There are two ancient cemeteries in Carrigtwohill; St David’s surrounding the Augustinian Abbey and another at Templecurraheen."
 permalink: /cemeteries/about-cemeteries/
 layout: layouts/page.njk
+section: cemeteries
 oldPath: "/Cemeteries/AboutCemeteries.aspx"
 ---
 

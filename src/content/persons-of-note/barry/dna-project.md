@@ -3,6 +3,7 @@ title: "Genetic Genealogy and Cork Families"
 description: "Barrymore DNA project is an American research project based in Pennsylvania."
 permalink: /persons-of-note/barry/dna-project/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/DNAProject.aspx"
 ---
 

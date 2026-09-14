@@ -3,6 +3,7 @@ title: "Garrett Standish Barry of Leamlara"
 description: "Garret Standish Barry of Leamlara, Carrigtwohill, was the 1<sup>st</sup> Catholic MP after Catholic Emancipation & Chairman of Daniel O"
 permalink: /persons-of-note/barry/garrett-standish-barry/garrett-standish-barry/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Garrett Standish Barry/GarrettStandishBarry.aspx"
 ---
 

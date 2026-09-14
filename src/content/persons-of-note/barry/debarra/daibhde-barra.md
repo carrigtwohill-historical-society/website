@@ -2,6 +2,7 @@
 title: "Dáibh de Barra"
 permalink: /persons-of-note/barry/debarra/daibhde-barra/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Debarra/DáibhdeBarra.aspx"
 ---
 

@@ -3,6 +3,7 @@ title: "Local Cemetery Burials"
 description: "An online searchable database for both St David’s and Templecurraheen Cemeteries."
 permalink: /cemeteries/interred/
 layout: layouts/page.njk
+section: cemeteries
 oldPath: "/Cemeteries/Interred.aspx"
 ---
 

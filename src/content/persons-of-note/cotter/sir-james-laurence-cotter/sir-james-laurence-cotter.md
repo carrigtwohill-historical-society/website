@@ -3,6 +3,7 @@ title: "Sir James Laurence Cotter"
 description: "Sir James Laurence Cotter, 1<sup>st </sup> Baronet was the son of  Sir James of Anngrove who was hanged. He established his new home at Rockforest as a Protestant."
 permalink: /persons-of-note/cotter/sir-james-laurence-cotter/sir-james-laurence-cotter/
 layout: layouts/page.njk
+section: cotter
 oldPath: "/Persons of Note/Cotter/Sir James Laurence Cotter/SirJamesLaurenceCotter.aspx"
 ---
 

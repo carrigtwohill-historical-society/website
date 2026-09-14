@@ -57,4 +57,10 @@
       btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
     });
   });
+
+  if (window.matchMedia("(max-width: 900px)").matches) {
+    document.querySelectorAll(".section-nav-panel").forEach((panel) => {
+      panel.removeAttribute("open");
+    });
+  }
 })();

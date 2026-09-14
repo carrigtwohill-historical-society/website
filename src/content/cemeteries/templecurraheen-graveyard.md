@@ -2,6 +2,7 @@
 title: "Templecurraheen"
 permalink: /cemeteries/templecurraheen-graveyard/
 layout: layouts/page.njk
+section: cemeteries
 oldPath: "/Cemeteries/Templecurraheen-graveyard.aspx"
 ---
 

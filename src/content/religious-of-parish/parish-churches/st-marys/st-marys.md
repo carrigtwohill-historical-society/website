@@ -3,6 +3,7 @@ title: "St Mary's Carrigtwohill"
 description: "St Mary’s Church Carrigtwohill, built between 1869 & 1872 by Rev Seymour is sited on Rev Hogan"
 permalink: /religious-of-parish/parish-churches/st-marys/st-marys/
 layout: layouts/page.njk
+section: parish-churches
 oldPath: "/Religious of Parish/Parish Churches/St Mary's/StMarys.aspx"
 ---
 

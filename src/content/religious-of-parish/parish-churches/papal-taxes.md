@@ -2,6 +2,7 @@
 title: "Papal Taxes"
 permalink: /religious-of-parish/parish-churches/papal-taxes/
 layout: layouts/page.njk
+section: parish-churches
 oldPath: "/Religious of Parish/Parish Churches/PapalTaxes.aspx"
 ---
 

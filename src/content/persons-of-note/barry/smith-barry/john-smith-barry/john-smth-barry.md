@@ -2,6 +2,7 @@
 title: "John Smith Barry of Foaty"
 permalink: /persons-of-note/barry/smith-barry/john-smith-barry/john-smth-barry/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Smith Barry/John Smith Barry/JohnSmthBarry.aspx"
 ---
 

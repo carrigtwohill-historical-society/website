@@ -2,6 +2,7 @@
 title: "Parish Origins"
 permalink: /religious-of-parish/parish-churches/parish-churches/
 layout: layouts/page.njk
+section: parish-churches
 oldPath: "/Religious of Parish/Parish Churches/ParishChurches.aspx"
 ---
 

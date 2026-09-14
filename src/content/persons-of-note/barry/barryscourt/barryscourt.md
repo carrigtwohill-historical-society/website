@@ -2,6 +2,7 @@
 title: "Families of Carrigtwohill"
 permalink: /persons-of-note/barry/barryscourt/barryscourt/
 layout: layouts/page.njk
+section: barrymore
 oldPath: "/Persons of Note/Barry/Barryscourt/Barryscourt.aspx"
 ---
 

@@ -1,0 +1,44 @@
+{
+  "barrymore": {
+    "heading": "Barrymore",
+    "items": [
+      { "label": "Barrymore Welsh Origins", "url": "/persons-of-note/barry/barryscourt/barryscourt/" },
+      { "label": "Barrymore History: Fr Edmond Barry", "url": "/persons-of-note/barry/barrymore/" },
+      { "label": "Standish Barry (Leamlara)", "url": "/persons-of-note/barry/standish-barry/standish-barry/" },
+      { "label": "Garrett Standish Barry", "url": "/persons-of-note/barry/garrett-standish-barry/garrett-standish-barry/" },
+      { "label": "John Smith Barry", "url": "/persons-of-note/barry/smith-barry/john-smith-barry/john-smth-barry/" },
+      { "label": "James Hugh Smith Barry (Fota)", "url": "/persons-of-note/barry/smith-barry/james-hugh-smith-barry/james-hugh-smith-barry/" },
+      { "label": "Dáibhí de Barra", "url": "/persons-of-note/barry/debarra/daibhde-barra/" },
+      { "label": "Barrymore DNA Project", "url": "/persons-of-note/barry/dna-project/" }
+    ]
+  },
+  "cotter": {
+    "heading": "Cotter of Anngrove",
+    "items": [
+      { "label": "Cotter of Anngrove", "url": "/persons-of-note/cotter/cotter/" },
+      { "label": "Family Vault", "url": "/persons-of-note/cotter/family-vault/" },
+      { "label": "Sir James Cotter", "url": "/persons-of-note/cotter/james-cotter/sir-james-cotter/" },
+      { "label": "Sir James Cotter Senior", "url": "/persons-of-note/cotter/sir-james-cotter-senior/sir-james-cotter-senior/" },
+      { "label": "Sir James Laurence Cotter", "url": "/persons-of-note/cotter/sir-james-laurence-cotter/sir-james-laurence-cotter/" }
+    ]
+  },
+  "parish-churches": {
+    "heading": "Parish Churches",
+    "items": [
+      { "label": "Parish Origins", "url": "/religious-of-parish/parish-churches/parish-churches/" },
+      { "label": "Abbey", "url": "/religious-of-parish/parish-churches/abbey/abbey/" },
+      { "label": "St David’s", "url": "/religious-of-parish/parish-churches/st-davids/st-davids-church/" },
+      { "label": "St Mary’s", "url": "/religious-of-parish/parish-churches/st-marys/st-marys/" },
+      { "label": "Papal Taxes", "url": "/religious-of-parish/parish-churches/papal-taxes/" }
+    ]
+  },
+  "cemeteries": {
+    "heading": "Local Cemeteries",
+    "items": [
+      { "label": "Local Cemeteries", "url": "/cemeteries/" },
+      { "label": "Our Local Cemeteries", "url": "/cemeteries/about-cemeteries/" },
+      { "label": "St David’s burial database", "url": "/cemeteries/interred/" },
+      { "label": "Templecurraheen", "url": "/cemeteries/templecurraheen-graveyard/" }
+    ]
+  }
+}

@@ -3,6 +3,7 @@ title: "Cotter of Anngrove"
 description: "Catholic Sir James Laurence Cotter was of Carrigtwohill was accused of rape of Quaker Elizabeth Squibb, 1719, for which he was convicted & hanged 1720."
 permalink: /persons-of-note/cotter/cotter/
 layout: layouts/page.njk
+section: cotter
 oldPath: "/Persons of Note/Cotter/Cotter.aspx"
 ---
 

@@ -3,6 +3,7 @@ title: "Augustinian Canon Abbey"
 description: "Carrigtwohill Franciscan or Augustinian Abbey incorporating the village cemetery given to the parish by the Earl of Barrymore is a National treasure, yet forgotten to history."
 permalink: /religious-of-parish/parish-churches/abbey/abbey/
 layout: layouts/page.njk
+section: parish-churches
 oldPath: "/Religious of Parish/Parish Churches/Abbey/Abbey.aspx"
 ---
 

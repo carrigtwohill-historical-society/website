@@ -2,6 +2,7 @@
 title: "Cotter Family Vault"
 permalink: /persons-of-note/cotter/family-vault/
 layout: layouts/page.njk
+section: cotter
 oldPath: "/Persons of Note/Cotter/FamilyVault.aspx"
 ---
 

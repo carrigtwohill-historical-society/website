@@ -3,6 +3,7 @@ title: "Hanged James Cotter"
 description: "Sir James Cotter of Anngrove, Ballinsperig, in Carrigtwohill, came under the spell of beautiful Quaker girl, was accused & convicted of rape, & was hanged, 1720."
 permalink: /persons-of-note/cotter/james-cotter/sir-james-cotter/
 layout: layouts/page.njk
+section: cotter
 oldPath: "/Persons of Note/Cotter/James Cotter/SirJamesCotter.aspx"
 ---
 

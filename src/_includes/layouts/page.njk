@@ -1,7 +1,11 @@
 ---
 layout: layouts/base.njk
 ---
-<article class="page">
+{% set hasSectionNav = section and sectionNavs[section] %}
+<article class="page{% if hasSectionNav %} page-with-section{% endif %}">
+  {% if hasSectionNav %}
+    {% include "partials/section-nav.njk" %}
+  {% endif %}
   <div class="page-body prose">
     {{ content | safe }}
   </div>
