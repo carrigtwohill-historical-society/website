@@ -53,5 +53,5 @@ oldPath: "/Religious of Parish/Clergy/Richard Seymour/RichardSeymour.aspx"
     </p>
      <figure class="FigureLeft">
        <img src="/assets/Religious%20of%20Parish/Clergy/Richard%20Seymour/Anne_Seymour_Death_CE11Sept1854.jpg" alt="ImageAnneSeymour">
-         <figcaption>Death of Anne Seymour, Cork Examiner, 11th September 1854</figcaption>
+        <figcaption>Death of Anne Seymour, Cork Examiner, 11th September 1854</figcaption>
     </figure>
