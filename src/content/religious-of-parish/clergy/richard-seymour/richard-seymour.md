@@ -52,8 +52,6 @@ oldPath: "/Religious of Parish/Clergy/Richard Seymour/RichardSeymour.aspx"
         1885, at his modest Main Street home, which today bears a plaque dedicated his dear beloved saintly, <a href="http://www.poorservants.org/our-beginning/" target="_blank">Mother Magdalen Taylor</a>, and where his own mother passed away, Richard Seymour went to meet his Lord. His spinster sister, Johanna, also lived out her last days in Richard&#39;s Main St House, but died in the Convent while being nursed by the Sisters.
     </p>
      <figure class="FigureLeft">
-        <img src="/assets/Religious%20of%20Parish/Clergy/Richard%20Seymour/Richard%20Seymour.png" alt="ImageRichardSeymour">
-        <img src="/assets/Religious%20of%20Parish/Clergy/Richard%20Seymour/Anne_Seymour_Death_CE11Sept1854.jpg" alt="ImageAnneSeymour">
-         
-        <figcaption>Death of Anne Seymour, Cork Examiner, 11th September 1854</figcaption>
+       <img src="/assets/Religious%20of%20Parish/Clergy/Richard%20Seymour/Anne_Seymour_Death_CE11Sept1854.jpg" alt="ImageAnneSeymour">
+         <figcaption>Death of Anne Seymour, Cork Examiner, 11th September 1854</figcaption>
     </figure>
