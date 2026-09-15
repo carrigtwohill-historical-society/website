@@ -789,8 +789,10 @@ a:hover { color: var(--cork-red); }
   }
   .page-with-section .section-nav-panel {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     overflow-x: auto;
+    width: 100%;
   }
   .page-with-section .section-nav-heading {
     flex: 0 0 auto;
@@ -802,10 +804,13 @@ a:hover { color: var(--cork-red); }
   }
   .page-with-section .section-nav-list {
     display: flex !important;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     flex-wrap: nowrap;
     align-items: stretch;
     padding: 0;
+  }
+  .page-with-section .section-nav-list li {
+    flex: 0 0 auto;
   }
   .page-with-section .section-nav-list a,
   .page-with-section .section-nav-list span {
