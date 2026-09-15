@@ -1,7 +1,7 @@
 <nav class="section-nav" aria-label="{{ sectionNavs[section].heading }}">
   <details class="section-nav-panel" open>
     <summary class="section-nav-summary">In this section</summary>
-    <p class="section-nav-heading">{{ sectionNavs[section].heading }}</p>
+    <p class="section-nav-heading">{{ sectionNavs[section].heading }}<span aria-hidden="true"> :-</span></p>
     <ul class="section-nav-list">
       {% for item in sectionNavs[section].items %}
       <li>

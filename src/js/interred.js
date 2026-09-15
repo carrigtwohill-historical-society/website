@@ -5,13 +5,15 @@
   if (!root) return;
 
   var select = root.querySelector("[data-interred-surname]");
+  var cemeterySelect = root.querySelector("[data-interred-cemetery]");
   var status = root.querySelector("[data-interred-status]");
   var results = document.querySelector("[data-interred-results]");
   var pageSize = 15;
   var currentRows = [];
   var currentPage = 1;
+  var knownCemeteries = ["Caherlag", "St David's", "Templecurraheen"];
   var columns = [
-    "Cemetery", "Grave", "Interred", "Burial", "Age", "Birth",
+    "Grave", "Interred", "Burial", "Age", "Birth",
     "Certificate", "Aged", "Status", "Occupation", "Address", "Townlands", "Witness"
   ];
 
@@ -31,7 +33,7 @@
   function renderPage() {
     if (!currentRows.length) {
       results.innerHTML = "";
-      status.textContent = "Select a surname to view matching records.";
+      status.textContent = "No records found for this surname and cemetery.";
       return;
     }
 
@@ -83,25 +85,71 @@
       return response.json();
     })
     .then(function (data) {
-      (data.surnames || []).forEach(function (surname) {
-        var option = document.createElement("option");
-        option.value = surname;
-        option.textContent = surname;
-        select.appendChild(option);
-      });
       var records = data.records || [];
-      status.textContent = records.length + " records available. Select a surname to search.";
-      select.addEventListener("change", function () {
+      function updateSurnames() {
+        var surnames = [...new Set(records.map(function (row) {
+          return row.PlotSurname;
+        }).filter(Boolean))].sort(function (a, b) {
+          return a.localeCompare(b);
+        });
+        select.innerHTML = "<option value=\"\">Choose a surname</option>";
+        surnames.forEach(function (surname) {
+          var option = document.createElement("option");
+          option.value = surname;
+          option.textContent = surname;
+          select.appendChild(option);
+        });
+      }
+
+      function updateCemeteries() {
         var surname = select.value;
-        currentRows = records.filter(function (row) {
+        var available = records.filter(function (row) {
           return row.PlotSurname === surname;
+        }).map(function (row) {
+          return row.Cemetery;
+        });
+        var cemeteries = [...new Set(knownCemeteries.concat(available))].sort(function (a, b) {
+          return a.localeCompare(b);
+        });
+        cemeterySelect.innerHTML = "<option value=\"\">Choose a cemetery</option>";
+        cemeteries.forEach(function (cemetery) {
+          var option = document.createElement("option");
+          option.value = cemetery;
+          option.textContent = cemetery;
+          cemeterySelect.appendChild(option);
+        });
+        cemeterySelect.disabled = !surname;
+      }
+
+      function updateResults() {
+        var cemetery = cemeterySelect.value;
+        var surname = select.value;
+        if (!surname || !cemetery) {
+          currentRows = [];
+          results.innerHTML = "";
+          status.textContent = surname ? "Select a cemetery to view matching records." :
+            "Select a surname first.";
+          return;
+        }
+        currentRows = records.filter(function (row) {
+          return row.PlotSurname === surname && (!cemetery || row.Cemetery === cemetery);
         });
         currentPage = 1;
         renderPage();
+      }
+
+      updateSurnames();
+      status.textContent = records.length + " records available. Select a surname first.";
+      select.addEventListener("change", function () {
+        updateCemeteries();
+        cemeterySelect.value = "";
+        updateResults();
       });
+      cemeterySelect.addEventListener("change", updateResults);
     })
     .catch(function () {
       select.disabled = true;
+      cemeterySelect.disabled = true;
       status.textContent = "The cemetery records are temporarily unavailable.";
     });
 })();
