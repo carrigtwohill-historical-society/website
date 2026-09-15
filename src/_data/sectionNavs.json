@@ -42,7 +42,6 @@
   "cemeteries": {
     "heading": "Local Cemeteries",
     "items": [
-      { "label": "Local Cemeteries", "url": "/cemeteries/" },
       { "label": "Old Abbey Cemetery (St David's)", "url": "/cemeteries/about-cemeteries/" },
       { "label": "Internments Database", "url": "/cemeteries/interred/" },
       { "label": "Templecurraheen", "url": "/cemeteries/templecurraheen-graveyard/" }
