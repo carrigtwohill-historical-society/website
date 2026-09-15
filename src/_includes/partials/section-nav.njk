@@ -5,7 +5,11 @@
     <ul class="section-nav-list">
       {% for item in sectionNavs[section].items %}
       <li>
+        {% if item.url %}
         <a href="{{ item.url | url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.label }}</a>
+        {% else %}
+        <span class="section-nav-item-disabled" aria-disabled="true">{{ item.label }}</span>
+        {% endif %}
       </li>
       {% endfor %}
     </ul>

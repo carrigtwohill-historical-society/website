@@ -32,6 +32,13 @@
       { "label": "Papal Taxes", "url": "/religious-of-parish/parish-churches/papal-taxes/" }
     ]
   },
+  "clergy": {
+    "heading": "Clergy of the Parish",
+    "items": [
+      { "label": "Richard Seymour", "url": "/religious-of-parish/clergy/richard-seymour/richard-seymour/" },
+      { "label": "Rev Saunders" }
+    ]
+  },
   "cemeteries": {
     "heading": "Local Cemeteries",
     "items": [

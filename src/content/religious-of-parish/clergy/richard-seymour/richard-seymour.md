@@ -3,6 +3,7 @@ title: "Richard Seymour"
 description: "Richard Seymour, a most zealous, pious & generous Parish Priest of Carrigtwohill built his Church & first school, then brought the sisters to the village."
 permalink: /religious-of-parish/clergy/richard-seymour/richard-seymour/
 layout: layouts/page.njk
+section: clergy
 oldPath: "/Religious of Parish/Clergy/Richard Seymour/RichardSeymour.aspx"
 ---
 
