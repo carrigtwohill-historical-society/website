@@ -7,7 +7,7 @@ section: cemeteries
 oldPath: "/Cemeteries/Interred.aspx"
 ---
 
-<h1>Internments at St David&#39;s &amp; Templecurraheen Cemeteries</h1>
+<h1>Local Cemetery Internments</h1>
 <p class="indentedText">
    The database includes known burials at St David’s, Templecurraheen, and Caherlag cemeteries. The current database results are only temporary which are still being developed. Selector dropdown list will only include names known to be buried in the relevant cemeteries.
    </p>
