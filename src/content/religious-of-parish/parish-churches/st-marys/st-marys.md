@@ -177,6 +177,6 @@ oldPath: "/Religious of Parish/Parish Churches/St Mary's/StMarys.aspx"
     <p class="indentedText">
         Two days later the <a href="/religious-of-parish/parish-churches/st-marys/st-marys-consecrationpdf/">Cork Examiner</a> published a long and detailed account of the consecration ceremony, which has been fully transcribed by members of our committee. Being far too lengthy to include here it may be <a>viewed separately</a> .</p>
     <figure class="FigureCenter">
-        <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20Mary%27s/St%20Mary%27s%20%26amp%3B%20Convent.jpg" alt="ImageStMarys">
+        <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20Mary%27s/St%20Mary%27s%20%26%20Convent.jpg" alt="ImageStMarys">
         
     </figure>

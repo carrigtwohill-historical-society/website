@@ -18,7 +18,7 @@ sources:
 
 Leamlara House was located midway between Carrigtwohill village and Watergrasshill, In the late 1950’s the estate was sold to the Land Commission who divided it up and sold the land to farmers, the owner of this estate was Standish Barry at one time an MP. The main entrance was off  the Leamlara road, there was a handsome set of gates and pillars and across the road a gate lodge built of cut limestone
 
-![Photograph of Leamlara House](/images/stories/leamlara-house/leamlara-house-02.jpg)
+![Photograph of Leamlara House](/assets/map/places/leamlara-house-02.jpg)
 
 *Leamlara House — Carrigtwohill Historical Society*
 
