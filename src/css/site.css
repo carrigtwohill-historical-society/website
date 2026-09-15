@@ -870,7 +870,7 @@ a:hover { color: var(--cork-red); }
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  border: 1px solid var(--line);
+  border: none;
 }
 .prose .FigureCenter.map-figure {
   max-width: 48rem;
@@ -889,7 +889,7 @@ a:hover { color: var(--cork-red); }
 .prose .FigureLeft img {
   width: 100%;
   display: block;
-  border: 1px solid var(--line);
+  border: none;
 }
 
 .constitution-aims {
@@ -920,7 +920,7 @@ a:hover { color: var(--cork-red); }
   max-width: 100%;
   height: auto !important;
   display: block;
-  border: 1px solid var(--line);
+  border: none;
   background: transparent;
 }
 
@@ -2030,7 +2030,7 @@ body.map-page-body .map-contribute {
   max-width: 36rem;
   margin: 0 0 1.25rem;
 }
-.place-hero img { width: 100%; border: 1px solid var(--line); }
+.place-hero img { width: 100%; border: none; }
 .place-placeholder-image {
   display: flex;
   align-items: center;
