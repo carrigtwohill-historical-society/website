@@ -97,8 +97,8 @@ a:hover { color: var(--cork-red); }
 }
 
 .brand-mark {
-  /* PNG is 640×466 (not square); size by height so the emblem reads large */
-  height: clamp(3.5rem, 12vw, 12.5rem);
+  /* Keep the larger emblem from increasing the header's flex footprint. */
+  height: clamp(3.5rem, 12vw, 10rem);
   width: auto;
   max-width: none;
   max-height: none;
@@ -108,6 +108,8 @@ a:hover { color: var(--cork-red); }
   background: transparent;
   object-fit: contain;
   padding: 0;
+  transform: translateX(-2.5rem) scale(1.3);
+  transform-origin: left center;
 }
 
 .brand-text {
@@ -797,6 +799,16 @@ a:hover { color: var(--cork-red); }
   }
   .section-nav-panel[open] .section-nav-summary::after {
     content: "▴";
+  }
+}
+
+@media (max-width: 1200px) {
+  .page-with-section {
+    display: block;
+  }
+  .page-with-section .section-nav {
+    position: static;
+    margin-bottom: 1.25rem;
   }
 }
 
@@ -1629,6 +1641,7 @@ body.map-page-body .header-bar {
 }
 body.map-page-body .brand-mark {
   height: 2.6rem;
+  transform: none;
 }
 body.map-page-body .brand-name {
   font-size: 0.82rem;
@@ -2069,6 +2082,123 @@ body.map-page-body .map-contribute {
   background: var(--paper);
   border: 1px dashed var(--blue-mid);
 }
+.interred-layout {
+  display: grid;
+  grid-template-columns: 14.5rem minmax(0, 1fr);
+  gap: 1rem;
+  width: calc(100% + 18rem);
+  align-items: start;
+  margin-top: -0.35rem;
+}
+.interred-search {
+  display: grid;
+  gap: 0.45rem;
+  width: 14.5rem;
+  max-width: 100%;
+  padding: 0.75rem;
+  background: var(--paper-2);
+  margin: 0;
+}
+.interred-search label {
+  font-weight: 700;
+  color: var(--blue);
+}
+.interred-search select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.6rem;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--white);
+  border: 3px solid var(--gold);
+  border-radius: 0.25rem;
+}
+.interred-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.interred-results {
+  min-width: 0;
+  margin-top: -0.75rem;
+  padding: 0.75rem;
+  background: var(--paper-2);
+}
+.interred-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(11, 61, 110, 0.08);
+  background: var(--white);
+}
+.interred-table {
+  min-width: 64rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.interred-table th,
+.interred-table td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.interred-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  color: white;
+  background: #1d6095;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.interred-table tbody tr:nth-child(even) {
+  background: var(--paper);
+}
+.interred-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.interred-page,
+.interred-page-nav {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--blue-mid);
+  border-radius: 0.2rem;
+  background: var(--white);
+  color: var(--blue);
+  font: inherit;
+  cursor: pointer;
+}
+.interred-page.is-current {
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+}
+.interred-page:hover:not(.is-current),
+.interred-page-nav:hover:not(:disabled) {
+  background: var(--gold-soft);
+}
+.interred-page-nav:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+@media (max-width: 900px) {
+  .interred-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0;
+  }
+  .interred-results {
+    margin-top: 0;
+  }
+}
 .media-note {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -2393,11 +2523,13 @@ body.map-page-body .map-contribute {
     flex-wrap: nowrap;
   }
   .brand-mark {
-    height: clamp(3.25rem, 18vw, 6.75rem);
+    height: clamp(3.25rem, 18vw, 6rem);
     width: auto;
     max-width: none;
     max-height: none;
     flex-shrink: 0;
+    transform: translateX(1.5rem) scale(1.3);
+    transform-origin: left center;
   }
   .brand-name {
     font-size: clamp(0.65rem, 2.8vw, 0.95rem);
@@ -2573,6 +2705,13 @@ body.map-page-body .map-contribute {
 
   .site-main {
     padding: 1.25rem 0.95rem 2.75rem;
+  }
+  .page-with-section {
+    display: block;
+  }
+  .page-with-section .section-nav {
+    position: static;
+    margin-bottom: 1.25rem;
   }
   .prose table {
     display: block;

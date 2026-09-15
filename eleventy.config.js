@@ -10,6 +10,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/data/places.json": "data/places.json" });
   eleventyConfig.addPassthroughCopy({ "src/data/categories.json": "data/categories.json" });
   eleventyConfig.addPassthroughCopy({ "src/data/url-map.json": "data/url-map.json" });
+  eleventyConfig.addPassthroughCopy({ "src/data/interred.json": "data/interred.json" });
   eleventyConfig.addPassthroughCopy({
     "src/data/carrigtwohill-parishes.geojson": "data/carrigtwohill-parishes.geojson",
   });

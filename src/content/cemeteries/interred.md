@@ -8,56 +8,24 @@ oldPath: "/Cemeteries/Interred.aspx"
 ---
 
 <h1>Internments at St David&#39;s &amp; Templecurraheen Cemeteries</h1>
-    <p class="indentedText">
-        The database has been designed to include known burials at St David’s cemetery and those
-        of Templecurraheen. Simply select surname from dropdown list, and use underlined headings 
-        to sort.
-    </p>
-      
-    
-        
-    " SelectCommand="SELECT DISTINCT [PlotSurname] FROM [Internments]">
-    
-    <figure class="FigureCenter">
+<p class="indentedText">
+    The database includes known burials at St David’s,  Templecurraheen, and Caherlag. The current database results are only tempory which are still being developed.<br/>
+    Select a surname to display matching records.
+</p>
 
-        
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
-            <Columns>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-            </Columns>
-            <EditRowStyle BackColor="#999999" />
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <SortedAscendingCellStyle BackColor="#E9E7E2" />
-            <SortedAscendingHeaderStyle BackColor="#506C8C" />
-            <SortedDescendingCellStyle BackColor="#FFFDF8" />
-            <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
-        
-        <br />
-        "
-            SelectCommand="SELECT * FROM [Internments] WHERE ([PlotSurname] = @PlotSurname)">
-            <SelectParameters>
-                
-            </SelectParameters>
+<div class="interred-layout">
+    <section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
+        <label id="interred-search-label" for="interred-surname">Select a surname</label>
+        <select id="interred-surname" data-interred-surname>
+            <option value="">Choose a surname</option>
+        </select>
+        <p class="interred-status" data-interred-status role="status">Loading cemetery records...</p>
+    </section>
 
-        
-    </figure>
-<section class="search-skeleton" aria-label="Search coming soon">
-<p><strong>Searchable records:</strong> this page will include a search of the society’s research collection. Data will be added when the hosting database export is available.</p>
-</section>
+    <div class="interred-results" data-interred-results></div>
+</div>
+<noscript>
+    <p class="search-skeleton">JavaScript is required to search the cemetery records.</p>
+</noscript>
+<script src="/js/interred.js" defer></script>
 
