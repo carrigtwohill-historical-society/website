@@ -13,7 +13,7 @@ oldPath: "/Cemeteries/Interred.aspx"
    </p>
 <p class="indentedText">
      Select a surname to display matching records.
-</p>p>
+</p>
 <section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
     <div class="interred-filter-grid">
         <div>
