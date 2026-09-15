@@ -12,7 +12,7 @@ oldPath: "/Religious of Parish/Clergy/Richard Seymour/RichardSeymour.aspx"
     <h2>A Brief Biography</h2>
     <h3>The Early Years</h3>
     <figure class="FigureLeft">
-        <img src="/assets/religious-of-parish/clergy/richard-seymour/richard-seymour/RichardSeymour.png" alt="ImageRichardSeymour">
+        <img src="/assets/Religious%20of%20Parish/Clergy/Richard%20Seymour/Richard%20Seymour.png" alt="ImageRichardSeymour">
         <figcaption>Believed to be the only known image of Father Seymour held at the Convent</figcaption>
     </figure>
     <p class="indentedText">
