@@ -11,10 +11,8 @@
   var pageSize = 15;
   var currentRows = [];
   var currentPage = 1;
-  var knownCemeteries = ["Caherlag", "St David's", "Templecurraheen"];
   var columns = [
-    "Grave", "Interred", "Burial", "Age", "Birth",
-    "Certificate", "Aged", "Status", "Occupation", "Address", "Townlands", "Witness"
+    "Plot", "Interred", "Date", "Age", "Born", "Relationship", "Address", "Townland"
   ];
 
   function sitePath(path) {
@@ -28,6 +26,17 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+
+  function displayInterred(row) {
+    var name = String(row.Interred || "").trim();
+    var alias = String(row.Alias || "").trim();
+    var surname = String(row.Surname || "").trim();
+    if (!name || !alias || !surname) return name;
+
+    var surnameStart = name.toLowerCase().lastIndexOf(surname.toLowerCase());
+    if (surnameStart < 0) return name;
+    return name.slice(0, surnameStart).trimEnd() + " (" + alias + ") " + name.slice(surnameStart);
   }
 
   function renderPage() {
@@ -45,7 +54,8 @@
     }).join("");
     var body = pageRows.map(function (row) {
       return "<tr>" + columns.map(function (column) {
-        return "<td>" + escapeHtml(row[column]) + "</td>";
+        var value = column === "Interred" ? displayInterred(row) : row[column];
+        return "<td>" + escapeHtml(value) + "</td>";
       }).join("") + "</tr>";
     }).join("");
     var pages = "";
@@ -88,7 +98,7 @@
       var records = data.records || [];
       function updateSurnames() {
         var surnames = [...new Set(records.map(function (row) {
-          return row.PlotSurname;
+          return row.Surname || row.PlotSurname;
         }).filter(Boolean))].sort(function (a, b) {
           return a.localeCompare(b);
         });
@@ -101,15 +111,20 @@
         });
       }
 
+      function cemeteryOrder(cemetery) {
+        var order = { "St David's": 0, "Templecurraheen": 1, "Caherlag": 2 };
+        return order[cemetery] == null ? 99 : order[cemetery];
+      }
+
       function updateCemeteries() {
         var surname = select.value;
         var available = records.filter(function (row) {
-          return row.PlotSurname === surname;
+          return (row.Surname || row.PlotSurname) === surname;
         }).map(function (row) {
           return row.Cemetery;
         });
-        var cemeteries = [...new Set(knownCemeteries.concat(available))].sort(function (a, b) {
-          return a.localeCompare(b);
+        var cemeteries = [...new Set(available)].sort(function (a, b) {
+          return cemeteryOrder(a) - cemeteryOrder(b) || a.localeCompare(b);
         });
         cemeterySelect.innerHTML = "<option value=\"\">Choose a cemetery</option>";
         cemeteries.forEach(function (cemetery) {
@@ -118,7 +133,10 @@
           option.textContent = cemetery;
           cemeterySelect.appendChild(option);
         });
-        cemeterySelect.disabled = !surname;
+        cemeterySelect.disabled = !surname || cemeteries.length === 0;
+        if (surname && cemeteries.length === 0) {
+          status.textContent = "No cemetery records found for this surname.";
+        }
       }
 
       function updateResults() {
@@ -132,14 +150,21 @@
           return;
         }
         currentRows = records.filter(function (row) {
-          return row.PlotSurname === surname && (!cemetery || row.Cemetery === cemetery);
+          return (row.Surname || row.PlotSurname) === surname && (!cemetery || row.Cemetery === cemetery);
         });
         currentPage = 1;
         renderPage();
       }
 
       updateSurnames();
-      status.textContent = records.length + " records available. Select a surname first.";
+      select.value = "Agheson";
+      updateCemeteries();
+      if (cemeterySelect.options.length === 2) {
+        cemeterySelect.value = cemeterySelect.options[1].value;
+        updateResults();
+      } else {
+        status.textContent = records.length + " records available. Select a cemetery to view Agheson records.";
+      }
       select.addEventListener("change", function () {
         updateCemeteries();
         cemeterySelect.value = "";

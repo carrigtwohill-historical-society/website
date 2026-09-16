@@ -865,19 +865,28 @@ a:hover { color: var(--cork-red); }
     width: 100%;
   }
   .interred-table {
-    min-width: 0;
+    min-width: 62rem;
     table-layout: fixed;
     font-size: 0.72rem;
   }
   .interred-table th:nth-child(1),
-  .interred-table td:nth-child(1) { width: 6%; }
+  .interred-table td:nth-child(1) { width: 12%; }
   .interred-table th:nth-child(2),
-  .interred-table td:nth-child(2) {
-    width: 24%;
-    white-space: nowrap;
-  }
+  .interred-table td:nth-child(2) { width: 8%; }
   .interred-table th:nth-child(3),
-  .interred-table td:nth-child(3) { width: 9%; }
+  .interred-table td:nth-child(3) { width: 6%; }
+  .interred-table th:nth-child(4),
+  .interred-table td:nth-child(4) { width: 22%; }
+  .interred-table th:nth-child(5),
+  .interred-table td:nth-child(5) { width: 18%; }
+  .interred-table th:nth-child(6),
+  .interred-table td:nth-child(6) { width: 6%; }
+  .interred-table th:nth-child(7),
+  .interred-table td:nth-child(7) { width: 6%; }
+  .interred-table th:nth-child(8),
+  .interred-table td:nth-child(8) { width: 6%; }
+  .interred-table th:nth-child(9),
+  .interred-table td:nth-child(9) { width: 10%; }
   .interred-table th,
   .interred-table td {
     padding: 0.35rem 0.3rem;
@@ -2220,17 +2229,19 @@ body.map-page-body .map-contribute {
   background: var(--white);
 }
 .interred-table {
-  min-width: 64rem;
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
   border-collapse: collapse;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
+  table-layout: auto;
 }
 .interred-table th,
 .interred-table td {
-  padding: 0.45rem 0.5rem;
+  padding: 0.35rem 0.45rem;
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
+  white-space: nowrap;
 }
 .interred-table th {
   position: sticky;
@@ -2240,6 +2251,16 @@ body.map-page-body .map-contribute {
   background: #1d6095;
   font-weight: 700;
   white-space: nowrap;
+}
+.interred-table th:nth-child(1),
+.interred-table td:nth-child(1),
+.interred-table th:nth-child(3),
+.interred-table td:nth-child(3),
+.interred-table th:nth-child(4),
+.interred-table td:nth-child(4),
+.interred-table th:nth-child(5),
+.interred-table td:nth-child(5) {
+  width: 1%;
 }
 .interred-table tbody tr:nth-child(even) {
   background: var(--paper);
@@ -2423,33 +2444,15 @@ body.map-page-body .map-contribute {
   border-top: 0;
 }
 .footer-bar {
-  height: 2.75rem; /* ~ main menu strip (0.7rem*2 + line) */
-  background: var(--blue);
+    min-width: max-content;
+    width: max-content;
+    table-layout: auto;
   border-bottom: 3px solid var(--gold);
 }
-.footer-body {
-  background: var(--white);
-  padding: 1.75rem 1.35rem 1.4rem;
-  max-width: var(--header-max);
-  margin: 0 auto;
-}
-.footer-partners {
-  text-align: center;
-}
-.footer-heading {
-  margin: 0 0 0.85rem;
-  font-weight: 700;
-  color: var(--blue);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.footer-links ul { list-style: none; margin: 0; padding: 0; }
 .footer-email {
   color: var(--ink);
-}
-.footer-links a,
-.footer-email a {
+    padding: 0.3rem 0.35rem;
+    white-space: nowrap;
   color: var(--blue);
 }
 .footer-email a:hover {

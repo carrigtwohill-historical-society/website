@@ -12,20 +12,20 @@ oldPath: "/Cemeteries/Interred.aspx"
    The database includes known burials at St David’s, Templecurraheen, and Caherlag cemeteries. The current database results are only temporary which are still being developed. Selector dropdown list will only include names known to be buried in the relevant cemeteries.
    </p>
 <p class="indentedText">
-     Select a surname to display matching records.
+     Select a surname to view matching records. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name.
 </p>
 <section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
     <div class="interred-filter-grid">
         <div>
-            <label id="interred-search-label" for="interred-surname">Select a surname</label>
+            <label id="interred-search-label" for="interred-surname">Surname</label>
             <select id="interred-surname" data-interred-surname>
-                <option value="">Choose a surname</option>
+                <option value="">Choose surname</option>
             </select>
         </div>
         <div>
-            <label id="interred-cemetery-label" for="interred-cemetery">Select a cemetery</label>
+            <label id="interred-cemetery-label" for="interred-cemetery">Cemetery</label>
             <select id="interred-cemetery" data-interred-cemetery disabled>
-                <option value="">Choose a surname first</option>
+                <option value="">Choose surname first</option>
             </select>
         </div>
     </div>
