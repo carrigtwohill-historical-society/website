@@ -2262,6 +2262,12 @@ body.map-page-body .map-contribute {
 .interred-table td:nth-child(5) {
   width: 1%;
 }
+.interred-table td:nth-child(3) {
+  text-align: right;
+}
+.interred-table th:nth-child(3) {
+  text-align: center;
+}
 .interred-table tbody tr:nth-child(even) {
   background: var(--paper);
 }

@@ -12,7 +12,7 @@ oldPath: "/Cemeteries/Interred.aspx"
    The database includes known burials at St David’s, Templecurraheen, and Caherlag cemeteries. The current database results are only temporary which are still being developed. Selector dropdown list will only include names known to be buried in the relevant cemeteries.
    </p>
 <p class="indentedText">
-     Select a surname to view matching records. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name.
+     Select a surname to view matching records. The first surname shown is the default as an example.Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name.
 </p>
 <section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
     <div class="interred-filter-grid">
