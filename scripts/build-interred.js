@@ -7,9 +7,11 @@ const SOURCE = path.join(ROOT, "Database", "Interred.xlsx");
 const OUTPUT = path.join(ROOT, "src", "data", "interred.json");
 
 const PUBLIC_COLUMNS = [
-  ["Cemetery", ["cemetery"]],
   ["No", ["no", "number", "recordnumber"]],
+  ["BurialID", ["burialid", "burialnumber", "burialrecordid"]],
+  ["Cemetery", ["cemetery"]],
   ["Plot", ["plot", "plotnumber", "grave", "gravenumber"]],
+  ["Row", ["row", "rownumber"]],
   ["Surname", ["surname", "plotsurname", "lastname"]],
   ["Interred", ["interred", "name", "fullname", "person"]],
   ["Alias", ["alias", "aka"]],
@@ -42,6 +44,18 @@ function findValue(row, aliases) {
   return "";
 }
 
+function joinKey(value) {
+  return text(value).replace(/\.0+$/, "").trim().toLowerCase();
+}
+
+function cleanRelatedRow(row) {
+  return Object.fromEntries(
+    Object.entries(row)
+      .map(([header, value]) => [text(header), text(value)])
+      .filter(([header, value]) => header && value)
+  );
+}
+
 function parsePlot(value) {
   if (value == null || value === "") return Number.MAX_SAFE_INTEGER;
   const match = String(value).match(/-?\d+/);
@@ -60,15 +74,39 @@ function main() {
   }
 
   const workbook = XLSX.readFile(SOURCE, { cellDates: true });
-  const sheetName = workbook.SheetNames[0];
-  if (!sheetName) throw new Error("Interred.xlsx contains no worksheets");
+  const sheetName = workbook.SheetNames.includes("Interred")
+    ? "Interred"
+    : workbook.SheetNames.includes("ExportInterred")
+      ? "ExportInterred"
+      : null;
+  if (!sheetName) {
+    throw new Error(
+      "Interred.xlsx must contain an Interred worksheet; the legacy WebsiteExport worksheet is no longer supported"
+    );
+  }
 
   const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+  const civilSheetName = workbook.SheetNames.includes("CivilRegistration")
+    ? "CivilRegistration"
+    : workbook.SheetNames.includes("Civil")
+      ? "Civil"
+      : null;
+  const civilByBurialId = new Map();
+  const civilSheet = civilSheetName && workbook.Sheets[civilSheetName];
+  if (civilSheet) {
+    const civilRows = XLSX.utils.sheet_to_json(civilSheet, { defval: "" });
+    civilRows.forEach((row) => {
+      const burialId = findValue(row, ["burialid", "burialnumber", "burialrecordid"]);
+      if (burialId) civilByBurialId.set(joinKey(burialId), cleanRelatedRow(row));
+    });
+  }
   const records = rows
     .map((row) => {
       const record = {};
       for (const [name, aliases] of PUBLIC_COLUMNS) record[name] = findValue(row, aliases);
       record.PlotSurname = record.Surname;
+      const related = civilByBurialId.get(joinKey(record.No));
+      if (related) record.Civil = related;
       return record;
     })
     .filter((record) => record.PlotSurname || record.Name || record.Interred);
@@ -81,10 +119,11 @@ function main() {
     const bPlot = parsePlot(b.Plot);
     if (aPlot !== bPlot) return aPlot - bPlot;
 
-    const row = String(a.Row || "").localeCompare(String(b.Row || ""), undefined, { numeric: true });
-    if (row !== 0) return row;
+    const aNo = parsePlot(a.No);
+    const bNo = parsePlot(b.No);
+    if (aNo !== bNo) return aNo - bNo;
 
-    return (a.Name || a.Interred || "").localeCompare(b.Name || b.Interred || "");
+    return (a.Interred || "").localeCompare(b.Interred || "");
   });
 
   const payload = {

@@ -11,14 +11,24 @@
   var pageSize = 15;
   var currentRows = [];
   var currentPage = 1;
+  var siteHeader = document.querySelector(".site-header");
   var columns = [
-    "Plot", "Interred", "Date", "Age", "Born", "Relationship", "Address", "Townland"
+    "No", "Plot", "Row", "Interred", "Date", "Age", "Born", "Relationship", "Address", "Townland"
   ];
 
   function sitePath(path) {
     var prefix = (document.documentElement.getAttribute("data-path-prefix") || "").replace(/\/$/, "");
     return prefix + path;
   }
+
+  function updateStickyHeaderOffset() {
+    if (siteHeader) {
+      root.style.setProperty("--interred-sticky-top", siteHeader.getBoundingClientRect().height + "px");
+    }
+  }
+
+  updateStickyHeaderOffset();
+  window.addEventListener("resize", updateStickyHeaderOffset);
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -39,6 +49,25 @@
     return name.slice(0, surnameStart).trimEnd() + " (" + alias + ") " + name.slice(surnameStart);
   }
 
+  function relatedFields(row) {
+    return Object.entries(row.Civil || {}).filter(function (entry) {
+      var fieldName = entry[0].toLowerCase();
+      return fieldName !== "no" && fieldName !== "burialid" && fieldName !== "certid";
+    });
+  }
+
+  function renderRelated(row, rowIndex) {
+    var fields = relatedFields(row);
+    if (!fields.length) return "";
+    var detailId = "interred-detail-" + rowIndex;
+    var content = fields.map(function (entry) {
+      return "<dt>" + escapeHtml(entry[0]) + "</dt><dd>" + escapeHtml(entry[1]) + "</dd>";
+    }).join("");
+    return "<button type=\"button\" class=\"interred-detail-toggle\" data-interred-detail=\"" + detailId +
+      "\" aria-expanded=\"false\" aria-controls=\"" + detailId + "\" aria-label=\"Show related record details\">+</button>" +
+      "<div id=\"" + detailId + "\" class=\"interred-detail\" hidden><dl>" + content + "</dl></div>";
+  }
+
   function renderPage() {
     if (!currentRows.length) {
       results.innerHTML = "";
@@ -52,11 +81,15 @@
     var head = columns.map(function (column) {
       return "<th scope=\"col\">" + escapeHtml(column) + "</th>";
     }).join("");
-    var body = pageRows.map(function (row) {
-      return "<tr>" + columns.map(function (column) {
+    var body = pageRows.map(function (row, rowIndex) {
+      var cells = columns.map(function (column, cellIndex) {
+        if (cellIndex === 0) {
+          return "<td>" + renderRelated(row, start + rowIndex) + escapeHtml(row.No) + "</td>";
+        }
         var value = column === "Interred" ? displayInterred(row) : row[column];
         return "<td>" + escapeHtml(value) + "</td>";
-      }).join("") + "</tr>";
+      });
+      return "<tr>" + cells.join("") + "</tr>";
     }).join("");
     var pages = "";
 
@@ -87,6 +120,15 @@
         renderPage();
       });
     });
+    results.querySelectorAll("[data-interred-detail]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var detail = document.getElementById(button.getAttribute("data-interred-detail"));
+        var expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", String(!expanded));
+        button.textContent = expanded ? "+" : "−";
+        detail.hidden = expanded;
+      });
+    });
   }
 
   fetch(sitePath("/data/interred.json"))
@@ -96,10 +138,24 @@
     })
     .then(function (data) {
       var records = data.records || [];
+      function matchesSurname(row, surname) {
+        var selected = String(surname || "").trim().toLowerCase();
+        return [row.Surname, row.PlotSurname, row.Alias].some(function (value) {
+          return String(value || "").trim().toLowerCase() === selected;
+        });
+      }
+
+      function plotKey(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
       function updateSurnames() {
-        var surnames = [...new Set(records.map(function (row) {
-          return row.Surname || row.PlotSurname;
-        }).filter(Boolean))].sort(function (a, b) {
+        var surnames = [...new Set(records.reduce(function (values, row) {
+          [row.Surname || row.PlotSurname, row.Alias].forEach(function (value) {
+            if (value) values.push(value);
+          });
+          return values;
+        }, []))].sort(function (a, b) {
           return a.localeCompare(b);
         });
         select.innerHTML = "<option value=\"\">Choose a surname</option>";
@@ -119,7 +175,7 @@
       function updateCemeteries() {
         var surname = select.value;
         var available = records.filter(function (row) {
-          return (row.Surname || row.PlotSurname) === surname;
+          return matchesSurname(row, surname);
         }).map(function (row) {
           return row.Cemetery;
         });
@@ -149,8 +205,14 @@
             "Select a surname first.";
           return;
         }
+        var matchingRows = records.filter(function (row) {
+          return matchesSurname(row, surname) && (!cemetery || row.Cemetery === cemetery);
+        });
+        var matchingPlots = new Set(matchingRows.map(function (row) {
+          return plotKey(row.Plot);
+        }).filter(Boolean));
         currentRows = records.filter(function (row) {
-          return (row.Surname || row.PlotSurname) === surname && (!cemetery || row.Cemetery === cemetery);
+          return row.Cemetery === cemetery && matchingPlots.has(plotKey(row.Plot));
         });
         currentPage = 1;
         renderPage();

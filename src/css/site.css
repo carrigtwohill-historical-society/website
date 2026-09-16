@@ -865,28 +865,30 @@ a:hover { color: var(--cork-red); }
     width: 100%;
   }
   .interred-table {
-    min-width: 62rem;
+    min-width: 72rem;
     table-layout: fixed;
     font-size: 0.72rem;
   }
   .interred-table th:nth-child(1),
-  .interred-table td:nth-child(1) { width: 12%; }
+  .interred-table td:nth-child(1) { width: 6%; }
   .interred-table th:nth-child(2),
   .interred-table td:nth-child(2) { width: 8%; }
   .interred-table th:nth-child(3),
   .interred-table td:nth-child(3) { width: 6%; }
   .interred-table th:nth-child(4),
-  .interred-table td:nth-child(4) { width: 22%; }
+  .interred-table td:nth-child(4) { width: 19%; }
   .interred-table th:nth-child(5),
-  .interred-table td:nth-child(5) { width: 18%; }
+  .interred-table td:nth-child(5) { width: 10%; }
   .interred-table th:nth-child(6),
   .interred-table td:nth-child(6) { width: 6%; }
   .interred-table th:nth-child(7),
-  .interred-table td:nth-child(7) { width: 6%; }
+  .interred-table td:nth-child(7) { width: 8%; }
   .interred-table th:nth-child(8),
-  .interred-table td:nth-child(8) { width: 6%; }
+  .interred-table td:nth-child(8) { width: 12%; }
   .interred-table th:nth-child(9),
-  .interred-table td:nth-child(9) { width: 10%; }
+  .interred-table td:nth-child(9) { width: 15%; }
+  .interred-table th:nth-child(10),
+  .interred-table td:nth-child(10) { width: 10%; }
   .interred-table th,
   .interred-table td {
     padding: 0.35rem 0.3rem;
@@ -2245,7 +2247,7 @@ body.map-page-body .map-contribute {
 }
 .interred-table th {
   position: sticky;
-  top: 0;
+  top: var(--interred-sticky-top, 0px);
   z-index: 2;
   color: white;
   background: #1d6095;
@@ -2254,6 +2256,8 @@ body.map-page-body .map-contribute {
 }
 .interred-table th:nth-child(1),
 .interred-table td:nth-child(1),
+.interred-table th:nth-child(2),
+.interred-table td:nth-child(2),
 .interred-table th:nth-child(3),
 .interred-table td:nth-child(3),
 .interred-table th:nth-child(4),
@@ -2265,6 +2269,32 @@ body.map-page-body .map-contribute {
 .interred-table td:nth-child(3) {
   text-align: right;
 }
+.interred-detail-toggle {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-right: 0.35rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.2rem;
+  color: var(--blue);
+  background: var(--paper-2);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.interred-detail {
+  margin: 0.5rem 0 0.15rem 1.7rem;
+  white-space: normal;
+}
+.interred-detail dl {
+  display: grid;
+  grid-template-columns: max-content minmax(10rem, 1fr);
+  gap: 0.2rem 0.65rem;
+  margin: 0;
+  font-size: 0.78rem;
+}
+.interred-detail dt { font-weight: 700; }
+.interred-detail dd { margin: 0; }
 .interred-table th:nth-child(3) {
   text-align: center;
 }
