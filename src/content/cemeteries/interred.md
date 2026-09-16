@@ -15,7 +15,7 @@ oldPath: "/Cemeteries/Interred.aspx"
    Relationship refers to the grave owner, or the person who erected the stone. It is not always the case that the person who erected the stone is buried in the same grave.
    </p>
 <p class="indentedText">
-     Select a surname to view matching records. The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where there is a corresponding Civil Registration of death has been found click the plus symbol to examine the corresponding record.
+     Select a surname to view matching records. The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where there is a corresponding Civil Registration of death has been found click the plus symbol to examine the record details.
 </p>
 <section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
     <div class="interred-filter-grid">
