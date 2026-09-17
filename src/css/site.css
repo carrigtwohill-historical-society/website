@@ -1072,16 +1072,17 @@ a:hover { color: var(--cork-red); }
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.st-davids-plans img {
+  width: auto !important;
+  max-width: 100%;
+  height: auto;
   background: var(--white);
   border: 1px solid rgba(11, 61, 110, 0.2);
   box-shadow: 0 3px 10px rgba(7, 42, 79, 0.12);
-}
-.st-davids-plans img {
-  width: 100% !important;
-  max-width: none;
-  height: auto;
-  border: 1px solid rgba(11, 61, 110, 0.12);
 }
 @media (max-width: 700px) {
   .st-davids-plans {
