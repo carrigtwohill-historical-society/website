@@ -6,6 +6,7 @@
 
   var select = root.querySelector("[data-interred-surname]");
   var cemeterySelect = root.querySelector("[data-interred-cemetery]");
+  var townlandSelect = root.querySelector("[data-interred-townland]");
   var status = root.querySelector("[data-interred-status]");
   var results = document.querySelector("[data-interred-results]");
   var pageSize = 15;
@@ -131,13 +132,17 @@
     });
   }
 
-  fetch(sitePath("/data/interred.json"))
-    .then(function (response) {
-      if (!response.ok) throw new Error("Could not load cemetery records");
+  Promise.all([
+    fetch(sitePath("/data/interred.json")),
+    fetch(sitePath("/data/townlands.json"))
+  ]).then(function (responses) {
+    if (!responses[0].ok || !responses[1].ok) throw new Error("Could not load cemetery filters");
+    return Promise.all(responses.map(function (response) {
       return response.json();
-    })
-    .then(function (data) {
-      var records = data.records || [];
+    }));
+  }).then(function (data) {
+      var records = data[0].records || [];
+      var townlands = data[1] || [];
       function matchesSurname(row, surname) {
         var selected = String(surname || "").trim().toLowerCase();
         return [row.Surname, row.PlotSurname, row.Alias].some(function (value) {
@@ -147,6 +152,32 @@
 
       function plotKey(value) {
         return String(value || "").trim().toLowerCase();
+      }
+
+      function selectedTownland(row) {
+        return String(row.Townland || "").trim().toLowerCase();
+      }
+
+      function townlandMatches(row, townland) {
+        var rowTownland = selectedTownland(row);
+        return townland === "foaty (fota)" ?
+          ["foaty (fota)", "fota island (foaty)"].indexOf(rowTownland) >= 0 :
+          rowTownland === townland;
+      }
+
+      function matchesFilters(row) {
+        var townland = townlandSelect.value.trim().toLowerCase();
+        return !townland || townlandMatches(row, townland);
+      }
+
+      function updateTownlands() {
+        townlandSelect.innerHTML = "<option value=\"\">All townlands</option>";
+        townlands.forEach(function (townland) {
+          var option = document.createElement("option");
+          option.value = townland;
+          option.textContent = townland;
+          townlandSelect.appendChild(option);
+        });
       }
 
       function updateSurnames() {
@@ -206,19 +237,20 @@
           return;
         }
         var matchingRows = records.filter(function (row) {
-          return matchesSurname(row, surname) && (!cemetery || row.Cemetery === cemetery);
+          return matchesSurname(row, surname) && (!cemetery || row.Cemetery === cemetery) && matchesFilters(row);
         });
         var matchingPlots = new Set(matchingRows.map(function (row) {
           return plotKey(row.Plot);
         }).filter(Boolean));
         currentRows = records.filter(function (row) {
-          return row.Cemetery === cemetery && matchingPlots.has(plotKey(row.Plot));
+          return row.Cemetery === cemetery && matchingPlots.has(plotKey(row.Plot)) && matchesFilters(row);
         });
         currentPage = 1;
         renderPage();
       }
 
       updateSurnames();
+      updateTownlands();
       select.value = "Agheson";
       updateCemeteries();
       if (cemeterySelect.options.length === 2) {
@@ -233,6 +265,9 @@
         updateResults();
       });
       cemeterySelect.addEventListener("change", updateResults);
+      townlandSelect.addEventListener("change", function () {
+        updateResults();
+      });
     })
     .catch(function () {
       select.disabled = true;

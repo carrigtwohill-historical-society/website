@@ -106,7 +106,12 @@ function main() {
       for (const [name, aliases] of PUBLIC_COLUMNS) record[name] = findValue(row, aliases);
       record.PlotSurname = record.Surname;
       const related = civilByBurialId.get(joinKey(record.No));
-      if (related) record.Civil = related;
+      if (related) {
+        if (!record.Townland) {
+          record.Townland = related.Townland || related["Registered Townland"] || "";
+        }
+        record.Civil = related;
+      }
       return record;
     })
     .filter((record) => record.PlotSurname || record.Name || record.Interred);

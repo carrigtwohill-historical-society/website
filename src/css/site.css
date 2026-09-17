@@ -859,7 +859,7 @@ a:hover { color: var(--cork-red); }
     width: 100%;
   }
   .interred-search {
-    width: min(34rem, 100%);
+    width: min(52rem, 100%);
     margin-bottom: 1rem;
   }
   .interred-results {
@@ -2181,7 +2181,7 @@ body.map-page-body .map-contribute {
 .interred-search {
   display: grid;
   gap: 0.45rem;
-  width: min(34rem, 100%);
+  width: min(52rem, 100%);
   max-width: 100%;
   padding: 0.75rem;
   background: var(--paper-2);
@@ -2189,7 +2189,7 @@ body.map-page-body .map-contribute {
 }
 .interred-filter-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
 }
 .interred-filter-grid > div {

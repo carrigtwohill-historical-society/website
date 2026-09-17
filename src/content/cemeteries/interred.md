@@ -31,6 +31,12 @@ oldPath: "/Cemeteries/Interred.aspx"
                 <option value="">Choose surname first</option>
             </select>
         </div>
+        <div>
+            <label id="interred-townland-label" for="interred-townland">Carrigtwohill Townlands Only</label>
+            <select id="interred-townland" data-interred-townland>
+                <option value="">All townlands</option>
+            </select>
+        </div>
     </div>
     <p class="interred-status" data-interred-status role="status">Loading cemetery records...</p>
 </section>
