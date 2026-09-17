@@ -791,7 +791,7 @@ a:hover { color: var(--cork-red); }
   .page-with-section .section-nav-panel {
     display: block;
     width: 100%;
-    background: var(--blue);
+    background: var(--paper-2);
   }
   .page-with-section .section-nav-panel::details-content {
     display: flex;
@@ -804,7 +804,8 @@ a:hover { color: var(--cork-red); }
     flex: 0 0 auto;
     padding: 0.75rem 1rem;
     white-space: nowrap;
-    background: var(--cork-red);
+    background: var(--gold);
+    color: var(--blue-deep);
   }
   .page-with-section .section-nav-heading span {
     margin-left: 0.25rem;
@@ -824,11 +825,14 @@ a:hover { color: var(--cork-red); }
   .page-with-section .section-nav-list span {
     height: 100%;
     padding: 0.75rem 1rem;
+    color: var(--blue);
     border-left: 0;
     border-bottom: 3px solid transparent;
     white-space: nowrap;
   }
   .page-with-section .section-nav-list a[aria-current="page"] {
+    background: rgba(226, 184, 74, 0.28);
+    color: var(--blue-deep);
     border-bottom-color: var(--gold);
   }
   .section-nav-heading,
