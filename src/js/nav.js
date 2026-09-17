@@ -58,9 +58,18 @@
     });
   });
 
-  if (window.matchMedia("(max-width: 900px)").matches) {
+  const sectionNavMedia = window.matchMedia("(max-width: 900px)");
+
+  function syncSectionNavPanels() {
     document.querySelectorAll(".section-nav-panel").forEach((panel) => {
-      panel.removeAttribute("open");
+      if (sectionNavMedia.matches) {
+        panel.removeAttribute("open");
+      } else {
+        panel.setAttribute("open", "");
+      }
     });
   }
+
+  syncSectionNavPanels();
+  sectionNavMedia.addEventListener("change", syncSectionNavPanels);
 })();

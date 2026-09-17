@@ -794,11 +794,13 @@ a:hover { color: var(--cork-red); }
     align-items: center;
     overflow-x: auto;
     width: 100%;
+    background: var(--blue);
   }
   .page-with-section .section-nav-heading {
     flex: 0 0 auto;
     padding: 0.75rem 1rem;
     white-space: nowrap;
+    background: var(--cork-red);
   }
   .page-with-section .section-nav-heading span {
     margin-left: 0.25rem;
@@ -809,6 +811,7 @@ a:hover { color: var(--cork-red); }
     flex-wrap: nowrap;
     align-items: stretch;
     padding: 0;
+    margin: 0;
   }
   .page-with-section .section-nav-list li {
     flex: 0 0 auto;
