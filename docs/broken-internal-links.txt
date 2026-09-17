@@ -1,0 +1,69 @@
+Broken Internal Links Audit
+===========================
+
+Checked generated site: 207 HTML pages
+Unresolved internal targets: 19
+
+Each entry shows the source page followed by the unresolved target.
+
+1. Source: About/about-us/index.html
+   Target: /website/about/membership/johnny-harte/johnny-hartespx/
+
+2. Source: cit-interactive/sample-credits/index.html
+   Target: /website/assets/Videos/SampleCredits.mp4
+
+3. Source: cit-interactive/sample-introduction/index.html
+   Target: /website/assets/Videos/SampleIntroduction.mp4
+
+4. Source: cit-interactive/village-signage/index.html
+   Target: /website/assets/Images/Taking%20of%20the%20Barracks.jpg
+
+5. Source: cit-interactive/village-signage/index.html
+   Target: /website/assets/Images/Poor%20Servants%20of%20the%20Mother%20of%20God.jpg
+
+6. Source: cit-interactive/village-signage/index.html
+   Target: /website/assets/Images/St%20David%27s%20Panel.jpg
+
+7. Source: Events/barrymore-dna-project/fota-house-dna-project/index.html
+   Target: /website/events/barrymore-dna-project/chs-presentationpdf/
+
+8. Source: Events/projects-and-events/past-events/city-hall/celebrating-cork-past/index.html
+   Target: /website/events/projects-and-events/coming-events/taking-of-the-barracks/takingof-barracks/
+
+9. Source: Events/projects-and-events/past-events/past-events/index.html
+   Target: /website/events/projects-and-events/past-events/events-calendar/
+
+10. Source: Events/projects-and-events/past-events/taking-of-the-barracks/plaque/plaque-unveiling/index.html
+    Target: /website/events/projects-and-events/past-events/taking-of-the-barracks/ric-barracks/
+
+11. Source: local-history/archaeological/altar-stone/altar-stone/index.html
+    Target: /website/local-history/archaeological/altar-stone/jchas-1943-altar-stonepdf/
+
+12. Source: local-history/ballyadam/ballyadam/index.html
+    Target: /website/local-history/ballyadam/petition-elementpdf/
+
+13. Source: local-history/caves-ringforts/caves/caves/index.html
+    Target: /website/local-history/caves-ringforts/caves/caves-of-carrigtwohillpdf/
+
+14. Source: local-history/caves-ringforts/caves/caves/index.html
+    Target: /website/local-history/caves-ringforts/caves/caves-of-carrigtwohill-naturalist-journal-1945pdf/
+
+15. Source: map/places/daibhi-de-barra/index.html
+    Target: /website/stories/lois-ameraidh/
+
+16. Source: persons-of-note/barry/garrett-standish-barry/garrett-standish-barry/index.html
+    Target: /website/persons-of-note/barry/garrett-standish-barry/sale-of-leamlara-1851pdf/
+
+17. Source: religious-of-parish/parish-churches/st-davids/st-davids-church/index.html
+    Target: /website/surveysandvaluations/valuations/valuation-field-book-26-nov-1847-parish-churchesjpg/
+
+18. Source: religious-of-parish/parish-churches/st-marys/st-marys/index.html
+    Target: /website/religious-of-parish/parish-churches/st-marys/st-marys-consecrationpdf/
+
+19. Source: religious-of-parish/poor-servants/poor-servants/index.html
+    Target: /website/religious-of-parish/poor-servants/newsletter-frances-taylorpdf/
+
+Notes:
+- The audit accounts for the site's /website GitHub Pages path prefix.
+- URL-encoded spaces and apostrophes were decoded before checking assets.
+- These targets may need a corrected URL, a restored asset, or an intentional removal.
