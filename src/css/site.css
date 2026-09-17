@@ -807,6 +807,10 @@ a:hover { color: var(--cork-red); }
     background: var(--gold);
     color: var(--blue-deep);
   }
+  .page-with-section .section-nav-heading a {
+    color: inherit;
+    text-decoration: none;
+  }
   .page-with-section .section-nav-heading span {
     margin-left: 0.25rem;
   }

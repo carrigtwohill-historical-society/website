@@ -2,6 +2,7 @@
 title: "Our Schools"
 permalink: /schools/hedge/hedge-schoolsaspx/
 layout: layouts/page.njk
+section: schools
 oldPath: "/Schools/Hedge/HedgeSchoolsaspx.aspx"
 ---
 

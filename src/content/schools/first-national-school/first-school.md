@@ -2,6 +2,7 @@
 title: "First National School"
 permalink: /schools/first-national-school/first-school/
 layout: layouts/page.njk
+section: schools
 oldPath: "/Schools/First National School/FirstSchool.aspx"
 ---
 

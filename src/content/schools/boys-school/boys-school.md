@@ -2,6 +2,7 @@
 title: "Boys' National School"
 permalink: /schools/boys-school/boys-school/
 layout: layouts/page.njk
+section: schools
 oldPath: "/Schools/Boys School/BoysSchool.aspx"
 ---
 

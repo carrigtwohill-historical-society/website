@@ -2,6 +2,7 @@
 title: "Our Schools"
 permalink: /schools/boarding-school/boarding-school/
 layout: layouts/page.njk
+section: schools
 oldPath: "/Schools/Boarding School/BoardingSchool.aspx"
 ---
 
