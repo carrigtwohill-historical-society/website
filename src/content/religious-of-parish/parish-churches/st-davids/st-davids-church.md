@@ -37,24 +37,16 @@ oldPath: "/Religious of Parish/Parish Churches/St David's/StDavidsChurch.aspx"
         Whereas the church outline is clearly defined. There were no other elevation drawing in this series.
     
      </p>
-    <table align="center" style="width: 95%">
-        <tr>
-            <td>
-                <figure>
-                    <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20David%27s/PainSouthElevation.jpg" alt="PanSouthElevation">
-                    <figcaption>James Pain's South Elevation</figcaption>
-                </figure>
-            </td>
-            <td>
-                <figure>
-                    <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20David%27s/PainChurchPlan.png" alt="PainChurchPlan">
-                    <figcaption>James Pain's Floor Plan</figcaption>
-
-                </figure>
-            </td>
-        </tr>
-
-    </table>
+    <div class="st-davids-plans">
+        <figure>
+            <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20David%27s/PainSouthElevation.jpg" alt="James Pain's South Elevation">
+            <figcaption>James Pain's South Elevation</figcaption>
+        </figure>
+        <figure>
+            <img src="/assets/Religious%20of%20Parish/Parish%20Churches/St%20David%27s/PainChurchPlan.png" alt="James Pain's Floor Plan">
+            <figcaption>James Pain's Floor Plan</figcaption>
+        </figure>
+    </div>
     
             
     <p class="indentedText">
