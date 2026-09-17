@@ -789,12 +789,16 @@ a:hover { color: var(--cork-red); }
     margin-bottom: 1.25rem;
   }
   .page-with-section .section-nav-panel {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+  }
+  .page-with-section .section-nav-panel::details-content {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     overflow-x: auto;
     width: 100%;
-    background: var(--blue);
   }
   .page-with-section .section-nav-heading {
     flex: 0 0 auto;
