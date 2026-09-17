@@ -464,8 +464,14 @@
   {
     "old": "/Schools/Hedge/HedgeSchoolsaspx.aspx",
     "oldEncoded": "/Schools/Hedge/HedgeSchoolsaspx.aspx",
-    "new": "/schools/hedge/hedge-schoolsaspx/",
+    "new": "/schools/hedge/hedge-schools/",
     "title": "Our Schools"
+  },
+  {
+    "old": "/schools/hedge/hedge-schoolsaspx",
+    "oldEncoded": "/schools/hedge/hedge-schoolsaspx",
+    "new": "/schools/hedge/hedge-schools/",
+    "title": "Hedge Schools"
   },
   {
     "old": "/SurveysandValuations/Downs Survey/DownsSurvey.aspx",

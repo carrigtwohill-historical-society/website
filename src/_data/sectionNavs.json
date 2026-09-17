@@ -49,9 +49,9 @@
   },
   "schools": {
     "heading": "Local Schools",
-    "headingUrl": "/schools/hedge/hedge-schoolsaspx/",
+    "headingUrl": "/schools/hedge/hedge-schools/",
     "items": [
-      { "label": "Hedge Schools", "url": "/schools/hedge/hedge-schoolsaspx/" },
+      { "label": "Hedge Schools", "url": "/schools/hedge/hedge-schools/" },
       { "label": "Boarding School", "url": "/schools/boarding-school/boarding-school/" },
       { "label": "First National School", "url": "/schools/first-national-school/first-school/" },
       { "label": "Boys School", "url": "/schools/boys-school/boys-school/" }

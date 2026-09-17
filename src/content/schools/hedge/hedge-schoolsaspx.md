@@ -1,6 +1,6 @@
 ---
 title: "Our Schools"
-permalink: /schools/hedge/hedge-schoolsaspx/
+permalink: /schools/hedge/hedge-schools/
 layout: layouts/page.njk
 section: schools
 oldPath: "/Schools/Hedge/HedgeSchoolsaspx.aspx"
