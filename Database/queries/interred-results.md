@@ -10,6 +10,7 @@ This page records the current working results for the Interred data as the SQLit
 - Interred data imported and available in the SQLite preview
 - Preview now shows the combined `full_name` instead of the intermediate name fields
 - Alias names are displayed between the first name and surname when present
+- Burial Certificates can now be joined to Interred through `burial_certificate.interred_id`
 
 ## Key query
 
@@ -18,6 +19,14 @@ Use this as the working preview query:
 ```sql
 SELECT *
 FROM v_interred_preview
+LIMIT 20;
+```
+
+## Burial Certificate relationship
+
+```sql
+SELECT *
+FROM v_burial_certificate_summary
 LIMIT 20;
 ```
 

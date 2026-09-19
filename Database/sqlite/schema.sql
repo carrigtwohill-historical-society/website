@@ -25,9 +25,22 @@ CREATE TABLE IF NOT EXISTS burial_certificate (
     burial_certificate_id INTEGER PRIMARY KEY,
     source_file_id INTEGER,
     interred_id INTEGER,
+    burial_id INTEGER,
     certificate_number TEXT,
     certificate_date TEXT,
+    certificate_day TEXT,
+    certificate_month_id INTEGER,
+    certificate_year TEXT,
+    age_at_certificate TEXT,
+    status_id INTEGER,
     issued_by TEXT,
+    occupation TEXT,
+    address TEXT,
+    townland_id INTEGER,
+    townland_name TEXT,
+    witness TEXT,
+    witness_relationship TEXT,
+    comments TEXT,
     notes TEXT,
     FOREIGN KEY (source_file_id) REFERENCES source_file(source_file_id)
 );
@@ -67,26 +80,33 @@ CREATE TABLE IF NOT EXISTS headstone (
 CREATE TABLE IF NOT EXISTS interred (
     interred_id INTEGER PRIMARY KEY,
     source_file_id INTEGER,
+    record_number INTEGER,
+    burial_id INTEGER,
     cemetery_id INTEGER,
     townland_id INTEGER,
     christian_name_id INTEGER,
     surname_id INTEGER,
+    relationship_id INTEGER,
     first_name TEXT,
     alias TEXT,
     middle_name TEXT,
     surname TEXT,
     maiden_name TEXT,
+    townland_source_name TEXT,
     religion_id INTEGER,
     marital_status_id INTEGER,
     age_at_death TEXT,
     date_of_birth TEXT,
     date_of_death TEXT,
     burial_date TEXT,
+    plot_number TEXT,
+    row_number TEXT,
     grave_number TEXT,
     notes TEXT,
     FOREIGN KEY (source_file_id) REFERENCES source_file(source_file_id),
     FOREIGN KEY (cemetery_id) REFERENCES cemetery(cemetery_id),
     FOREIGN KEY (townland_id) REFERENCES townland(townland_id),
+    FOREIGN KEY (relationship_id) REFERENCES relationship_lookup(relationship_id),
     FOREIGN KEY (religion_id) REFERENCES religious_denomination(religion_id),
     FOREIGN KEY (marital_status_id) REFERENCES marital_status(marital_status_id)
 );
@@ -212,8 +232,9 @@ SELECT i.interred_id,
        i.middle_name,
        i.surname,
        i.maiden_name,
-       c.name AS cemetery_name,
-       t.townland_name,
+         c.name AS cemetery_name,
+    r.relationship_name,
+         COALESCE(i.townland_source_name, t.townland_name) AS townland_name,
        i.burial_date,
        i.date_of_death,
        i.age_at_death,
@@ -237,8 +258,9 @@ SELECT i.interred_id,
        i.middle_name,
        i.surname,
        i.maiden_name,
-       c.name AS cemetery_name,
-       t.townland_name,
+    c.name AS cemetery_name,
+    r.relationship_name,
+    COALESCE(i.townland_source_name, t.townland_name) AS townland_name,
        i.burial_date,
        i.date_of_death,
        i.age_at_death,
@@ -247,26 +269,55 @@ FROM interred i
 LEFT JOIN standard_christian_names cn ON cn.christian_name_id = i.christian_name_id
 LEFT JOIN surnames_standard_list ssl ON ssl.surname_id = i.surname_id
 LEFT JOIN cemetery c ON c.cemetery_id = i.cemetery_id
+LEFT JOIN relationship_lookup r ON r.relationship_id = i.relationship_id
 LEFT JOIN townland t ON t.townland_id = i.townland_id;
 
 CREATE VIEW IF NOT EXISTS v_interred_preview AS
-SELECT interred_id,
-       full_name,
-       cemetery_name,
-       townland_name,
-       burial_date,
-       date_of_death,
-       age_at_death,
-       grave_number
-FROM v_interred_lookup
-ORDER BY interred_id
+SELECT l.interred_id,
+       l.full_name,
+    b.burial_certificate_id,
+    l.relationship_name,
+       l.cemetery_name,
+       l.townland_name,
+       l.burial_date,
+       l.date_of_death,
+       l.age_at_death,
+    l.grave_number
+FROM v_interred_lookup l
+LEFT JOIN burial_certificate b ON b.interred_id = l.interred_id
+WHERE b.burial_certificate_id IS NOT NULL
+ORDER BY l.interred_id
 LIMIT 20;
 
 CREATE VIEW IF NOT EXISTS v_burial_certificate_summary AS
 SELECT b.burial_certificate_id,
-       i.first_name,
-       i.surname,
+       i.interred_id,
+       CASE
+           WHEN NULLIF(TRIM(i.alias), '') IS NOT NULL THEN
+               i.first_name || ' (' || TRIM(i.alias) || ') ' || i.surname
+           ELSE
+               i.first_name || ' ' || i.surname
+       END AS full_name,
+       c.name AS cemetery_name,
+       COALESCE(i.townland_source_name, t.townland_name) AS townland_name,
+       r.relationship_name,
        b.certificate_number,
-       b.certificate_date
+    b.certificate_date,
+    b.certificate_day,
+    b.certificate_month_id,
+    b.certificate_year,
+    b.age_at_certificate,
+    b.status_id,
+    ms.status_name AS certificate_status,
+    b.occupation,
+    b.address,
+    b.townland_name AS certificate_townland,
+    b.witness,
+    b.witness_relationship,
+    b.comments
 FROM burial_certificate b
-LEFT JOIN interred i ON i.interred_id = b.interred_id;
+LEFT JOIN interred i ON i.interred_id = b.interred_id
+LEFT JOIN cemetery c ON c.cemetery_id = i.cemetery_id
+LEFT JOIN townland t ON t.townland_id = i.townland_id
+LEFT JOIN relationship_lookup r ON r.relationship_id = i.relationship_id
+LEFT JOIN marital_status ms ON ms.marital_status_id = b.status_id;

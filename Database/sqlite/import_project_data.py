@@ -38,6 +38,50 @@ DEF_TABLE_MAP = {
     "Townlands": "townland",
 }
 
+SOURCE_COLUMN_ALIASES = {
+    "cemetery": {"cemeteryid": "cemetery_id", "cemetery": "name"},
+    "townland": {"townlandid": "townland_id", "townland": "townland_name"},
+    "standard_christian_names": {"nameid": "christian_name_id", "name": "christian_name"},
+    "surnames_standard_list": {"surnameid": "surname_id"},
+    "burial_certificate": {
+        "certid": "burial_certificate_id",
+        "burialid": "burial_id",
+        "day": "certificate_day",
+        "certmonthid": "certificate_month_id",
+        "year": "certificate_year",
+        "age": "age_at_certificate",
+        "statusid": "status_id",
+        "occupation": "occupation",
+        "address": "address",
+        "townlandid": "townland_id",
+        "townland": "townland_name",
+        "witness": "witness",
+        "witrelationship": "witness_relationship",
+        "conmments": "comments",
+        "comments": "comments",
+    },
+    "interred": {
+        "interredid": "interred_id",
+        "interedid": "interred_id",
+        "no": "record_number",
+        "burialid": "burial_id",
+        "interredrelationshipid": "relationship_id",
+        "interedrelationshipid": "relationship_id",
+        "interredtownlandid": "townland_id",
+        "interedtownlandid": "townland_id",
+        "christianid": "christian_name_id",
+        "christianname": "first_name",
+        "intersurnameid": "surname_id",
+        "interredsurnameid": "surname_id",
+        "interedsurnameid": "surname_id",
+        "plot": "plot_number",
+        "row": "row_number",
+    },
+    "relationship_lookup": {"relationshipid": "relationship_id", "relationship": "relationship_name"},
+    "marital_status": {"maritalstatusid": "marital_status_id", "status": "status_name"},
+    "religious_denomination": {"religiousdenominationid": "religion_id", "religiousdenomination": "denomination_name"},
+}
+
 
 def normalize_identifier(value: str) -> str:
     value = value.strip()
@@ -92,13 +136,13 @@ def read_csv_rows(path: Path) -> list[dict[str, str]]:
     return rows
 
 
-def read_xlsx_rows(path: Path) -> list[dict[str, str]]:
+def read_xlsx_rows(path: Path, sheet_name: str | None = None) -> list[dict[str, str]]:
     if load_workbook is None:
         raise RuntimeError(
             f"openpyxl is required to read Excel files. Install it with: pip install openpyxl"
         )
     workbook = load_workbook(path, read_only=True, data_only=True)
-    sheet = workbook.active
+    sheet = workbook[sheet_name] if sheet_name else workbook.active
     rows = []
     first = True
     header = []
@@ -119,9 +163,25 @@ def read_xlsx_rows(path: Path) -> list[dict[str, str]]:
     return rows
 
 
+def xlsx_sheet_names(path: Path) -> list[str]:
+    if load_workbook is None:
+        raise RuntimeError(
+            "openpyxl is required to read Excel files. Install it with: pip install openpyxl"
+        )
+    workbook = load_workbook(path, read_only=True, data_only=True)
+    names = workbook.sheetnames
+    workbook.close()
+    return names
+
+
 def pragma_columns(conn: sqlite3.Connection, table_name: str) -> list[str]:
     info = conn.execute(f'PRAGMA table_info("{table_name}")').fetchall()
     return [row[1] for row in info]
+
+
+def primary_key_columns(conn: sqlite3.Connection, table_name: str) -> list[str]:
+    info = conn.execute(f'PRAGMA table_info("{table_name}")').fetchall()
+    return [row[1] for row in info if row[5]]
 
 
 def record_source_file(conn: sqlite3.Connection, file_path: Path) -> int:
@@ -134,20 +194,45 @@ def record_source_file(conn: sqlite3.Connection, file_path: Path) -> int:
 
 
 def import_file(conn: sqlite3.Connection, file_path: Path, mapping: dict[str, str]) -> tuple[str, int]:
-    table_name = table_name_from_file(file_path, mapping)
-    if table_name is None:
-        return ("SKIPPED", 0)
-
     if file_path.suffix.lower() == ".csv":
+        table_name = table_name_from_file(file_path, mapping)
+        if table_name is None:
+            return ("SKIPPED", 0)
         rows = read_csv_rows(file_path)
     elif file_path.suffix.lower() in {".xlsx", ".xls"}:
-        rows = read_xlsx_rows(file_path)
+        sheet_names = xlsx_sheet_names(file_path)
+        imported = []
+        for sheet_name in sheet_names:
+            table_name = table_name_from_source_name(sheet_name, mapping)
+            if table_name is None:
+                continue
+            count = import_rows(conn, table_name, read_xlsx_rows(file_path, sheet_name), file_path)
+            imported.append((table_name, count))
+        if not imported:
+            return ("SKIPPED", 0)
+        return (", ".join(table_name for table_name, _ in imported), sum(count for _, count in imported))
     else:
         return ("SKIPPED", 0)
 
+    return table_name, import_rows(conn, table_name, rows, file_path)
+
+
+def table_name_from_source_name(source_name: str, mapping: dict[str, str]) -> str | None:
+    normalized = normalize_identifier(source_name)
+    for name, target_name in mapping.items():
+        if normalize_identifier(name) == normalized:
+            return target_name
+    return None
+
+
+def import_rows(conn: sqlite3.Connection, table_name: str, rows: list[dict[str, str]], file_path: Path) -> int:
     source_file_id = record_source_file(conn, file_path)
     columns = pragma_columns(conn, table_name)
+    primary_keys = primary_key_columns(conn, table_name)
     normalized_columns = {normalize_identifier(col): col for col in columns}
+    for source_name, target_name in SOURCE_COLUMN_ALIASES.get(table_name, {}).items():
+        if target_name in columns:
+            normalized_columns[source_name] = target_name
 
     inserted = 0
     for row in rows:
@@ -176,12 +261,23 @@ def import_file(conn: sqlite3.Connection, file_path: Path, mapping: dict[str, st
             continue
 
         placeholders = ", ".join(["?"] * len(insert_cols))
-        sql = f'INSERT INTO "{table_name}" ({", ".join(f'"{c}"' for c in insert_cols)}) VALUES ({placeholders})'
+        sql = f'INSERT OR IGNORE INTO "{table_name}" ({", ".join(f'"{c}"' for c in insert_cols)}) VALUES ({placeholders})'
         conn.execute(sql, insert_values)
+        if primary_keys and all(key in normalized_row for key in primary_keys):
+            update_cols = [col for col in insert_cols if col not in primary_keys]
+            if update_cols:
+                assignments = ", ".join(f'"{col}" = ?' for col in update_cols)
+                where = " AND ".join(f'"{key}" = ?' for key in primary_keys)
+                values = [normalized_row[col] for col in update_cols]
+                values.extend(normalized_row[key] for key in primary_keys)
+                conn.execute(
+                    f'UPDATE "{table_name}" SET {assignments} WHERE {where}',
+                    values,
+                )
         inserted += 1
 
     conn.commit()
-    return (table_name, inserted)
+    return inserted
 
 
 def iter_data_files(raw_dir: Path) -> Iterable[Path]:
@@ -232,7 +328,8 @@ def main() -> int:
     for file_path in files:
         table_name, count = import_file(conn, file_path, mapping)
         if table_name != "SKIPPED":
-            imported.append((table_name, count, file_path.name))
+            for target_name in table_name.split(", "):
+                imported.append((target_name, count, file_path.name))
             print(f"{file_path.name} -> {table_name}: {count} rows imported")
 
     print("\nValidation summary:")

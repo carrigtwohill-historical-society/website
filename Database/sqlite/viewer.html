@@ -32,10 +32,34 @@
 
       .header {
         background: var(--panel);
-        border: 1px solid var(--border);
         border-radius: 12px;
         padding: 18px 20px;
         margin-bottom: 20px;
+      }
+
+      .filters {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      select {
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 10px;
+        border: 2px solid #d9ad36;
+        border-radius: 6px;
+        background: #fffdf8;
+        color: var(--text);
+        font: inherit;
       }
 
       h1 {
@@ -62,7 +86,8 @@
       }
 
       .table-wrap {
-        overflow: auto;
+        overflow-x: auto;
+        overflow-y: visible;
         background: var(--panel);
         border: 1px solid var(--border);
         border-radius: 12px;
@@ -70,7 +95,8 @@
       }
 
       table {
-        width: 100%;
+        width: max-content;
+        min-width: 100%;
         border-collapse: collapse;
         min-width: 980px;
       }
@@ -81,6 +107,7 @@
         text-align: left;
         vertical-align: top;
         font-size: 0.95rem;
+        white-space: nowrap;
       }
 
       .right-column {
@@ -111,14 +138,76 @@
         color: #9b1f1f;
         font-weight: bold;
       }
+
+      .expand-button {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 1.2rem;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .pager .page-button.active {
+        background: var(--primary);
+        color: #ffffff;
+      }
+
+      .detail-row td {
+        background: #f7f9fc;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .pager {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        padding: 12px 0;
+      }
+
+      .pager button {
+        min-width: 48px;
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .pager .page-button.active {
+        background: var(--primary);
+        color: #ffffff;
+      }
+
+      .pager button:disabled {
+        cursor: default;
+        opacity: 0.45;
+      }
+
+      @media (max-width: 760px) {
+        .filters { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
     <div class="page">
       <header class="header">
-        <h1>Interred Preview</h1>
-        <p class="subtitle">Showing the first 20 records from the SQLite project database.</p>
+        <h1>Interred</h1>
+        <p class="subtitle">Browse Interred records and expand linked Burial Certificates.</p>
       </header>
+
+      <section class="filters" aria-label="Interred filters">
+        <label>Surname<select id="surname-filter"><option value="">All surnames</option></select></label>
+        <label>Cemetery<select id="cemetery-filter"><option value="">All cemeteries</option></select></label>
+        <label>Townland<select id="townland-filter"><option value="">All townlands</option></select></label>
+      </section>
 
       <div class="status" id="status">
         <strong>Loading</strong> project database…
@@ -130,6 +219,11 @@
           <tbody id="tbody"></tbody>
         </table>
       </div>
+      <div class="pager" id="pager" style="display:none;">
+        <button id="previous-page" type="button">Previous</button>
+        <span id="page-buttons"></span>
+        <button id="next-page" type="button">Next</button>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
@@ -139,46 +233,88 @@
       const tableEl = document.getElementById('results-table');
       const theadEl = document.getElementById('thead');
       const tbodyEl = document.getElementById('tbody');
-      const headerLabels = {
-        interred_id: 'No.',
-        full_name: 'Name',
-        cemetery_name: 'Cemetery',
-        townland_name: 'Townland',
-        burial_date: 'Burial Date',
-        date_of_death: 'Date of Death',
-        age_at_death: 'Age',
-        grave_number: 'Grave'
-      };
+      const pagerEl = document.getElementById('pager');
+      const pageButtonsEl = document.getElementById('page-buttons');
+      const pageSize = 15;
+      let allRows = [];
+      let visibleRows = [];
+      let currentPage = 1;
 
       function setStatus(message, isError = false) {
         statusEl.innerHTML = isError ? `<span class="error">${message}</span>` : `<strong>Ready</strong> ${message}`;
       }
 
-      function renderTable(rows, columns) {
+      function setOptions(id, values, emptyLabel) {
+        const select = document.getElementById(id);
+        select.innerHTML = `<option value="">${emptyLabel}</option>`;
+        values.filter(Boolean).sort((a, b) => a.localeCompare(b)).forEach((value) => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+      }
+
+      function selectDefault(id, value) {
+        const select = document.getElementById(id);
+        const option = [...select.options].find((item) => item.value === value);
+        if (option) {
+          option.selected = true;
+          select.value = value;
+        }
+      }
+
+      function normalise(value) {
+        return String(value || '').trim().toLowerCase();
+      }
+
+      function renderTable(rows) {
         if (!rows || rows.length === 0) {
           tableEl.style.display = 'none';
-          statusEl.innerHTML = '<strong>No data</strong> The database is present, but the selected query returned no rows.';
+          pagerEl.style.display = 'none';
+          statusEl.innerHTML = '<strong>No data</strong> No records match the selected filters.';
           return;
         }
 
+        const start = (currentPage - 1) * pageSize;
+        const pageRows = rows.slice(start, start + pageSize);
         const headerRow = document.createElement('tr');
-        columns.forEach((col) => {
+        const expandHeader = document.createElement('th');
+        expandHeader.textContent = '';
+        headerRow.appendChild(expandHeader);
+        ['interred_id', 'plot_number', 'row_number', 'full_name', 'burial_date', 'age_at_death', 'date_of_birth', 'relationship_name', 'address', 'townland_name'].forEach((col) => {
           const th = document.createElement('th');
-          if (col === 'interred_id' || col === 'burial_date') {
+          if (col === 'interred_id' || col === 'plot_number' || col === 'row_number' || col === 'burial_date' || col === 'age_at_death' || col === 'date_of_birth') {
             th.className = 'right-column';
           }
-          th.textContent = headerLabels[col] || col;
+          th.textContent = ({ interred_id: 'No.', plot_number: 'Plot', row_number: 'Row', full_name: 'Interred', burial_date: 'Date', age_at_death: 'Age', date_of_birth: 'Born', relationship_name: 'Relationship', address: 'Address', townland_name: 'Townland' })[col];
           headerRow.appendChild(th);
         });
         theadEl.innerHTML = '';
         theadEl.appendChild(headerRow);
 
         tbodyEl.innerHTML = '';
-        rows.forEach((row) => {
+        pageRows.forEach((row) => {
           const tr = document.createElement('tr');
-          columns.forEach((col) => {
+          const expandCell = document.createElement('td');
+          if (row.burial_certificate_id !== null) {
+            const button = document.createElement('button');
+            button.className = 'expand-button';
+            button.type = 'button';
+            button.textContent = '+';
+            button.title = 'Show Burial Certificate';
+            button.addEventListener('click', () => {
+              const detail = tr.nextElementSibling;
+              const hidden = detail.style.display === 'none';
+              detail.style.display = hidden ? 'table-row' : 'none';
+              button.textContent = hidden ? '-' : '+';
+            });
+            expandCell.appendChild(button);
+          }
+          tr.appendChild(expandCell);
+          ['interred_id', 'plot_number', 'row_number', 'full_name', 'burial_date', 'age_at_death', 'date_of_birth', 'relationship_name', 'address', 'townland_name'].forEach((col) => {
             const td = document.createElement('td');
-            if (col === 'interred_id' || col === 'burial_date') {
+            if (col === 'interred_id' || col === 'plot_number' || col === 'row_number' || col === 'burial_date' || col === 'age_at_death' || col === 'date_of_birth') {
               td.className = 'right-column';
             }
             const value = row[col];
@@ -186,9 +322,45 @@
             tr.appendChild(td);
           });
           tbodyEl.appendChild(tr);
+          if (row.burial_certificate_id !== null) {
+            const detail = document.createElement('tr');
+            detail.className = 'detail-row';
+            detail.style.display = 'none';
+            const detailCell = document.createElement('td');
+            detailCell.colSpan = 11;
+            detailCell.innerHTML = `<strong>Burial Certificate ${row.burial_certificate_id}</strong><br>Record: ${row.certificate_date || row.certificate_year || ''}<br>Age: ${row.certificate_age || ''}<br>Status: ${row.certificate_status || ''}<br>Occupation: ${row.certificate_occupation || ''}<br>Registered Address: ${row.certificate_address || ''}<br>Registered Townland: ${row.certificate_townland || ''}<br>Witness: ${row.witness || ''}`;
+            detail.appendChild(detailCell);
+            tbodyEl.appendChild(detail);
+          }
         });
 
         tableEl.style.display = 'table';
+        pagerEl.style.display = 'flex';
+        const pageCount = Math.ceil(rows.length / pageSize);
+        pageButtonsEl.innerHTML = '';
+        for (let page = 1; page <= pageCount; page += 1) {
+          const button = document.createElement('button');
+          button.className = `page-button${page === currentPage ? ' active' : ''}`;
+          button.type = 'button';
+          button.textContent = String(page);
+          button.addEventListener('click', () => {
+            currentPage = page;
+            renderTable(visibleRows);
+          });
+          pageButtonsEl.appendChild(button);
+        }
+        document.getElementById('previous-page').disabled = currentPage === 1;
+        document.getElementById('next-page').disabled = currentPage === pageCount;
+      }
+
+      function applyFilters() {
+        const surname = document.getElementById('surname-filter').value;
+        const cemetery = document.getElementById('cemetery-filter').value;
+        const townland = document.getElementById('townland-filter').value;
+        visibleRows = allRows.filter((row) => (!surname || row.surname === surname) && (!cemetery || row.cemetery_name === cemetery) && (!townland || row.townland_name === townland));
+        currentPage = 1;
+        renderTable(visibleRows);
+        setStatus(`Showing ${visibleRows.length} matching Interred records.`);
       }
 
       async function loadDatabase() {
@@ -197,7 +369,7 @@
             locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
           });
 
-          const response = await fetch(dbPath);
+          const response = await fetch(`${dbPath}?v=${Date.now()}`, { cache: 'no-store' });
           if (!response.ok) {
             throw new Error('Database file not found. Import the Access tables first and rebuild project.db.');
           }
@@ -205,35 +377,44 @@
           const arrayBuffer = await response.arrayBuffer();
           const db = new SQL.Database(new Uint8Array(arrayBuffer));
 
-          const tableExists = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='interred'");
-          const viewExists = db.exec("SELECT name FROM sqlite_master WHERE type='view' AND name='v_interred_preview'");
-          if ((!tableExists || tableExists.length === 0) && (!viewExists || viewExists.length === 0)) {
-            throw new Error('The Interred table or preview view is not present yet. Import the data first.');
-          }
-
-          const query = "SELECT * FROM v_interred_preview LIMIT 20;";
+          const query = `SELECT i.record_number AS interred_id, COALESCE(ssl.surname, i.surname) AS surname, COALESCE(i.plot_number, i.grave_number) AS plot_number, i.row_number, CASE WHEN NULLIF(TRIM(i.alias), '') IS NOT NULL THEN COALESCE(cn.christian_name, i.first_name) || ' (' || TRIM(i.alias) || ') ' || COALESCE(ssl.surname, i.surname) ELSE COALESCE(cn.christian_name, i.first_name) || ' ' || COALESCE(ssl.surname, i.surname) END AS full_name, i.burial_date, i.age_at_death, i.date_of_birth, r.relationship_name, b.address AS certificate_address, COALESCE(i.townland_source_name, t.townland_name) AS townland_name, b.burial_certificate_id, b.certificate_date, b.age_at_certificate AS certificate_age, ms.status_name AS certificate_status, b.occupation AS certificate_occupation, b.townland_name AS certificate_townland, b.witness, c.name AS cemetery_name FROM interred i LEFT JOIN standard_christian_names cn ON cn.christian_name_id = i.christian_name_id LEFT JOIN surnames_standard_list ssl ON ssl.surname_id = i.surname_id LEFT JOIN relationship_lookup r ON r.relationship_id = i.relationship_id LEFT JOIN townland t ON t.townland_id = i.townland_id LEFT JOIN cemetery c ON c.cemetery_id = i.cemetery_id LEFT JOIN burial_certificate b ON b.burial_id = i.record_number LEFT JOIN marital_status ms ON ms.marital_status_id = b.status_id ORDER BY i.record_number, surname COLLATE NOCASE;`;
           const result = db.exec(query);
 
           if (!result || result.length === 0 || !result[0].values || result[0].values.length === 0) {
             throw new Error('The query returned no rows. Check whether the imported data contains records.');
           }
 
-          const columns = result[0].columns;
-          const rows = result[0].values.map((entry) => {
+          allRows = result[0].values.map((entry) => {
             const obj = {};
-            columns.forEach((col, idx) => {
+            result[0].columns.forEach((col, idx) => {
               obj[col] = entry[idx];
             });
             return obj;
           });
 
-          renderTable(rows, columns);
-          setStatus(`Showing ${rows.length} Interred records from ${dbPath}.`);
+          setOptions('surname-filter', [...new Set(allRows.map((row) => row.surname))], 'All surnames');
+          setOptions('cemetery-filter', [...new Set(allRows.map((row) => row.cemetery_name))], 'All cemeteries');
+          setOptions('townland-filter', [...new Set(allRows.map((row) => row.townland_name))], 'All townlands');
+          const defaultSurname = allRows.find((row) => normalise(row.surname).includes('ahern'))?.surname || 'Ahern';
+          const defaultCemetery = allRows.find((row) => normalise(row.surname).includes('ahern') && normalise(row.cemetery_name).includes("st david"))?.cemetery_name || "St David's";
+          selectDefault('surname-filter', defaultSurname);
+          selectDefault('cemetery-filter', defaultCemetery);
+          selectDefault('townland-filter', '');
+          visibleRows = allRows.filter((row) => normalise(row.surname) === normalise(defaultSurname) && normalise(row.cemetery_name) === normalise(defaultCemetery));
+          currentPage = 1;
+          renderTable(visibleRows);
+          setStatus(`Showing ${visibleRows.length} matching Interred records.`);
         } catch (error) {
           tableEl.style.display = 'none';
           setStatus(error.message, true);
         }
       }
+
+      ['surname-filter', 'cemetery-filter', 'townland-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => {
+        applyFilters();
+      }));
+      document.getElementById('previous-page').addEventListener('click', () => { currentPage -= 1; renderTable(visibleRows); });
+      document.getElementById('next-page').addEventListener('click', () => { currentPage += 1; renderTable(visibleRows); });
 
       loadDatabase();
     </script>
