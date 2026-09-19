@@ -1,0 +1,5 @@
+source_file,source_table,target_table,primary_key,notes,status
+ExampleFile.accdb,People,people,person_id,Main person table,planned
+ExampleFile.accdb,Places,places,place_id,Geographic table,planned
+ExampleFile.accdb,Events,events,event_id,Event table,planned
+ExampleFile.accdb,Interments,interments,interment_id,Cemetery records,planned

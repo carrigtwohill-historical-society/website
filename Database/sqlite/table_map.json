@@ -1,0 +1,20 @@
+{
+  "Ballinacurra": "ballinacurra",
+  "BurialCertificates": "burial_certificate",
+  "BurialPlots": "burial_plot",
+  "Cemetery": "cemetery",
+  "Data": "data",
+  "Headstones": "headstone",
+  "Interred": "interred",
+  "InterredStDavids": "interred_st_davids",
+  "MaritalStatus": "marital_status",
+  "Months": "month_lookup",
+  "Relationships": "relationship_lookup",
+  "ReligiousDenominations": "religious_denomination",
+  "StFinbarrs": "st_finbarrs",
+  "WebsiteExportCivil": "website_export_civil",
+  "WebsiteExportInterred": "website_export_interred",
+  "StandardChristianNames": "standard_christian_names",
+  "SurnamesStandardList": "surnames_standard_list",
+  "Townlands": "townland"
+}

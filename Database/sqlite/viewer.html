@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interred Viewer</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --border: #dfe6f0;
+        --text: #243247;
+        --muted: #5e6f85;
+        --primary: #375a7f;
+        --primary-soft: #edf3fb;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 0 16px 32px;
+      }
+
+      .header {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.9rem;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .status {
+        background: var(--primary-soft);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        color: var(--text);
+      }
+
+      .status strong {
+        color: var(--primary);
+      }
+
+      .table-wrap {
+        overflow: auto;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(36, 50, 71, 0.04);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+      }
+
+      th, td {
+        border-bottom: 1px solid var(--border);
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.95rem;
+      }
+
+      .right-column {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      th {
+        background: #f7f9fc;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      tbody tr:hover {
+        background: #f9fbff;
+      }
+
+      .empty {
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--muted);
+      }
+
+      .error {
+        color: #9b1f1f;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <h1>Interred Preview</h1>
+        <p class="subtitle">Showing the first 20 records from the SQLite project database.</p>
+      </header>
+
+      <div class="status" id="status">
+        <strong>Loading</strong> project database…
+      </div>
+
+      <div class="table-wrap" id="table-wrap">
+        <table id="results-table" style="display:none;">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script>
+      const dbPath = 'project.db';
+      const statusEl = document.getElementById('status');
+      const tableEl = document.getElementById('results-table');
+      const theadEl = document.getElementById('thead');
+      const tbodyEl = document.getElementById('tbody');
+      const headerLabels = {
+        interred_id: 'No.',
+        full_name: 'Name',
+        cemetery_name: 'Cemetery',
+        townland_name: 'Townland',
+        burial_date: 'Burial Date',
+        date_of_death: 'Date of Death',
+        age_at_death: 'Age',
+        grave_number: 'Grave'
+      };
+
+      function setStatus(message, isError = false) {
+        statusEl.innerHTML = isError ? `<span class="error">${message}</span>` : `<strong>Ready</strong> ${message}`;
+      }
+
+      function renderTable(rows, columns) {
+        if (!rows || rows.length === 0) {
+          tableEl.style.display = 'none';
+          statusEl.innerHTML = '<strong>No data</strong> The database is present, but the selected query returned no rows.';
+          return;
+        }
+
+        const headerRow = document.createElement('tr');
+        columns.forEach((col) => {
+          const th = document.createElement('th');
+          if (col === 'interred_id' || col === 'burial_date') {
+            th.className = 'right-column';
+          }
+          th.textContent = headerLabels[col] || col;
+          headerRow.appendChild(th);
+        });
+        theadEl.innerHTML = '';
+        theadEl.appendChild(headerRow);
+
+        tbodyEl.innerHTML = '';
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+          columns.forEach((col) => {
+            const td = document.createElement('td');
+            if (col === 'interred_id' || col === 'burial_date') {
+              td.className = 'right-column';
+            }
+            const value = row[col];
+            td.textContent = value === null || value === undefined ? '' : String(value);
+            tr.appendChild(td);
+          });
+          tbodyEl.appendChild(tr);
+        });
+
+        tableEl.style.display = 'table';
+      }
+
+      async function loadDatabase() {
+        try {
+          const SQL = await initSqlJs({
+            locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
+          });
+
+          const response = await fetch(dbPath);
+          if (!response.ok) {
+            throw new Error('Database file not found. Import the Access tables first and rebuild project.db.');
+          }
+
+          const arrayBuffer = await response.arrayBuffer();
+          const db = new SQL.Database(new Uint8Array(arrayBuffer));
+
+          const tableExists = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='interred'");
+          const viewExists = db.exec("SELECT name FROM sqlite_master WHERE type='view' AND name='v_interred_preview'");
+          if ((!tableExists || tableExists.length === 0) && (!viewExists || viewExists.length === 0)) {
+            throw new Error('The Interred table or preview view is not present yet. Import the data first.');
+          }
+
+          const query = "SELECT * FROM v_interred_preview LIMIT 20;";
+          const result = db.exec(query);
+
+          if (!result || result.length === 0 || !result[0].values || result[0].values.length === 0) {
+            throw new Error('The query returned no rows. Check whether the imported data contains records.');
+          }
+
+          const columns = result[0].columns;
+          const rows = result[0].values.map((entry) => {
+            const obj = {};
+            columns.forEach((col, idx) => {
+              obj[col] = entry[idx];
+            });
+            return obj;
+          });
+
+          renderTable(rows, columns);
+          setStatus(`Showing ${rows.length} Interred records from ${dbPath}.`);
+        } catch (error) {
+          tableEl.style.display = 'none';
+          setStatus(error.message, true);
+        }
+      }
+
+      loadDatabase();
+    </script>
+  </body>
+</html>
