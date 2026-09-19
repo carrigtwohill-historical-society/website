@@ -18,6 +18,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({
     "src/data/carrigtwohill-townlands.geojson": "data/carrigtwohill-townlands.geojson",
   });
+  eleventyConfig.addPassthroughCopy({
+    "Database/sqlite/viewer.html": "cemeteries/interred/index.html",
+  });
+  eleventyConfig.addPassthroughCopy({
+    "Database/sqlite/project.db": "cemeteries/interred/project.db",
+  });
   // legacy filename if present
   eleventyConfig.addPassthroughCopy({ "src/data/parishes.geojson": "data/parishes.geojson" });
 

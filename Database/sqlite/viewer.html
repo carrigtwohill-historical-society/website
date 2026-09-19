@@ -264,6 +264,14 @@
         }
       }
 
+      function addAccessCemeterySet() {
+        const select = document.getElementById('cemetery-filter');
+        const option = document.createElement('option');
+        option.value = '__access_cemeteries__';
+        option.textContent = "St David's, Templecurraheen & Caherlag";
+        select.insertBefore(option, select.options[1] || null);
+      }
+
       function normalise(value) {
         return String(value || '').trim().toLowerCase();
       }
@@ -357,7 +365,13 @@
         const surname = document.getElementById('surname-filter').value;
         const cemetery = document.getElementById('cemetery-filter').value;
         const townland = document.getElementById('townland-filter').value;
-        visibleRows = allRows.filter((row) => (!surname || row.surname === surname) && (!cemetery || row.cemetery_name === cemetery) && (!townland || row.townland_name === townland));
+        visibleRows = allRows.filter((row) =>
+          (!surname || row.surname === surname) &&
+          (!cemetery || (cemetery === '__access_cemeteries__'
+            ? ['St David\'s', 'Templecurraheen', 'Caherlag'].includes(row.cemetery_name)
+            : row.cemetery_name === cemetery)) &&
+          (!townland || row.townland_name === townland)
+        );
         currentPage = 1;
         renderTable(visibleRows);
         setStatus(`Showing ${visibleRows.length} matching Interred records.`);
@@ -377,7 +391,7 @@
           const arrayBuffer = await response.arrayBuffer();
           const db = new SQL.Database(new Uint8Array(arrayBuffer));
 
-          const query = `SELECT i.record_number AS interred_id, COALESCE(ssl.surname, i.surname) AS surname, COALESCE(i.plot_number, i.grave_number) AS plot_number, i.row_number, CASE WHEN NULLIF(TRIM(i.alias), '') IS NOT NULL THEN COALESCE(cn.christian_name, i.first_name) || ' (' || TRIM(i.alias) || ') ' || COALESCE(ssl.surname, i.surname) ELSE COALESCE(cn.christian_name, i.first_name) || ' ' || COALESCE(ssl.surname, i.surname) END AS full_name, i.burial_date, i.age_at_death, i.date_of_birth, r.relationship_name, b.address AS certificate_address, COALESCE(i.townland_source_name, t.townland_name) AS townland_name, b.burial_certificate_id, b.certificate_date, b.age_at_certificate AS certificate_age, ms.status_name AS certificate_status, b.occupation AS certificate_occupation, b.townland_name AS certificate_townland, b.witness, c.name AS cemetery_name FROM interred i LEFT JOIN standard_christian_names cn ON cn.christian_name_id = i.christian_name_id LEFT JOIN surnames_standard_list ssl ON ssl.surname_id = i.surname_id LEFT JOIN relationship_lookup r ON r.relationship_id = i.relationship_id LEFT JOIN townland t ON t.townland_id = i.townland_id LEFT JOIN cemetery c ON c.cemetery_id = i.cemetery_id LEFT JOIN burial_certificate b ON b.burial_id = i.record_number LEFT JOIN marital_status ms ON ms.marital_status_id = b.status_id ORDER BY i.record_number, surname COLLATE NOCASE;`;
+          const query = `SELECT i.record_number AS interred_id, COALESCE(ssl.surname, i.surname) AS surname, p.plot_number, p.row_number, CASE WHEN NULLIF(TRIM(i.alias), '') IS NOT NULL THEN COALESCE(i.first_name, cn.christian_name) || ' (' || TRIM(i.alias) || ') ' || COALESCE(ssl.surname, i.surname) ELSE COALESCE(i.first_name, cn.christian_name) || ' ' || COALESCE(ssl.surname, i.surname) END AS full_name, i.burial_date, i.age_at_death, i.date_of_birth, r.relationship_name, b.address AS certificate_address, COALESCE(t.townland_name, p.townland_name) AS townland_name, b.burial_certificate_id, b.certificate_date, b.age_at_certificate AS certificate_age, ms.status_name AS certificate_status, b.occupation AS certificate_occupation, b.townland_name AS certificate_townland, b.witness, c.name AS cemetery_name FROM interred i INNER JOIN burial_plot p ON p.burial_id = i.burial_id INNER JOIN cemetery c ON c.cemetery_id = p.cemetery_id LEFT JOIN standard_christian_names cn ON i.christian_name_id = cn.christian_name_id LEFT JOIN surnames_standard_list ssl ON i.surname_id = ssl.surname_id LEFT JOIN relationship_lookup r ON i.relationship_id = r.relationship_id LEFT JOIN townland t ON i.townland_id = t.townland_id LEFT JOIN burial_certificate b ON b.burial_id = i.record_number LEFT JOIN marital_status ms ON ms.marital_status_id = b.status_id WHERE c.cemetery_id IN (1, 5, 9) ORDER BY i.record_number, surname COLLATE NOCASE;`;
           const result = db.exec(query);
 
           if (!result || result.length === 0 || !result[0].values || result[0].values.length === 0) {
@@ -394,16 +408,17 @@
 
           setOptions('surname-filter', [...new Set(allRows.map((row) => row.surname))], 'All surnames');
           setOptions('cemetery-filter', [...new Set(allRows.map((row) => row.cemetery_name))], 'All cemeteries');
+          addAccessCemeterySet();
           setOptions('townland-filter', [...new Set(allRows.map((row) => row.townland_name))], 'All townlands');
-          const defaultSurname = allRows.find((row) => normalise(row.surname).includes('ahern'))?.surname || 'Ahern';
-          const defaultCemetery = allRows.find((row) => normalise(row.surname).includes('ahern') && normalise(row.cemetery_name).includes("st david"))?.cemetery_name || "St David's";
+          selectDefault('surname-filter', 'Ahern');
+          selectDefault('cemetery-filter', '__access_cemeteries__');
+          selectDefault('townland-filter', '');
+          const defaultSurname = [...document.getElementById('surname-filter').options]
+            .find((option) => normalise(option.value) === 'ahern')?.value || 'Ahern';
+          const defaultCemetery = '__access_cemeteries__';
           selectDefault('surname-filter', defaultSurname);
           selectDefault('cemetery-filter', defaultCemetery);
-          selectDefault('townland-filter', '');
-          visibleRows = allRows.filter((row) => normalise(row.surname) === normalise(defaultSurname) && normalise(row.cemetery_name) === normalise(defaultCemetery));
-          currentPage = 1;
-          renderTable(visibleRows);
-          setStatus(`Showing ${visibleRows.length} matching Interred records.`);
+          applyFilters();
         } catch (error) {
           tableEl.style.display = 'none';
           setStatus(error.message, true);
