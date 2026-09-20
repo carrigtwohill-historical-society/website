@@ -72,6 +72,16 @@
         color: var(--muted);
       }
 
+      .intro {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .intro + .intro {
+        margin-top: 10px;
+      }
+
       .status {
         background: var(--primary-soft);
         border: 1px solid var(--border);
@@ -191,6 +201,20 @@
         opacity: 0.45;
       }
 
+      body.embedded {
+        background: transparent;
+      }
+
+      body.embedded .page {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      body.embedded .header {
+        display: none;
+      }
+
       @media (max-width: 760px) {
         .filters { grid-template-columns: 1fr; }
       }
@@ -199,14 +223,22 @@
   <body>
     <div class="page">
       <header class="header">
-        <h1>Interred</h1>
-        <p class="subtitle">Browse Interred records and expand linked Burial Certificates.</p>
+        <h1>Local Cemetery Internments</h1>
+        <p class="intro">
+          The database includes known burials at St David’s, Templecurraheen, and Caherlag. The current database results are temporary and still being developed. Select a surname to display matching records.
+        </p>
+        <p class="intro">
+          Relationship refers to the grave owner, or the person who erected the stone. It is not always the case that the person who erected the stone is buried in the same grave.
+        </p>
+        <p class="intro">
+          The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where a corresponding Civil Registration of death has been found we have included a brief transcript of the civil registration record. These are identified by a plus symbol. Click on it to examine the record details.
+        </p>
       </header>
 
       <section class="filters" aria-label="Interred filters">
-        <label>Surname<select id="surname-filter"><option value="">All surnames</option></select></label>
-        <label>Cemetery<select id="cemetery-filter"><option value="">All cemeteries</option></select></label>
-        <label>Townland<select id="townland-filter"><option value="">All townlands</option></select></label>
+        <label>Surname<select id="surname-filter"><option value="" selected>Loading surnames...</option></select></label>
+        <label>Cemetery<select id="cemetery-filter"></select></label>
+        <label>Townland<select id="townland-filter"><option value="" selected>All townlands</option></select></label>
       </section>
 
       <div class="status" id="status">
@@ -228,6 +260,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script>
+      if (new URLSearchParams(window.location.search).has('embed')) {
+        document.body.classList.add('embedded');
+      }
+
       const dbPath = 'project.db';
       const statusEl = document.getElementById('status');
       const tableEl = document.getElementById('results-table');
@@ -244,9 +280,9 @@
         statusEl.innerHTML = isError ? `<span class="error">${message}</span>` : `<strong>Ready</strong> ${message}`;
       }
 
-      function setOptions(id, values, emptyLabel) {
+      function setOptions(id, values, emptyLabel, includeEmpty = true) {
         const select = document.getElementById(id);
-        select.innerHTML = `<option value="">${emptyLabel}</option>`;
+        select.innerHTML = includeEmpty ? `<option value="">${emptyLabel}</option>` : '';
         values.filter(Boolean).sort((a, b) => a.localeCompare(b)).forEach((value) => {
           const option = document.createElement('option');
           option.value = value;
@@ -264,16 +300,50 @@
         }
       }
 
-      function addAccessCemeterySet() {
+      function updateCemeteryOptions() {
+        const surname = document.getElementById('surname-filter').value;
+        const cemeteries = [...new Set(allRows
+          .filter((row) => !surname || row.surname === surname)
+          .map((row) => row.cemetery_name))];
+        setOptions('cemetery-filter', cemeteries, '', false);
         const select = document.getElementById('cemetery-filter');
-        const option = document.createElement('option');
-        option.value = '__access_cemeteries__';
-        option.textContent = "St David's, Templecurraheen & Caherlag";
-        select.insertBefore(option, select.options[1] || null);
+        select.value = cemeteries[0] || '';
+      }
+
+      function updateTownlandOptions() {
+        const surname = document.getElementById('surname-filter').value;
+        const cemetery = document.getElementById('cemetery-filter').value;
+        const matchingRows = allRows.filter((row) =>
+          (!surname || row.surname === surname) &&
+          (!cemetery || row.cemetery_name === cemetery)
+        );
+        const namedTownlands = [...new Set(matchingRows
+          .map((row) => String(row.townland_name || '').trim())
+          .filter(Boolean))];
+        const select = document.getElementById('townland-filter');
+        setOptions('townland-filter', namedTownlands, 'All townlands');
+        if (matchingRows.some((row) => !String(row.townland_name || '').trim())) {
+          const option = document.createElement('option');
+          option.value = '__blank_townland__';
+          option.textContent = 'Blank - Not Provided';
+          select.appendChild(option);
+        }
       }
 
       function normalise(value) {
         return String(value || '').trim().toLowerCase();
+      }
+
+      function formatDate(value) {
+        const match = String(value || '').match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+        if (!match) return value == null ? '' : String(value);
+        const year = match[1];
+        const month = match[2];
+        const day = match[3];
+        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+        if (!month) return year;
+        if (!day) return `-${monthNames[Number(month)] || month} - ${year}`;
+        return `${Number(day)}-${monthNames[Number(month)] || month}-${year}`;
       }
 
       function renderTable(rows) {
@@ -325,7 +395,7 @@
             if (col === 'interred_id' || col === 'plot_number' || col === 'row_number' || col === 'burial_date' || col === 'age_at_death' || col === 'date_of_birth') {
               td.className = 'right-column';
             }
-            const value = row[col];
+            const value = col === 'burial_date' ? formatDate(row[col]) : row[col];
             td.textContent = value === null || value === undefined ? '' : String(value);
             tr.appendChild(td);
           });
@@ -365,12 +435,19 @@
         const surname = document.getElementById('surname-filter').value;
         const cemetery = document.getElementById('cemetery-filter').value;
         const townland = document.getElementById('townland-filter').value;
+        if (surname && !cemetery) {
+          visibleRows = [];
+          currentPage = 1;
+          renderTable(visibleRows);
+          setStatus('Select a cemetery to view matching Interred records.');
+          return;
+        }
         visibleRows = allRows.filter((row) =>
           (!surname || row.surname === surname) &&
-          (!cemetery || (cemetery === '__access_cemeteries__'
-            ? ['St David\'s', 'Templecurraheen', 'Caherlag'].includes(row.cemetery_name)
-            : row.cemetery_name === cemetery)) &&
-          (!townland || row.townland_name === townland)
+          (!cemetery || row.cemetery_name === cemetery) &&
+          (!townland || (townland === '__blank_townland__'
+            ? !String(row.townland_name || '').trim()
+            : row.townland_name === townland))
         );
         currentPage = 1;
         renderTable(visibleRows);
@@ -407,17 +484,13 @@
           });
 
           setOptions('surname-filter', [...new Set(allRows.map((row) => row.surname))], 'All surnames');
-          setOptions('cemetery-filter', [...new Set(allRows.map((row) => row.cemetery_name))], 'All cemeteries');
-          addAccessCemeterySet();
-          setOptions('townland-filter', [...new Set(allRows.map((row) => row.townland_name))], 'All townlands');
-          selectDefault('surname-filter', 'Ahern');
-          selectDefault('cemetery-filter', '__access_cemeteries__');
-          selectDefault('townland-filter', '');
-          const defaultSurname = [...document.getElementById('surname-filter').options]
-            .find((option) => normalise(option.value) === 'ahern')?.value || 'Ahern';
-          const defaultCemetery = '__access_cemeteries__';
+          updateTownlandOptions();
+          const surnameSelect = document.getElementById('surname-filter');
+          const defaultSurname = surnameSelect.options[1]?.value || '';
           selectDefault('surname-filter', defaultSurname);
-          selectDefault('cemetery-filter', defaultCemetery);
+          updateCemeteryOptions();
+          updateTownlandOptions();
+          selectDefault('townland-filter', '');
           applyFilters();
         } catch (error) {
           tableEl.style.display = 'none';
@@ -425,7 +498,13 @@
         }
       }
 
-      ['surname-filter', 'cemetery-filter', 'townland-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => {
+      document.getElementById('surname-filter').addEventListener('change', () => {
+        updateCemeteryOptions();
+        updateTownlandOptions();
+        applyFilters();
+      });
+      ['cemetery-filter', 'townland-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => {
+        if (id === 'cemetery-filter') updateTownlandOptions();
         applyFilters();
       }));
       document.getElementById('previous-page').addEventListener('click', () => { currentPage -= 1; renderTable(visibleRows); });

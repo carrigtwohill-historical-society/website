@@ -87,6 +87,11 @@ SOURCE_COLUMN_ALIASES = {
         "interedtownlandid": "townland_id",
         "christianid": "christian_name_id",
         "christianname": "first_name",
+        "age": "age_at_death",
+        "born": "date_of_birth",
+        "dayintered": "burial_day",
+        "monthintered": "burial_month",
+        "yearintered": "burial_year",
         "intersurnameid": "surname_id",
         "interredsurnameid": "surname_id",
         "interedsurnameid": "surname_id",
@@ -259,6 +264,38 @@ def import_rows(conn: sqlite3.Connection, table_name: str, rows: list[dict[str, 
             key = normalize_identifier(str(raw_key))
             if key in normalized_columns:
                 normalized_row[normalized_columns[key]] = value if value != "" else None
+        if table_name == "interred":
+            source_values = {
+                normalize_identifier(str(raw_key)): value
+                for raw_key, value in row.items()
+            }
+            day = source_values.get("dayintered")
+            month = source_values.get("monthintered")
+            year = source_values.get("yearintered")
+            for source_key, target_key in (
+                ("dayintered", "burial_day"),
+                ("monthintered", "burial_month"),
+                ("yearintered", "burial_year"),
+            ):
+                value = source_values.get(source_key)
+                if value not in (None, "") and target_key in columns:
+                    try:
+                        normalized_row[target_key] = int(float(value))
+                    except (TypeError, ValueError):
+                        pass
+            if year not in (None, "") and "burial_date" in columns:
+                try:
+                    year_value = int(float(year))
+                    month_value = int(float(month)) if month not in (None, "") else None
+                    day_value = int(float(day)) if day not in (None, "") else None
+                    if month_value and day_value:
+                        normalized_row["burial_date"] = f"{year_value:04d}-{month_value:02d}-{day_value:02d}"
+                    elif month_value:
+                        normalized_row["burial_date"] = f"{year_value:04d}-{month_value:02d}"
+                    else:
+                        normalized_row["burial_date"] = str(year_value)
+                except (TypeError, ValueError):
+                    pass
         if "source_file_id" in normalized_columns and "source_file_id" not in normalized_row:
             normalized_row["source_file_id"] = source_file_id
         if not normalized_row:

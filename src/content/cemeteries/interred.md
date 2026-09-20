@@ -9,41 +9,15 @@ oldPath: "/Cemeteries/Interred.aspx"
 
 <h1>Local Cemetery Internments</h1>
 <p class="indentedText">
-   The database includes known burials at St David’s, Templecurraheen, and Caherlag cemeteries. The current database results are only temporary which are still being developed. Selector dropdown list will only include names known to be buried in the relevant cemeteries.
+    The database includes known burials at St David’s, Templecurraheen, and Caherlag. The current database results are temporary and still being developed. Select a surname to display matching records.
    </p>
    <p class="indentedText">
    Relationship refers to the grave owner, or the person who erected the stone. It is not always the case that the person who erected the stone is buried in the same grave.
    </p>
 <p class="indentedText">
-     Select a surname to view matching records. The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where a corresponding Civil Registration of death has been found we have included a brief transcript of the civil registration record. These are identified by a plus symbol. Click on it to examine the record details.
+    The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where a corresponding Civil Registration of death has been found we have included a brief transcript of the civil registration record. These are identified by a plus symbol. Click on it to examine the record details.
 </p>
-<section class="interred-search" data-interred-search aria-labelledby="interred-search-label">
-    <div class="interred-filter-grid">
-        <div>
-            <label id="interred-search-label" for="interred-surname">Surname</label>
-            <select id="interred-surname" data-interred-surname>
-                <option value="">Choose surname</option>
-            </select>
-        </div>
-        <div>
-            <label id="interred-cemetery-label" for="interred-cemetery">Cemetery</label>
-            <select id="interred-cemetery" data-interred-cemetery disabled>
-                <option value="">Choose surname first</option>
-            </select>
-        </div>
-        <div>
-            <label id="interred-townland-label" for="interred-townland">Carrigtwohill Townlands Only</label>
-            <select id="interred-townland" data-interred-townland>
-                <option value="">All townlands</option>
-            </select>
-        </div>
-    </div>
-    <p class="interred-status" data-interred-status role="status">Loading cemetery records...</p>
-</section>
-
-<div class="interred-results" data-interred-results></div>
-<noscript>
-    <p class="search-skeleton">JavaScript is required to search the cemetery records.</p>
-</noscript>
-<script src="/js/interred.js" defer></script>
+<div class="interred-database-frame">
+    <iframe src="/cemeteries/interred/database/?embed=1" title="Search interred cemetery records" loading="lazy"></iframe>
+</div>
 
