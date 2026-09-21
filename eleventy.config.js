@@ -24,6 +24,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({
     "Database/sqlite/project.db": "cemeteries/interred/database/project.db",
   });
+  eleventyConfig.addPassthroughCopy({
+    "Database/sqlite/ira-viewer.html": "database/ira-medals/index.html",
+  });
+  eleventyConfig.addPassthroughCopy({
+    "Database/sqlite/project.db": "database/ira-medals/project.db",
+  });
   // legacy filename if present
   eleventyConfig.addPassthroughCopy({ "src/data/parishes.geojson": "data/parishes.geojson" });
 

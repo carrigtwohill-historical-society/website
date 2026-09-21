@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IRA Medals &amp; Pensions</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.45 Arial, sans-serif; color: #17324d; background: #f5f7fb; }
+    body { margin: 0; padding: 1rem; }
+    h1 { margin: 0 0 1rem; color: #0b3d6e; }
+    .filters { display: grid; grid-template-columns: repeat(2, minmax(12rem, 22rem)); gap: .75rem; margin-bottom: 1rem; }
+    label { display: grid; gap: .35rem; color: #0b3d6e; font-weight: 700; }
+    select { min-height: 2.5rem; padding: .35rem .5rem; color: #17324d; background: white; border: 2px solid #d9a916; border-radius: .3rem; font: inherit; }
+    @media (max-width: 700px) { .filters { grid-template-columns: 1fr; } }
+    .status { margin: 0 0 1rem; padding: .75rem 1rem; background: #eaf2fb; border: 1px solid #d4e1ef; border-radius: .4rem; }
+    .table-wrap { overflow: auto; background: white; border: 1px solid #d4e1ef; }
+    table { width: max-content; min-width: 100%; border-collapse: collapse; }
+    th, td { padding: .45rem .6rem; border-bottom: 1px solid #e1e7ee; text-align: left; white-space: nowrap; }
+    th { position: sticky; top: 0; color: white; background: #0b3d6e; }
+    .date-header, .date-cell { text-align: right; }
+    .address-cell { white-space: pre-line; }
+    .error { color: #9d1c1c; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>IRA Medals &amp; Pensions</h1>
+  <div class="filters">
+    <label>Surname<select id="surname-filter"></select></label>
+    <label>Townland<select id="townland-filter"></select></label>
+  </div>
+  <p class="status" id="status">Loading database...</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>File</th><th>Associate Files</th><th>Applicant</th><th>Address</th><th class="date-header">Date of Birth</th><th class="date-header">Date of Death</th><th>Occupation</th><th>Rank</th><th class="date-header">Medal Awarded</th><th>Certificate</th></tr></thead>
+      <tbody id="results"></tbody>
+    </table>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+  <script>
+    (async function () {
+      const status = document.getElementById('status');
+      const results = document.getElementById('results');
+      const surnameFilter = document.getElementById('surname-filter');
+      const townlandFilter = document.getElementById('townland-filter');
+      try {
+        const SQL = await initSqlJs({ locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}` });
+        const response = await fetch(`project.db?v=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('SQLite database could not be loaded.');
+        const db = new SQL.Database(new Uint8Array(await response.arrayBuffer()));
+        const query = `SELECT i.medal_id, i.file_ref, TRIM(COALESCE(cn.christian_name, i.name) || ' ' || CASE WHEN NULLIF(TRIM(i.surname), '') IS NOT NULL THEN i.surname ELSE COALESCE(ssl.surname, '') END) AS applicant, i.address, COALESCE(NULLIF(TRIM(ssl.surname), ''), NULLIF(TRIM(i.surname), ''), '') AS surname, TRIM(COALESCE(i.dob, '') || CASE WHEN i.dob IS NOT NULL AND (m.month_name IS NOT NULL OR i.yob IS NOT NULL) THEN ' - ' ELSE '' END || COALESCE(m.month_name, '') || CASE WHEN m.month_name IS NOT NULL AND i.yob IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.yob, '')) AS date_of_birth, TRIM(COALESCE(i.death_day, '') || CASE WHEN i.death_day IS NOT NULL AND (md.month_name IS NOT NULL OR i.death_year IS NOT NULL) THEN ' - ' ELSE '' END || CASE md.month_id WHEN 1 THEN 'Jan' WHEN 2 THEN 'Feb' WHEN 3 THEN 'Mar' WHEN 4 THEN 'Apr' WHEN 5 THEN 'May' WHEN 6 THEN 'Jun' WHEN 7 THEN 'Jul' WHEN 8 THEN 'Aug' WHEN 9 THEN 'Sept' WHEN 10 THEN 'Oct' WHEN 11 THEN 'Nov' WHEN 12 THEN 'Dec' END || CASE WHEN md.month_name IS NOT NULL AND i.death_year IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.death_year, '')) AS date_of_death, TRIM(COALESCE(i.medal_d, '') || CASE WHEN i.medal_d IS NOT NULL AND i.medal_m IS NOT NULL THEN ' - ' ELSE '' END || CASE lower(trim(i.medal_m)) WHEN 'january' THEN 'Jan' WHEN 'february' THEN 'Feb' WHEN 'march' THEN 'Mar' WHEN 'april' THEN 'Apr' WHEN 'may' THEN 'May' WHEN 'june' THEN 'Jun' WHEN 'july' THEN 'Jul' WHEN 'august' THEN 'Aug' WHEN 'september' THEN 'Sept' WHEN 'october' THEN 'Oct' WHEN 'november' THEN 'Nov' WHEN 'december' THEN 'Dec' ELSE trim(i.medal_m) END || CASE WHEN i.medal_m IS NOT NULL AND i.medal_y IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.medal_y, '')) AS medal_awarded_date, i.townland_id, COALESCE(t.townland_name, i.townland_id) AS townland_name, i.occupation, i.rank, i.certificate FROM iramedals i LEFT JOIN standard_christian_names cn ON i.name_id = cn.christian_name_id LEFT JOIN surnames_standard_list ssl ON i.surname_id = ssl.surname_id LEFT JOIN month_lookup m ON i.mob = m.month_id LEFT JOIN month_lookup md ON i.death_month = md.month_id LEFT JOIN townland t ON i.townland_id = t.townland_id ORDER BY i.medal_id;`;
+        const queryWithAssociated = query.replace('i.file_ref,', 'i.file_ref, i.associated_pension_file,');
+        const result = db.exec(queryWithAssociated)[0];
+        const rows = result.values;
+        const setOptions = (select, values, emptyLabel) => {
+          select.innerHTML = `<option value="">${emptyLabel}</option>`;
+          [...new Set(values.filter(value => value != null && String(value).trim() !== ''))]
+            .map(value => String(value))
+            .sort((a, b) => a.localeCompare(b))
+            .forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+        };
+        const updateTownlands = () => {
+          const surname = surnameFilter.value;
+          const matching = rows.filter(row => !surname || row[5] === surname);
+          setOptions(townlandFilter, matching.map(row => row[9]), 'Select Townland');
+          if (matching.some(row => !String(row[9] || '').trim())) {
+            const option = document.createElement('option');
+            option.value = '__blank__';
+            option.textContent = 'Blank - Not Provided';
+            townlandFilter.appendChild(option);
+          }
+          townlandFilter.value = [...townlandFilter.options].find(option => option.value)?.value || '';
+        };
+        const render = () => {
+          const surname = surnameFilter.value;
+          const townland = townlandFilter.value;
+          const visible = rows.filter(row =>
+            (!surname || row[5] === surname) &&
+            (!townland || (townland === '__blank__' ? !String(row[9] || '').trim() : String(row[9] || '') === townland))
+          );
+          results.innerHTML = '';
+          visible.forEach(row => {
+          const tr = document.createElement('tr');
+          [0, 1, 2, 3, 4, 6, 7, 11, 12, 8, 13].forEach(index => { const td = document.createElement('td'); if (index === 4) td.className = 'address-cell'; if ([6, 7, 8].includes(index)) td.classList.add('date-cell'); td.textContent = row[index] == null ? '' : String(row[index]); tr.appendChild(td); });
+          results.appendChild(tr);
+          });
+          status.textContent = `Showing ${visible.length} IRA medal records from SQLite.`;
+        };
+        setOptions(surnameFilter, rows.map(row => row[5]), 'Select Surname');
+        surnameFilter.value = [...surnameFilter.options].find(option => option.value)?.value || '';
+        updateTownlands();
+        render();
+        surnameFilter.addEventListener('change', () => { updateTownlands(); render(); });
+        townlandFilter.addEventListener('change', render);
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = error.message;
+      }
+    }());
+  </script>
+</body>
+</html>

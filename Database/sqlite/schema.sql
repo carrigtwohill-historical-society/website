@@ -127,6 +127,44 @@ CREATE TABLE IF NOT EXISTS interred (
     FOREIGN KEY (marital_status_id) REFERENCES marital_status(marital_status_id)
 );
 
+CREATE TABLE IF NOT EXISTS iramedals (
+    medal_id INTEGER PRIMARY KEY,
+    townland_id INTEGER,
+    name_id INTEGER,
+    name TEXT,
+    surname_id INTEGER,
+    surname TEXT,
+    maiden_id INTEGER,
+    maiden TEXT,
+    dob TEXT,
+    mob INTEGER,
+    yob TEXT,
+    death_day INTEGER,
+    death_month INTEGER,
+    death_year INTEGER,
+    widow TEXT,
+    alias TEXT,
+    widow_death TEXT,
+    occupation TEXT,
+    address TEXT,
+    file_ref TEXT,
+    status_id INTEGER,
+    entry TEXT,
+    successful_medal TEXT,
+    medal_awarded TEXT,
+    certificate TEXT,
+    associated_pension_file TEXT,
+    pensioned TEXT,
+    pension_regected_means TEXT,
+    pension_rejected_other TEXT,
+    rank TEXT,
+    brigade TEXT,
+    division TEXT,
+    unit TEXT,
+    organisation_id INTEGER,
+    company TEXT
+);
+
 CREATE TABLE IF NOT EXISTS interred_st_davids (
     interred_st_davids_id INTEGER PRIMARY KEY,
     source_file_id INTEGER,
@@ -239,6 +277,8 @@ CREATE INDEX IF NOT EXISTS idx_cemetery_name ON cemetery(name);
 CREATE INDEX IF NOT EXISTS idx_headstone_interred ON headstone(interred_id);
 CREATE INDEX IF NOT EXISTS idx_interred_cemetery ON interred(cemetery_id);
 CREATE INDEX IF NOT EXISTS idx_interred_townland ON interred(townland_id);
+CREATE INDEX IF NOT EXISTS idx_iramedals_surname ON iramedals(surname_id);
+CREATE INDEX IF NOT EXISTS idx_iramedals_name ON iramedals(name_id);
 CREATE INDEX IF NOT EXISTS idx_interred_surname ON interred(surname);
 CREATE INDEX IF NOT EXISTS idx_townland_name ON townland(townland_name);
 

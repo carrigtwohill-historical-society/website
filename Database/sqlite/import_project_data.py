@@ -25,6 +25,7 @@ DEF_TABLE_MAP = {
     "Data": "data",
     "Headstones": "headstone",
     "Interred": "interred",
+    "IRAMedals": "iramedals",
     "InterredStDavids": "interred_st_davids",
     "MaritalStatus": "marital_status",
     "Months": "month_lookup",
@@ -39,10 +40,27 @@ DEF_TABLE_MAP = {
 }
 
 SOURCE_COLUMN_ALIASES = {
+    "iramedals": {
+        "medalid": "medal_id",
+        "townlandid": "townland_id",
+        "nameid": "name_id",
+        "surnameid": "surname_id",
+        "maidenid": "maiden_id",
+        "fileref": "file_ref",
+        "mob": "mob",
+        "statusid": "status_id",
+        "successfulmedal": "successful_medal",
+        "medalawarded": "medal_awarded",
+        "associatedpensionfile": "associated_pension_file",
+        "pensioned": "pensioned",
+        "pensionregectedmeans": "pension_regected_means",
+        "pensionrejectedother": "pension_rejected_other",
+        "organisationid": "organisation_id",
+    },
     "cemetery": {"cemeteryid": "cemetery_id", "cemetery": "name"},
     "townland": {"townlandid": "townland_id", "townland": "townland_name"},
     "standard_christian_names": {"nameid": "christian_name_id", "name": "christian_name"},
-    "surnames_standard_list": {"surnameid": "surname_id"},
+    "surnames_standard_list": {"surnameid": "surname_id", "surname": "surname"},
     "burial_certificate": {
         "certid": "burial_certificate_id",
         "burialid": "burial_id",
@@ -178,7 +196,13 @@ def read_xlsx_rows(path: Path, sheet_name: str | None = None) -> list[dict[str, 
         for idx, cell in enumerate(row):
             if idx >= len(header):
                 break
-            item[header[idx]] = "" if cell is None else str(cell).strip()
+            value = "" if cell is None else str(cell).strip()
+            if str(header[idx]).casefold() == "address":
+                value = value.replace("_x000d_", "\n").replace("_x000a_", "\n")
+                item[header[idx]] = "\n".join(line.strip() for line in value.splitlines() if line.strip())
+            else:
+                value = value.replace("_x000d_", " ").replace("_x000a_", " ")
+                item[header[idx]] = " ".join(value.split())
         rows.append(item)
     workbook.close()
     return rows
@@ -203,6 +227,51 @@ def pragma_columns(conn: sqlite3.Connection, table_name: str) -> list[str]:
 def primary_key_columns(conn: sqlite3.Connection, table_name: str) -> list[str]:
     info = conn.execute(f'PRAGMA table_info("{table_name}")').fetchall()
     return [row[1] for row in info if row[5]]
+
+
+def import_month_lookup(conn: sqlite3.Connection, source_db: Path) -> int:
+    if not source_db.exists():
+        return 0
+    source = sqlite3.connect(f"file:{source_db}?mode=ro", uri=True)
+    try:
+        rows = source.execute("SELECT MonthsID, Months FROM Months ORDER BY MonthsID").fetchall()
+    except sqlite3.Error:
+        source.close()
+        return 0
+    source.close()
+    for month_id, month_name in rows:
+        conn.execute(
+            "INSERT OR REPLACE INTO month_lookup (month_id, month_number, month_name) VALUES (?, ?, ?)",
+            (month_id, month_id, month_name),
+        )
+    conn.commit()
+    return len(rows)
+
+
+def apply_address_amendments(conn: sqlite3.Connection, workbook_path: Path) -> int:
+    if not workbook_path.exists() or load_workbook is None:
+        return 0
+    workbook = load_workbook(workbook_path, read_only=True, data_only=True)
+    try:
+        sheet = workbook["Sheet1"]
+        rows = read_xlsx_rows(workbook_path, "Sheet1")
+    except (KeyError, ValueError):
+        workbook.close()
+        return 0
+    workbook.close()
+    updated = 0
+    for row in rows:
+        medal_id = row.get("MedalID")
+        address = row.get("Address")
+        if medal_id in (None, ""):
+            continue
+        conn.execute(
+            "UPDATE iramedals SET townland_id = COALESCE(?, townland_id), address = ? WHERE medal_id = ?",
+            (row.get("TownlandId") or None, address or None, int(float(medal_id))),
+        )
+        updated += conn.execute("SELECT changes()").fetchone()[0]
+    conn.commit()
+    return updated
 
 
 def record_source_file(conn: sqlite3.Connection, file_path: Path) -> int:
@@ -296,6 +365,23 @@ def import_rows(conn: sqlite3.Connection, table_name: str, rows: list[dict[str, 
                         normalized_row["burial_date"] = str(year_value)
                 except (TypeError, ValueError):
                     pass
+        if table_name == "iramedals":
+            source_values = {
+                normalize_identifier(str(raw_key)): value
+                for raw_key, value in row.items()
+            }
+            death = source_values.get("death")
+            if death not in (None, ""):
+                text = str(death).strip()
+                parts = text[:10].split("-")
+                if len(parts) == 3 and all(part.strip().isdigit() for part in parts):
+                    try:
+                        year, month, day = (int(part.strip()) for part in parts)
+                        normalized_row["death_day"] = day
+                        normalized_row["death_month"] = month
+                        normalized_row["death_year"] = year
+                    except ValueError:
+                        pass
         if "source_file_id" in normalized_columns and "source_file_id" not in normalized_row:
             normalized_row["source_file_id"] = source_file_id
         if not normalized_row:
@@ -349,6 +435,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--schema", type=Path, default=Path(__file__).resolve().parent / "schema.sql")
     parser.add_argument("--map", type=Path, default=Path(__file__).resolve().parent / "table_map.json")
     parser.add_argument("--reset", action="store_true", help="Delete the existing database before import.")
+    parser.add_argument("--extra-file", type=Path, action="append", default=[], help="Additional CSV/XLSX/XLS source file to import.")
     return parser
 
 
@@ -373,6 +460,7 @@ def main() -> int:
 
     mapping = read_json_map(args.map)
     files = list(iter_data_files(args.raw_dir))
+    files.extend(path for path in args.extra_file if path.exists())
     if not files:
         print(f"No CSV/XLSX/XLS files found in {args.raw_dir}")
         return 0
@@ -384,6 +472,16 @@ def main() -> int:
             for target_name in table_name.split(", "):
                 imported.append((target_name, count, file_path.name))
             print(f"{file_path.name} -> {table_name}: {count} rows imported")
+
+    months_source = args.db.parent.parent / "Carrigtwohill.db"
+    months_imported = import_month_lookup(conn, months_source)
+    if months_imported:
+        print(f"{months_source.name} -> month_lookup: {months_imported} rows imported")
+
+    amendments = args.db.parent.parent / "queries" / "Address Amendments.xlsx"
+    amendments_applied = apply_address_amendments(conn, amendments)
+    if amendments_applied:
+        print(f"{amendments.name} -> iramedals: {amendments_applied} addresses amended")
 
     print("\nValidation summary:")
     for table_name, count, file_name in imported:
