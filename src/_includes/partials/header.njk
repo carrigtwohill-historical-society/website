@@ -79,7 +79,7 @@
       <li class="nav-item{% if item.children %} has-children{% endif %}">
         {% if item.children %}
         <button type="button" class="nav-parent" data-nav-parent aria-expanded="false">
-          <span>{{ item.label }}</span>
+          <span>{{ item.label }}{% if item.labelSub %}<br><span class="nav-label-sub">{{ item.labelSub }}</span>{% endif %}</span>
           <span class="nav-chevron" aria-hidden="true"></span>
         </button>
         <ul class="nav-sub">
