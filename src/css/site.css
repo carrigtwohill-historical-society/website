@@ -2277,13 +2277,15 @@ body.map-page-body .map-contribute {
   padding: 0.75rem;
   background: var(--paper-2);
 }
-.interred-database-frame {
+.interred-database-frame,
+.ira-database-frame {
   width: 100%;
   margin-top: 1.5rem;
   border: 1px solid var(--line);
   background: var(--paper-2);
 }
-.interred-database-frame iframe {
+.interred-database-frame iframe,
+.ira-database-frame iframe {
   display: block;
   width: 100%;
   min-height: 56rem;

@@ -31,6 +31,8 @@
     .detail-grid dt { font-weight: 700; color: #0b3d6e; text-align: left; }
     .detail-grid dd { margin: 0; white-space: pre-line; text-align: left; }
     .detail-grid .wide-field { grid-column: span 2; }
+    body.embedded { padding: 0.25rem; background: transparent; }
+    body.embedded h1 { display: none; }
   </style>
 </head>
 <body>
@@ -54,6 +56,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
   <script>
     (async function () {
+      if (new URLSearchParams(window.location.search).has('embed')) {
+        document.body.classList.add('embedded');
+      }
       const status = document.getElementById('status');
       const results = document.getElementById('results');
       const detailsSection = document.getElementById('details-section');
