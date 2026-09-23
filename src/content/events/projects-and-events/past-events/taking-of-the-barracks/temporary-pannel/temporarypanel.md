@@ -2,6 +2,7 @@
 title: "RIC Barracks Temporary Panel"
 permalink: /events/projects-and-events/past-events/taking-of-the-barracks/temporary-pannel/temporarypanel/
 layout: layouts/page.njk
+section: ric-barracks
 oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/Temporary Pannel/Temporarypanel .aspx"
 ---
 

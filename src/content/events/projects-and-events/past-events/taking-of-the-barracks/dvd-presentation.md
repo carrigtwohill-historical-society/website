@@ -3,6 +3,7 @@ title: "DVD Presentation"
 description: "RIC Barracks of Carrigtwohill was attacked and taken by RIA members of Cobh and Midletion, 3 January 1920"
 permalink: /events/projects-and-events/past-events/taking-of-the-barracks/dvd-presentation/
 layout: layouts/page.njk
+section: ric-barracks
 oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/DVD Presentation.aspx"
 ---
 

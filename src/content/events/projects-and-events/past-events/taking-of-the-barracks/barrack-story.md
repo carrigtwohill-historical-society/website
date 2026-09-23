@@ -2,6 +2,7 @@
 title: "RIC Barrack"
 permalink: /events/projects-and-events/past-events/taking-of-the-barracks/barrack-story/
 layout: layouts/page.njk
+section: ric-barracks
 oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/BarrackStory.aspx"
 ---
 

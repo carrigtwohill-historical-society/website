@@ -2,6 +2,7 @@
 title: "Plaque Unveiling"
 permalink: /events/projects-and-events/past-events/taking-of-the-barracks/plaque/plaque-unveiling/
 layout: layouts/page.njk
+section: ric-barracks
 oldPath: "/Events/Projects And Events/Past Events/Taking of the Barracks/Plaque/PlaqueUnveiling.aspx"
 ---
 

@@ -56,5 +56,15 @@
       { "label": "First National School", "url": "/schools/first-national-school/first-school/" },
       { "label": "Boys School", "url": "/schools/boys-school/boys-school/" }
     ]
+  },
+  "ric-barracks": {
+    "heading": "Taking of Carrigtwohill RIC Barracks",
+    "headingUrl": "/events/projects-and-events/past-events/taking-of-the-barracks/barrack-story/",
+    "items": [
+      { "label": "A General Overview", "url": "/events/projects-and-events/past-events/taking-of-the-barracks/barrack-story/" },
+      { "label": "DVD Presentation", "url": "/events/projects-and-events/past-events/taking-of-the-barracks/dvd-presentation/" },
+      { "label": "Plaque Unveiling", "url": "/events/projects-and-events/past-events/taking-of-the-barracks/plaque/plaque-unveiling/" },
+      { "label": "Temporary Panel", "url": "/events/projects-and-events/past-events/taking-of-the-barracks/temporary-pannel/temporarypanel/" }
+    ]
   }
 }
