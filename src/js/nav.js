@@ -2,6 +2,14 @@
   const toggle = document.querySelector("[data-nav-toggle]");
   const nav = document.querySelector("[data-site-nav]");
   const label = document.querySelector("[data-nav-toggle-label]");
+  const header = document.querySelector(".site-header");
+
+  function positionNav() {
+    if (!nav || !header) return;
+    const top = Math.max(header.getBoundingClientRect().bottom, 0);
+    nav.style.top = top + "px";
+    nav.style.maxHeight = (window.innerHeight - top) + "px";
+  }
 
   function setOpen(open) {
     if (!nav || !toggle) return;
@@ -9,7 +17,9 @@
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.classList.toggle("nav-open", open);
     if (label) label.textContent = open ? "Close" : "Menu";
-    if (!open) {
+    if (open) {
+      positionNav();
+    } else {
       document.querySelectorAll(".nav-item.is-open").forEach((item) => {
         item.classList.remove("is-open");
         const btn = item.querySelector("[data-nav-parent]");
@@ -36,6 +46,13 @@
         setOpen(false);
         toggle.focus();
       }
+    });
+
+    window.addEventListener("resize", () => {
+      if (nav.classList.contains("is-open")) positionNav();
+    });
+    window.addEventListener("orientationchange", () => {
+      if (nav.classList.contains("is-open")) positionNav();
     });
   }
 

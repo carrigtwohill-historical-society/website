@@ -2787,10 +2787,9 @@ body.map-page-body .map-contribute {
 
   .site-nav {
     display: none;
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
-    top: 100%;
     max-height: min(78vh, 36rem);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
