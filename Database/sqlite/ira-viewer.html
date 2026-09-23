@@ -31,6 +31,8 @@
     .detail-grid dt { font-weight: 700; color: #0b3d6e; text-align: left; }
     .detail-grid dd { margin: 0; white-space: pre-line; text-align: left; }
     .detail-grid .wide-field { grid-column: span 2; }
+    .detail-grid .full-field { grid-column: 1 / -1; }
+    .detail-grid .entry-text { max-width: 60ch; }
     body.embedded { padding: 0.25rem; background: transparent; }
     body.embedded h1 { display: none; }
   </style>
@@ -163,6 +165,10 @@
                 const dd = document.createElement('dd');
                 dd.textContent = String(row[index]);
                 if (label === 'Unit') dd.classList.add('wide-field');
+                if (label === 'Entry') {
+                  dt.classList.add('full-field');
+                  dd.classList.add('full-field', 'entry-text');
+                }
                 dl.appendChild(dt);
                 dl.appendChild(dd);
               });
