@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS iramedals_applicants (
     name TEXT,
     surname_id INTEGER,
     surname TEXT,
-    dob TEXT,
+    dob INTEGER,
     mob INTEGER,
     yob TEXT,
     death_day INTEGER,
