@@ -46,6 +46,8 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("isoDate", () => new Date().toISOString().slice(0, 10));
 
+  eleventyConfig.addGlobalData("buildTime", () => Date.now());
+
   eleventyConfig.addFilter("urlencode", (s) =>
     encodeURIComponent(s == null ? "" : String(s))
   );

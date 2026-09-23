@@ -33,6 +33,6 @@ oldPath: "/Local History/Military/ArmyPensions.aspx"
     </table>
 
     <div class="ira-database-frame">
-        <iframe src="/database/ira-medals/?embed=1" title="Search IRA Medals & Pensions records" loading="lazy"></iframe>
+        <iframe src="/database/ira-medals/?embed=1&v={{ buildTime }}" title="Search IRA Medals & Pensions records" loading="lazy"></iframe>
     </div>
 

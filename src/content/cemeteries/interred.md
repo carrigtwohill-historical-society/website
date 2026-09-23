@@ -18,6 +18,6 @@ oldPath: "/Cemeteries/Interred.aspx"
     The first surname shown is the default as an example. Where a name appears in brackets it refers to an alias such as in Ellen (Geany) Leahy, and would often refer to maiden name. Where a corresponding Civil Registration of death has been found we have included a brief transcript of the civil registration record. These are identified by a plus symbol. Click on it to examine the record details.
 </p>
 <div class="interred-database-frame">
-    <iframe src="/cemeteries/interred/database/?embed=1" title="Search interred cemetery records" loading="lazy"></iframe>
+    <iframe src="/cemeteries/interred/database/?embed=1&v={{ buildTime }}" title="Search interred cemetery records" loading="lazy"></iframe>
 </div>
 
