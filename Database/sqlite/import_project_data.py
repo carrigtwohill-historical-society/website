@@ -25,7 +25,8 @@ DEF_TABLE_MAP = {
     "Data": "data",
     "Headstones": "headstone",
     "Interred": "interred",
-    "IRAMedals": "iramedals",
+    "IRAMedalsApplicants": "iramedals_applicants",
+    "IRAMedalsDetails": "iramedals_details",
     "InterredStDavids": "interred_st_davids",
     "MaritalStatus": "marital_status",
     "Months": "month_lookup",
@@ -40,20 +41,22 @@ DEF_TABLE_MAP = {
 }
 
 SOURCE_COLUMN_ALIASES = {
-    "iramedals": {
+    "iramedals_applicants": {
         "medalid": "medal_id",
         "townlandid": "townland_id",
         "nameid": "name_id",
         "surnameid": "surname_id",
-        "maidenid": "maiden_id",
         "fileref": "file_ref",
         "mob": "mob",
+        "associatedpensionfile": "associated_pension_file",
+    },
+    "iramedals_details": {
+        "medalid": "medal_id",
+        "maidenid": "maiden_id",
         "statusid": "status_id",
         "successfulmedal": "successful_medal",
         "medalawarded": "medal_awarded",
-        "associatedpensionfile": "associated_pension_file",
         "pensioned": "pensioned",
-        "pensionregectedmeans": "pension_regected_means",
         "pensionrejectedother": "pension_rejected_other",
         "organisationid": "organisation_id",
     },
@@ -266,7 +269,7 @@ def apply_address_amendments(conn: sqlite3.Connection, workbook_path: Path) -> i
         if medal_id in (None, ""):
             continue
         conn.execute(
-            "UPDATE iramedals SET townland_id = COALESCE(?, townland_id), address = ? WHERE medal_id = ?",
+            "UPDATE iramedals_applicants SET townland_id = COALESCE(?, townland_id), address = ? WHERE medal_id = ?",
             (row.get("TownlandId") or None, address or None, int(float(medal_id))),
         )
         updated += conn.execute("SELECT changes()").fetchone()[0]
@@ -365,7 +368,7 @@ def import_rows(conn: sqlite3.Connection, table_name: str, rows: list[dict[str, 
                         normalized_row["burial_date"] = str(year_value)
                 except (TypeError, ValueError):
                     pass
-        if table_name == "iramedals":
+        if table_name == "iramedals_applicants":
             source_values = {
                 normalize_identifier(str(raw_key)): value
                 for raw_key, value in row.items()
@@ -481,7 +484,7 @@ def main() -> int:
     amendments = args.db.parent.parent / "queries" / "Address Amendments.xlsx"
     amendments_applied = apply_address_amendments(conn, amendments)
     if amendments_applied:
-        print(f"{amendments.name} -> iramedals: {amendments_applied} addresses amended")
+        print(f"{amendments.name} -> iramedals_applicants: {amendments_applied} addresses amended")
 
     print("\nValidation summary:")
     for table_name, count, file_name in imported:

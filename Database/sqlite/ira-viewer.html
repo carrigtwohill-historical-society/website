@@ -20,6 +20,17 @@
     .date-header, .date-cell { text-align: right; }
     .address-cell { white-space: pre-line; }
     .error { color: #9d1c1c; font-weight: 700; }
+    .toggle-cell { width: 2rem; text-align: center; }
+    .toggle-btn { width: 1.6rem; height: 1.6rem; border: 2px solid #0b3d6e; border-radius: .3rem; background: white; color: #0b3d6e; font-weight: 700; line-height: 1; cursor: pointer; }
+    .toggle-btn:hover { background: #eaf2fb; }
+    h2 { margin: 1.5rem 0 .5rem; color: #0b3d6e; font-size: 1.1rem; }
+    .entry-cell { white-space: pre-line; min-width: 20rem; }
+    .detail-block { background: white; border: 1px solid #d4e1ef; border-radius: .4rem; padding: .75rem 1rem; margin-bottom: .75rem; }
+    .detail-block h3 { margin: 0 0 .5rem; color: #0b3d6e; font-size: 1rem; }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, max-content)); justify-content: start; gap: .5rem 1.5rem; margin: 0; text-align: left; }
+    .detail-grid dt { font-weight: 700; color: #0b3d6e; text-align: left; }
+    .detail-grid dd { margin: 0; white-space: pre-line; text-align: left; }
+    .detail-grid .wide-field { grid-column: span 2; }
   </style>
 </head>
 <body>
@@ -29,17 +40,24 @@
     <label>Townland<select id="townland-filter"></select></label>
   </div>
   <p class="status" id="status">Loading database...</p>
+  <h2>Applicants</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>ID</th><th>File</th><th>Associate Files</th><th>Applicant</th><th>Address</th><th class="date-header">Date of Birth</th><th class="date-header">Date of Death</th><th>Occupation</th><th>Rank</th><th class="date-header">Medal Awarded</th><th>Certificate</th></tr></thead>
+      <thead><tr><th></th><th>ID</th><th>File</th><th>Associate Files</th><th>Applicant</th><th>Address</th><th class="date-header">Date of Birth</th><th class="date-header">Date of Death</th><th>Occupation</th></tr></thead>
       <tbody id="results"></tbody>
     </table>
+  </div>
+  <div id="details-section" hidden>
+    <h2>Details (linked by ID)</h2>
+    <div id="details-results"></div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
   <script>
     (async function () {
       const status = document.getElementById('status');
       const results = document.getElementById('results');
+      const detailsSection = document.getElementById('details-section');
+      const detailsResults = document.getElementById('details-results');
       const surnameFilter = document.getElementById('surname-filter');
       const townlandFilter = document.getElementById('townland-filter');
       try {
@@ -47,7 +65,7 @@
         const response = await fetch(`project.db?v=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) throw new Error('SQLite database could not be loaded.');
         const db = new SQL.Database(new Uint8Array(await response.arrayBuffer()));
-        const query = `SELECT i.medal_id, i.file_ref, TRIM(COALESCE(cn.christian_name, i.name) || ' ' || CASE WHEN NULLIF(TRIM(i.surname), '') IS NOT NULL THEN i.surname ELSE COALESCE(ssl.surname, '') END) AS applicant, i.address, COALESCE(NULLIF(TRIM(ssl.surname), ''), NULLIF(TRIM(i.surname), ''), '') AS surname, TRIM(COALESCE(i.dob, '') || CASE WHEN i.dob IS NOT NULL AND (m.month_name IS NOT NULL OR i.yob IS NOT NULL) THEN ' - ' ELSE '' END || COALESCE(m.month_name, '') || CASE WHEN m.month_name IS NOT NULL AND i.yob IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.yob, '')) AS date_of_birth, TRIM(COALESCE(i.death_day, '') || CASE WHEN i.death_day IS NOT NULL AND (md.month_name IS NOT NULL OR i.death_year IS NOT NULL) THEN ' - ' ELSE '' END || CASE md.month_id WHEN 1 THEN 'Jan' WHEN 2 THEN 'Feb' WHEN 3 THEN 'Mar' WHEN 4 THEN 'Apr' WHEN 5 THEN 'May' WHEN 6 THEN 'Jun' WHEN 7 THEN 'Jul' WHEN 8 THEN 'Aug' WHEN 9 THEN 'Sept' WHEN 10 THEN 'Oct' WHEN 11 THEN 'Nov' WHEN 12 THEN 'Dec' END || CASE WHEN md.month_name IS NOT NULL AND i.death_year IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.death_year, '')) AS date_of_death, TRIM(COALESCE(i.medal_d, '') || CASE WHEN i.medal_d IS NOT NULL AND i.medal_m IS NOT NULL THEN ' - ' ELSE '' END || CASE lower(trim(i.medal_m)) WHEN 'january' THEN 'Jan' WHEN 'february' THEN 'Feb' WHEN 'march' THEN 'Mar' WHEN 'april' THEN 'Apr' WHEN 'may' THEN 'May' WHEN 'june' THEN 'Jun' WHEN 'july' THEN 'Jul' WHEN 'august' THEN 'Aug' WHEN 'september' THEN 'Sept' WHEN 'october' THEN 'Oct' WHEN 'november' THEN 'Nov' WHEN 'december' THEN 'Dec' ELSE trim(i.medal_m) END || CASE WHEN i.medal_m IS NOT NULL AND i.medal_y IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.medal_y, '')) AS medal_awarded_date, i.townland_id, COALESCE(t.townland_name, i.townland_id) AS townland_name, i.occupation, i.rank, i.certificate FROM iramedals i LEFT JOIN standard_christian_names cn ON i.name_id = cn.christian_name_id LEFT JOIN surnames_standard_list ssl ON i.surname_id = ssl.surname_id LEFT JOIN month_lookup m ON i.mob = m.month_id LEFT JOIN month_lookup md ON i.death_month = md.month_id LEFT JOIN townland t ON i.townland_id = t.townland_id ORDER BY i.medal_id;`;
+        const query = `SELECT i.medal_id, i.file_ref, TRIM(COALESCE(cn.christian_name, i.name) || ' ' || CASE WHEN NULLIF(TRIM(i.surname), '') IS NOT NULL THEN i.surname ELSE COALESCE(ssl.surname, '') END) AS applicant, i.address, COALESCE(NULLIF(TRIM(ssl.surname), ''), NULLIF(TRIM(i.surname), ''), '') AS surname, TRIM(COALESCE(i.dob, '') || CASE WHEN i.dob IS NOT NULL AND (m.month_name IS NOT NULL OR i.yob IS NOT NULL) THEN ' - ' ELSE '' END || COALESCE(m.month_name, '') || CASE WHEN m.month_name IS NOT NULL AND i.yob IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.yob, '')) AS date_of_birth, TRIM(COALESCE(i.death_day, '') || CASE WHEN i.death_day IS NOT NULL AND (md.month_name IS NOT NULL OR i.death_year IS NOT NULL) THEN ' - ' ELSE '' END || CASE md.month_id WHEN 1 THEN 'Jan' WHEN 2 THEN 'Feb' WHEN 3 THEN 'Mar' WHEN 4 THEN 'Apr' WHEN 5 THEN 'May' WHEN 6 THEN 'Jun' WHEN 7 THEN 'Jul' WHEN 8 THEN 'Aug' WHEN 9 THEN 'Sept' WHEN 10 THEN 'Oct' WHEN 11 THEN 'Nov' WHEN 12 THEN 'Dec' END || CASE WHEN md.month_name IS NOT NULL AND i.death_year IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(i.death_year, '')) AS date_of_death, TRIM(COALESCE(d.medal_d, '') || CASE WHEN d.medal_d IS NOT NULL AND d.medal_m IS NOT NULL THEN ' - ' ELSE '' END || CASE lower(trim(d.medal_m)) WHEN 'january' THEN 'Jan' WHEN 'february' THEN 'Feb' WHEN 'march' THEN 'Mar' WHEN 'april' THEN 'Apr' WHEN 'may' THEN 'May' WHEN 'june' THEN 'Jun' WHEN 'july' THEN 'Jul' WHEN 'august' THEN 'Aug' WHEN 'september' THEN 'Sept' WHEN 'october' THEN 'Oct' WHEN 'november' THEN 'Nov' WHEN 'december' THEN 'Dec' ELSE trim(d.medal_m) END || CASE WHEN d.medal_m IS NOT NULL AND d.medal_y IS NOT NULL THEN ' - ' ELSE '' END || COALESCE(d.medal_y, '')) AS medal_awarded_date, i.townland_id, COALESCE(t.townland_name, i.townland_id) AS townland_name, i.occupation, d.rank, d.certificate, d.maiden, d.widow, d.widow_death, d.alias, d.successful_medal, d.pensioned, d.pension_rejected_other, d.brigade, d.division, d.unit, d.company, d.entry FROM iramedals_applicants i LEFT JOIN iramedals_details d ON d.medal_id = i.medal_id LEFT JOIN standard_christian_names cn ON i.name_id = cn.christian_name_id LEFT JOIN surnames_standard_list ssl ON i.surname_id = ssl.surname_id LEFT JOIN month_lookup m ON i.mob = m.month_id LEFT JOIN month_lookup md ON i.death_month = md.month_id LEFT JOIN townland t ON i.townland_id = t.townland_id ORDER BY i.medal_id;`;
         const queryWithAssociated = query.replace('i.file_ref,', 'i.file_ref, i.associated_pension_file,');
         const result = db.exec(queryWithAssociated)[0];
         const rows = result.values;
@@ -83,10 +101,83 @@
             (!townland || (townland === '__blank__' ? !String(row[9] || '').trim() : String(row[9] || '') === townland))
           );
           results.innerHTML = '';
+          detailsResults.innerHTML = '';
+          detailsSection.hidden = true;
+          let collapseActive = null;
+          const detailFields = [
+            [12, 'Rank'], [8, 'Medal Awarded'], [13, 'Certificate'], [14, 'Maiden Name'],
+            [15, 'Widow'], [16, 'Widow Death'], [17, 'Alias'], [18, 'Successful Medal'],
+            [19, 'Pensioned'], [20, 'Pension Rejected (Other)'], [23, 'Unit'], [25, 'Entry'],
+          ];
           visible.forEach(row => {
-          const tr = document.createElement('tr');
-          [0, 1, 2, 3, 4, 6, 7, 11, 12, 8, 13].forEach(index => { const td = document.createElement('td'); if (index === 4) td.className = 'address-cell'; if ([6, 7, 8].includes(index)) td.classList.add('date-cell'); td.textContent = row[index] == null ? '' : String(row[index]); tr.appendChild(td); });
-          results.appendChild(tr);
+            const tr = document.createElement('tr');
+            const toggleTd = document.createElement('td');
+            toggleTd.className = 'toggle-cell';
+            const populatedFields = detailFields.filter(([index]) => row[index] != null && !['', '0'].includes(String(row[index]).trim()));
+            const unitStatement = [21, 22, 24].map(index => row[index]).filter(value => value != null && !['', '0'].includes(String(value).trim())).join(', ');
+            const hasDetails = populatedFields.length > 0 || unitStatement !== '';
+            let toggleBtn = null;
+            if (hasDetails) {
+              toggleBtn = document.createElement('button');
+              toggleBtn.type = 'button';
+              toggleBtn.className = 'toggle-btn';
+              toggleBtn.textContent = '+';
+              toggleBtn.setAttribute('aria-expanded', 'false');
+              toggleTd.appendChild(toggleBtn);
+            }
+            tr.appendChild(toggleTd);
+            [0, 1, 2, 3, 4, 6, 7, 11].forEach(index => { const td = document.createElement('td'); if (index === 4) td.className = 'address-cell'; if ([6, 7].includes(index)) td.classList.add('date-cell'); td.textContent = row[index] == null ? '' : String(row[index]); tr.appendChild(td); });
+            results.appendChild(tr);
+
+            if (!hasDetails) return;
+            let detailBlock = null;
+            const collapse = () => {
+              detailBlock.remove();
+              detailBlock = null;
+              toggleBtn.textContent = '+';
+              toggleBtn.setAttribute('aria-expanded', 'false');
+              if (collapseActive === collapse) collapseActive = null;
+              if (!detailsResults.children.length) detailsSection.hidden = true;
+            };
+            toggleBtn.addEventListener('click', () => {
+              if (detailBlock) {
+                collapse();
+                return;
+              }
+              if (collapseActive) collapseActive();
+              detailBlock = document.createElement('div');
+              detailBlock.className = 'detail-block';
+              const heading = document.createElement('h3');
+              heading.textContent = `ID ${row[0]}`;
+              detailBlock.appendChild(heading);
+              const dl = document.createElement('dl');
+              dl.className = 'detail-grid';
+              populatedFields.forEach(([index, label]) => {
+                const dt = document.createElement('dt');
+                dt.textContent = label;
+                const dd = document.createElement('dd');
+                dd.textContent = String(row[index]);
+                if (label === 'Unit') dd.classList.add('wide-field');
+                dl.appendChild(dt);
+                dl.appendChild(dd);
+              });
+              if (unitStatement !== '') {
+                const dt = document.createElement('dt');
+                dt.textContent = 'Army Unit';
+                const dd = document.createElement('dd');
+                dd.textContent = unitStatement;
+                dd.classList.add('wide-field');
+                dl.appendChild(dt);
+                dl.appendChild(dd);
+              }
+              detailBlock.appendChild(dl);
+              detailsResults.appendChild(detailBlock);
+              detailsSection.hidden = false;
+              collapseActive = collapse;
+              toggleBtn.textContent = '−';
+              toggleBtn.setAttribute('aria-expanded', 'true');
+              detailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
           });
           status.textContent = `Showing ${visible.length} IRA medal records from SQLite.`;
         };
