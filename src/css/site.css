@@ -2570,12 +2570,15 @@ body.map-page-body .map-contribute {
 
 .partner-list {
   list-style: none;
-  margin: 0;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: stretch;
+  overflow-x: auto;
   gap: 0.35rem;
 }
 .partner-list > li {
