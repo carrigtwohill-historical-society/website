@@ -2,6 +2,7 @@
 title: "Committee & Membership"
 permalink: /membership/committee/
 layout: layouts/page.njk
+section: about-us
 oldPath: "/Membership/Committee.aspx"
 ---
 <meta name="description" content = "Committee members have varied backgrounds with a common interest of Carrigtwohill rich history, who shall always promote awareness of it through our society." />

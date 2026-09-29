@@ -3,6 +3,7 @@ title: "Current Membership"
 description: "Membership consists of Carrigtwohill inhabitants & expatriates around the word who have an interest in their homeland rich history. It"
 permalink: /membership/current-membership/
 layout: layouts/page.njk
+section: about-us
 oldPath: "/Membership/CurrentMembership.aspx"
 ---
 <meta name="description" content="Membership consists of Carrigtwohill inhabitants & expatriates around the word who have an interest in their homeland rich history. It's an ever expanding list." />

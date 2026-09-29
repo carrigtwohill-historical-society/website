@@ -1,4 +1,15 @@
 {
+  "about-us": {
+    "heading": "About Us",
+    "headingUrl": "/about/about-us/",
+    "items": [
+      { "label": "About Us", "url": "/about/about-us/" },
+      { "label": "Formation" },
+      { "label": "Committee", "url": "/membership/committee/" },
+      { "label": "Membership", "url": "/membership/current-membership/" },
+      { "label": "Contact Us", "url": "/about/contact-us/" }
+    ]
+  },
   "barrymore": {
     "heading": "Barrymore",
     "items": [

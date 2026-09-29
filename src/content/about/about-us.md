@@ -2,6 +2,7 @@
 title: "About Us"
 permalink: /about/about-us/
 layout: layouts/page.njk
+section: about-us
 oldPath: "/About/AboutUs.aspx"
 ---
 
@@ -12,7 +13,7 @@ oldPath: "/About/AboutUs.aspx"
         This page is only intended to briefly outline the formation history of our society, and not an effort to fully document
         the Minutes of our meetings.
     </p>
-    <h3>Formation - Historical Group</h3>
+    <h3>Historical Group</h3>
     <p class="indentedText">
         Originally recorded as ‘Historical Group’ within the Minutes, the concept of an historical society for Carrigtwohill
         was the brainchild of our founding members as a group of local history enthusiasts. These Minutes record the first 
