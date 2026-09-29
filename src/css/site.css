@@ -2570,21 +2570,18 @@ body.map-page-body .map-contribute {
 
 .partner-list {
   list-style: none;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   padding: 0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
-  overflow-x: auto;
-  gap: 0.35rem;
+  gap: 0.15rem;
 }
 .partner-list > li {
   display: flex;
-  flex: 0 0 auto;
-  width: 17.5rem;
+  width: 100%;
   max-width: 100%;
   min-width: 0;
 }
@@ -2696,8 +2693,11 @@ body.map-page-body .map-contribute {
   .home-hero,
   .contact-layout,
   .home-panels { grid-template-columns: 1fr; }
+  .partner-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .partner-list > li {
-    width: 11rem;
+    width: 100%;
   }
   .partner-link {
     padding-right: 0.5rem;
@@ -2947,10 +2947,6 @@ body.map-page-body .map-contribute {
 @media (max-width: 420px) {
   .btn-membership-mobile { display: none; }
   .nav-toggle-label { min-width: 2.6rem; }
-  .partner-list > li {
-    width: 100%;
-    max-width: 11rem;
-  }
 }
 
 /* Lightbox — enlarge content photographs */
