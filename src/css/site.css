@@ -2615,6 +2615,10 @@ body.map-page-body .map-contribute {
   flex-shrink: 0;
   padding: 0;
 }
+.partner-list > li:nth-child(3) .partner-link img,
+.partner-list > li:nth-child(4) .partner-link img {
+  height: 6rem;
+}
 .partner-caption {
   position: absolute;
   left: 0;
@@ -2698,6 +2702,10 @@ body.map-page-body .map-contribute {
   }
   .partner-link img {
     height: 2.75rem;
+  }
+  .partner-list > li:nth-child(3) .partner-link img,
+  .partner-list > li:nth-child(4) .partner-link img {
+    height: 3.75rem;
   }
   .prose .FigureRight,
   .prose figure {
