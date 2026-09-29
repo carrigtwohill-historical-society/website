@@ -246,7 +246,7 @@ module.exports = function (eleventyConfig) {
   });
 
   return {
-    pathPrefix: "/",
+    pathPrefix: "/website/",
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
