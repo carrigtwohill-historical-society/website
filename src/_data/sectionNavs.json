@@ -3,8 +3,8 @@
     "heading": "About Us",
     "headingUrl": "/about/about-us/",
     "items": [
+      { "label": "Formation", "url": "/about/formation-community-council/" },
       { "label": "About Us", "url": "/about/about-us/" },
-      { "label": "Formation" },
       { "label": "Committee", "url": "/membership/committee/" },
       { "label": "Membership", "url": "/membership/current-membership/" },
       { "label": "Contact Us", "url": "/about/contact-us/" }
