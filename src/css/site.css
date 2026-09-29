@@ -2581,7 +2581,7 @@ body.map-page-body .map-contribute {
 .partner-list > li {
   display: flex;
   flex: 0 0 auto;
-  width: 12rem;
+  width: 17.5rem;
   max-width: 100%;
   min-width: 0;
 }
@@ -2594,7 +2594,7 @@ body.map-page-body .map-contribute {
   justify-content: center;
   text-decoration: none;
   color: var(--ink);
-  padding: 1.15rem 1rem 1rem;
+  padding: 1.15rem 0.75rem 1rem;
   background: transparent;
   border: none;
   border-radius: 0.3rem;
@@ -2607,7 +2607,7 @@ body.map-page-body .map-contribute {
 }
 .partner-link img {
   width: auto;
-  height: 7.5rem;
+  height: 4.5rem;
   max-width: 100%;
   object-fit: contain;
   background: transparent;
@@ -2690,10 +2690,14 @@ body.map-page-body .map-contribute {
   .contact-layout,
   .home-panels { grid-template-columns: 1fr; }
   .partner-list > li {
-    width: 9.5rem;
+    width: 11rem;
+  }
+  .partner-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
   }
   .partner-link img {
-    height: 6.5rem;
+    height: 2.75rem;
   }
   .prose .FigureRight,
   .prose figure {
