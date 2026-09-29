@@ -1,6 +1,6 @@
 # Carrigtwohill & District Historical Society
 
-Eleventy static site for GitHub Pages: `https://carrigtwohill-historical-society.github.io/website/`
+Eleventy static site for GitHub Pages: `https://carrigtwohillhistoricalsociety.com/`
 
 ## Commands
 

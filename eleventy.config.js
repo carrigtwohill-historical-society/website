@@ -5,6 +5,7 @@ const Image = require("@11ty/eleventy-img");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+  eleventyConfig.addPassthroughCopy({ "src/CNAME": "CNAME" });
   eleventyConfig.addPassthroughCopy({ "src/js": "js" });
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
   eleventyConfig.addPassthroughCopy({ "src/data/places.json": "data/places.json" });
@@ -132,9 +133,21 @@ module.exports = function (eleventyConfig) {
   // Migrated HTML uses root-absolute /assets/... — apply pathPrefix for GH Pages
   eleventyConfig.addTransform("prefixRootUrls", (content, outputPath) => {
     if (!outputPath || !outputPath.endsWith(".html")) return content;
+    const prefix = String(require("./src/_data/site.json").pathPrefix || "").replace(/\/$/, "");
+    if (!prefix) return content;
     let out = content.replace(
-      /(href|src|action)="\/(?!website\/)/g,
-      '$1="/website/'
+      /(href|src|action)="([^"]*)"/g,
+      (full, attribute, value) => {
+        if (
+          !value.startsWith("/") ||
+          value.startsWith("//") ||
+          value === prefix ||
+          value.startsWith(`${prefix}/`)
+        ) {
+          return full;
+        }
+        return `${attribute}="${prefix}${value}"`;
+      }
     );
     // eleventy-img srcset
     out = out.replace(
@@ -144,11 +157,16 @@ module.exports = function (eleventyConfig) {
           .split(",")
           .map((part) => {
             const trimmed = part.trim();
-            if (trimmed.startsWith("/website/") || trimmed.startsWith("http")) {
+            if (
+              trimmed === prefix ||
+              trimmed.startsWith(`${prefix}/`) ||
+              trimmed.startsWith("http") ||
+              trimmed.startsWith("//")
+            ) {
               return trimmed;
             }
             if (trimmed.startsWith("/")) {
-              return `/website${trimmed}`;
+              return `${prefix}${trimmed}`;
             }
             return trimmed;
           })
@@ -228,7 +246,7 @@ module.exports = function (eleventyConfig) {
   });
 
   return {
-    pathPrefix: "/website/",
+    pathPrefix: "/",
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
