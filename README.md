@@ -1,6 +1,8 @@
 # Carrigtwohill & District Historical Society
 
-Eleventy static site for GitHub Pages: `https://carrigtwohill-historical-society.github.io/website/`
+Eleventy static site: `https://carrigtwohillhistoricalsociety.com/`
+
+The custom domain is served from the site root. Leave `pathPrefix` in `src/_data/site.json` empty so CSS, JavaScript, and image URLs are not prefixed with `/website/`. GitHub still redirects `https://carrigtwohill-historical-society.github.io/website/` to that domain.
 
 ## Commands
 

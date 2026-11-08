@@ -6,6 +6,7 @@ eleventyExcludeFromCollections: true
 ---
 <section class="error-page" data-pagefind-ignore>
   <h1>Page not found</h1>
+  <!-- Browser lookup of verified old URLs. This is not an HTTP 301, and unknown URLs stay on this page. -->
   <p id="redirect-status">That address is not on the new site. Checking for an updated link…</p>
   <p><a href="{{ '/' | url }}">Return home</a> · <a href="{{ '/map/' | url }}">Open the map</a> · <a href="{{ '/about/contact-us/' | url }}">Contact us</a></p>
 </section>
@@ -40,24 +41,39 @@ eleventyExcludeFromCollections: true
   fetch(mapUrl)
     .then(function (r) { return r.json(); })
     .then(function (rows) {
+      var list = Array.isArray(rows) ? rows : (rows && Array.isArray(rows.paths) ? rows.paths : []);
       var path = norm(location.pathname);
       var wanted = candidates(path);
       var hit = null;
-      for (var i = 0; i < rows.length; i++) {
-        var old = norm(rows[i].old || rows[i].oldEncoded || "");
-        var oldLower = old.toLowerCase();
-        for (var j = 0; j < wanted.length; j++) {
-          if (wanted[j] === old || wanted[j].toLowerCase() === oldLower) {
-            hit = rows[i];
-            break;
+      for (var i = 0; i < list.length; i++) {
+        var aliases = [list[i].old, list[i].oldEncoded];
+        var matched = false;
+        for (var a = 0; a < aliases.length; a++) {
+          if (!aliases[a]) continue;
+          var old = norm(aliases[a]);
+          var oldLower = old.toLowerCase();
+          for (var j = 0; j < wanted.length; j++) {
+            if (wanted[j] === old || wanted[j].toLowerCase() === oldLower) {
+              matched = true;
+              break;
+            }
           }
+          if (matched) break;
         }
-        if (hit) break;
+        if (matched) {
+          hit = list[i];
+          break;
+        }
       }
       if (hit && hit.new) {
-        var dest = prefix + "/" + String(hit.new).replace(/^\//, "");
+        var next = String(hit.new);
+        if (!/^https?:\/\//i.test(next)) {
+          next = (prefix ? prefix : "") + "/" + next.replace(/^\//, "");
+        }
+        if (location.search && next.indexOf("?") === -1) next += location.search;
+        if (location.hash && next.indexOf("#") === -1) next += location.hash;
         if (status) status.textContent = "This page has moved — redirecting…";
-        location.replace(dest);
+        location.replace(next);
         return;
       }
       if (status) {

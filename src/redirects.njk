@@ -4,7 +4,7 @@ pagination:
   size: 1
   alias: redirect
 eleventyExcludeFromCollections: true
-permalink: "{{ redirect.old }}/"
+permalink: "{{ redirect.old | safe }}/"
 layout: false
 ---
 <!DOCTYPE html>
@@ -13,10 +13,14 @@ layout: false
   <meta charset="utf-8">
   <title>Redirecting…</title>
   <link rel="canonical" href="{{ site.url }}{{ site.pathPrefix }}{{ redirect.new }}">
-  <meta http-equiv="refresh" content="0;url={{ site.pathPrefix }}{{ redirect.new }}">
+  <!-- Browser redirect only. GitHub Pages cannot send an HTTP 301. -->
   <script>
-    location.replace("{{ site.pathPrefix }}{{ redirect.new }}");
+    var dest = "{{ site.pathPrefix }}{{ redirect.new }}";
+    if (location.search && dest.indexOf("?") === -1) dest += location.search;
+    if (location.hash && dest.indexOf("#") === -1) dest += location.hash;
+    location.replace(dest);
   </script>
+  <meta http-equiv="refresh" content="0;url={{ site.pathPrefix }}{{ redirect.new }}">
 </head>
 <body>
   <p>This page has moved to <a href="{{ site.pathPrefix }}{{ redirect.new }}">{{ redirect.title or redirect.new }}</a>.</p>

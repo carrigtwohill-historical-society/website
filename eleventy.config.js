@@ -3,6 +3,15 @@ const fs = require("fs");
 const { execSync } = require("child_process");
 const Image = require("@11ty/eleventy-img");
 
+/** Eleventy pathPrefix. Empty site.pathPrefix means the custom domain root. */
+function eleventyPathPrefix() {
+  const raw = String(require("./src/_data/site.json").pathPrefix || "")
+    .trim()
+    .replace(/\/$/, "");
+  if (!raw) return "/";
+  return raw.startsWith("/") ? `${raw}/` : `/${raw}/`;
+}
+
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/CNAME": "CNAME" });
@@ -130,7 +139,8 @@ module.exports = function (eleventyConfig) {
     return current === url || current.startsWith(url);
   });
 
-  // Migrated HTML uses root-absolute /assets/... — apply pathPrefix for GH Pages
+  // Migrated HTML uses root-absolute /assets/... — prefix only when site.pathPrefix is set.
+  // The custom domain is served from /, so an empty pathPrefix leaves those URLs alone.
   eleventyConfig.addTransform("prefixRootUrls", (content, outputPath) => {
     if (!outputPath || !outputPath.endsWith(".html")) return content;
     const prefix = String(require("./src/_data/site.json").pathPrefix || "").replace(/\/$/, "");
@@ -246,7 +256,7 @@ module.exports = function (eleventyConfig) {
   });
 
   return {
-    pathPrefix: "/website/",
+    pathPrefix: eleventyPathPrefix(),
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
